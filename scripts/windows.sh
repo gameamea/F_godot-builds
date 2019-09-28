@@ -1,9 +1,11 @@
 #!/bin/bash
-#
+
+#------
 # This script compiles and packages Godot for Windows using MinGW and InnoSetup.
 #
 # Copyright © 2017 Hugo Locurcio and contributors - CC0 1.0 Universal
 # See `LICENSE.md` included in the source distribution for details.
+#------
 
 set -euo pipefail
 

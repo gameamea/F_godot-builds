@@ -2,8 +2,6 @@
 
 This repository contains scripts for compiling Godot for various platforms.
 
-## [~~Download builds~~](https://godot.hugo.pro/) (not yet ready)
-
 ## Using this build system for your own builds
 
 You are welcome to use these build scripts to set up your own build environment.
@@ -12,11 +10,11 @@ Here are some technical details:
 ### Supported platforms
 
 - **Android** (ARMv7 only)
-- **HTML5** (WebAssembly)
-- **iOS** (ARMv8 + ARMv7)
+- **Web** (emscripten)
+- **iOS** (ARMv8 + ARMv7) (NOT TESTED since the initial version of the script in 2017)
 - **Linux** (64-bit only)
-- **macOS** (64-bit only)
-- **Windows** (64-bit + 32-bit)
+- **macOS** (64-bit only) (NOT TESTED since the initial version of the script in 2017)
+- **Windows** (64-bit + 32-bit) (NOT TESTED since the initial version of the script in 2017)
 
 #### Additional notes
 
@@ -40,9 +38,9 @@ Here are some technical details:
 
 ### Setting it up
 
-This build system has been only tested on Fedora 27. Linux builds are performed
-in an Ubuntu 14.04 chroot, so that the binaries can run on both old and new
-distributions.
+This build system has been initially tested on Fedora 27 and Ubuntu 14.04,
+and then on the latest Arch Linux release available in september 2019
+Linux builds are performed in a Arch Linux distribution.
 
 #### Environment variables
 
@@ -54,6 +52,7 @@ will be placed.
 ## License
 
 Copyright © 2017 Hugo Locurcio and contributors
+Copyright © 2019 Laurent Ongaro and contributors
 
 Files in this repository are licensed under CC0 1.0 Universal,
 see [LICENSE.md](LICENSE.md) for more information.

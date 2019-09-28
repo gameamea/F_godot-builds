@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+        <title>Godot Build Scripts</title>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+        
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 12px;
+                line-height: 1.6;
+            }
+        </style>
+        
+        
+    </head>
+    <body>
+        <h1 id="godot-build-scripts">Godot Build Scripts</h1>
+<p>This repository contains scripts for compiling Godot for various platforms.</p>
+<h2 id="using-this-build-system-for-your-own-builds">Using this build system for your own builds</h2>
+<p>You are welcome to use these build scripts to set up your own build environment.<br>
+Here are some technical details:</p>
+<h3 id="supported-platforms">Supported platforms</h3>
+<ul>
+<li><strong>Android</strong> (ARMv7 only)</li>
+<li><strong>Web</strong> (emscripten)</li>
+<li><strong>iOS</strong> (ARMv8 + ARMv7) (NOT TESTED since the initial version of the script in 2017)</li>
+<li><strong>Linux</strong> (64-bit only)</li>
+<li><strong>macOS</strong> (64-bit only) (NOT TESTED since the initial version of the script in 2017)</li>
+<li><strong>Windows</strong> (64-bit + 32-bit) (NOT TESTED since the initial version of the script in 2017)</li>
+</ul>
+<h4 id="additional-notes">Additional notes</h4>
+<ul>
+<li><strong>Linux editors come as <a href="https://appimage.org/">AppImages</a>.</strong>
+<ul>
+<li>No dependencies need to be installed before running them – just download it,<br>
+make it executable then run it!</li>
+<li>These also provide substantial file size reductions thanks to the built-in<br>
+DEFLATE compression.</li>
+</ul>
+</li>
+<li><strong>Windows editors are packaged into installers generated using <a href="http://www.jrsoftware.org/isinfo.php">InnoSetup</a>.</strong>
+<ul>
+<li>The installers do not require administrative privileges to work.</li>
+<li>These also provide built-in LZMA compression, making the download faster.</li>
+</ul>
+</li>
+</ul>
+<h3 id="directory-structure">Directory structure</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">File / directory</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><code>build_godot.sh</code></td>
+<td>The main build script.</td>
+</tr>
+<tr>
+<td style="text-align:right"><code>resources/</code></td>
+<td>Contains resource files, such as Windows installer definition files.</td>
+</tr>
+<tr>
+<td style="text-align:right"><code>scripts/</code></td>
+<td>Contains the platform-specific build and packaging scripts.</td>
+</tr>
+<tr>
+<td style="text-align:right"><code>utilities/</code></td>
+<td>Contains various utilities, such as for installing dependencies.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="setting-it-up">Setting it up</h3>
+<p>This build system has been initially tested on Fedora 27 and Ubuntu 14.04,<br>
+and then on the latest Arch Linux release available in september 2019<br>
+Linux builds are performed in a Arch Linux distribution.</p>
+<h4 id="environment-variables">Environment variables</h4>
+<p>Overriding these variables is optional.</p>
+<ul>
+<li><code>ARTIFACTS_DIR</code> can be set to an absolute path where build artifacts (binaries)<br>
+will be placed.</li>
+</ul>
+<h2 id="license">License</h2>
+<p>Copyright © 2017 Hugo Locurcio and contributors<br>
+Copyright © 2019 Laurent Ongaro and contributors</p>
+<p>Files in this repository are licensed under CC0 1.0 Universal,<br>
+see <a href="LICENSE.md">LICENSE.md</a> for more information.</p>
+
+    </body>
+    </html>
