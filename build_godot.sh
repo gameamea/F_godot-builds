@@ -7,87 +7,66 @@
 
 set -euo pipefail
 
-# add some init
+# ------------
+# BUILDS SETTINGS
+#
+# these values can be changed to choose what to do in the build process
+# ------------
 
-export buildWithMono=0 #TODO
+# if set to 1 no question will be ask and default value will be used
+isQuiet=1
 
 # set to 1 for enabling functionnalities
-export buildLinuxEditor=1
-export buildLinuxTemplates=1
-export buildMacosEditor=0
-export buildMacosTemplates=0
-export buildWindowsEditor=0
-export buildWindowsTemplates=0
+export buildLinuxEditor=0      #OK noMono32 noMono64
+export buildLinuxTemplates=0   #OK noMono32 noMono64
+export buildWindowsEditor=0    #TODO:TEST no mono & TEST Mono
+export buildWindowsTemplates=0 #TODO:TEST no mono & TEST Mono
+export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
+export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web platforms
-export buildWeb=0 #TODO
-export buildIos=0   #TODO
-export buildAndroid=1
+export buildAndroid=0 #OK noMono
+export buildWeb=1     #TODO
+export buildIos=0     #TODO
 
 # Deploy
-export deploy=0 # TODO
+export deploy=0 #TODO: update code after each sucessfull build process added
 
-#
-# git repo to pull from
-# GODOT original
-GODOT_ORIGIN="https://github.com/godotengine/godot.git"
-# My fork
-GODOT_ORIGIN="git@github.com:gameamea/F_godot-builds.git"
+# Build options
 
-# used on some fonction return
-export result=0
-
-# Variables
-
-# Android tools path
-# If these 2 variables are not set, the tools will be downloaded inside the folder set in TOOLS_DIR
-export ANDROID_HOME="/opt/android-sdk"
-export ANDROID_NDK_ROOT="/opt/android-ndk"
+# Also build 32 bits version if possible
+export build32Bits=1
+# Mono
+export buildWithMono=0 #TODO
+# Javascript
+# By default, the JavaScript singleton will be built into the engine. Since eval() calls can be a security concern.
+export buildWithJavascriptSingleton=1
 
 # `DIR` contains the directory where the script is located, regardless of where
 # it is run from. This makes it easy to run this set of build scripts from any
 # location
-export DIR
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Specify the number of CPU threads to use as the first command line argument
-# If not set, defaults to 1.5 times the number of CPU threads
-export THREADS="${1:-"$(($(nproc) * 3 / 2))"}"
-export THREADS=$(nproc)
-
-# Common directories used in the script
-export SCRIPTS_DIR="$DIR/scripts"
-
+# NOTE: can not be moved in variables.sh
+export DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # The directory where utility scripts are located
 export UTILITIES_DIR="$DIR/utilities"
-
-# The directory where resource files are located
-export RESOURCES_DIR="$DIR/resources"
-
-# The directory where SDKs and tools like InnoSetup are located
-export TOOLS_DIR="$DIR/tools"
-
-# The directory where build artifacts will be copied
-# EDITOR_DIR and TEMPLATES_DIR are used by platform-specific scripts
-export ARTIFACTS_DIR="${ARTIFACTS_DIR:-"$DIR/artifacts"}"
-export EDITOR_DIR="$ARTIFACTS_DIR/editor"
-export TEMPLATES_DIR="$ARTIFACTS_DIR/templates"
-
-# The directory where the Godot Git repository will be cloned
-#export GODOT_DIR="/tmp/godot"
-export GODOT_DIR="$scriptFolder/_godot"
 
 # add some functions
 source "$UTILITIES_DIR/functions.sh"
 
-# Install or update dependencies
-"$UTILITIES_DIR/install_dependencies.sh"
+# init variables and settings
+source "$UTILITIES_DIR/variables.sh"
 
 mkdir -p "$EDITOR_DIR" "$TEMPLATES_DIR"
 
+yesNoS "Do you want to Install or update dependencies" 0
+if [ $result -eq 1 ]; then
+  # Install or update dependencies
+  "$UTILITIES_DIR/install_dependencies.sh"
+fi
+
 # Delete the existing Godot Git repository (it probably is from an old build)
 # then clone a fresh copy
-yesNo "Do you want to remove existing source code and Get an update from git Repo "
+yesNoS "Do you want to remove existing source code and Get an update from git Repo " 0
 if [ $result -eq 1 ]; then
   rm -rf "$GODOT_DIR"
   echo_header "Cloning Godot Git repository from $GODOT_ORIGIN"
@@ -95,35 +74,26 @@ if [ $result -eq 1 ]; then
 fi
 cd "$GODOT_DIR"
 
-# Set the environment variables used in build naming
+# build Desktop Editor & Templates
+#-----
 
-# Commit date (not the system date!)
-export BUILD_DATE
-BUILD_DATE="$(git show -s --format=%cd --date=short)"
-# Short (9-character) commit hash
-export BUILD_COMMIT
-BUILD_COMMIT="$(git rev-parse --short=9 HEAD)"
-# The final version string
-export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
+# Linux
+[ $buildLinuxEditor -eq 1 ] && "$SCRIPTS_DIR/linux.sh"
+# Windows
+[ $buildWindowsEditor -eq 1 ] && "$SCRIPTS_DIR/windows.sh"
+# MacOS
+[ $buildMacosEditor -eq 1 ] && "$SCRIPTS_DIR/macos.sh"
 
-# SCons flags to use in all build commands
-export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
-
-# Run the scripts
-
-# Desktop platforms
-if [ $buildLinuxEditor -eq 1 ]; then "$SCRIPTS_DIR/linux.sh" editor; fi
-if [ $buildLinuxTemplates -eq 1 ]; then "$SCRIPTS_DIR/linux.sh" templates; fi
-if [ $buildMacosEditor -eq 1 ]; then "$SCRIPTS_DIR/macos.sh" editor; fi
-if [ $buildMacosTemplates -eq 1 ]; then "$SCRIPTS_DIR/macos.sh" templates; fi
-if [ $buildWindowsEditor -eq 1 ]; then "$SCRIPTS_DIR/windows.sh" editor; fi
-if [ $buildWindowsTemplates -eq 1 ]; then "$SCRIPTS_DIR/windows.sh" templates; fi
-
-# Mobile/Web platforms
-if [ $buildWeb -eq 1 ]; then "$SCRIPTS_DIR/web.sh"; fi
-if [ $buildIos -eq 1 ]; then "$SCRIPTS_DIR/ios.sh"; fi
-if [ $buildAndroid -eq 1 ]; then "$SCRIPTS_DIR/android.sh"; fi
+# build Other Templates
+#-----
+# Android
+[ $buildAndroid -eq 1 ] && "$SCRIPTS_DIR/android.sh"
+# Web
+[ $buildWeb -eq 1 ] && "$SCRIPTS_DIR/web.sh"
+# IOS
+[ $buildIos -eq 1 ] && "$SCRIPTS_DIR/ios.sh"
+# UWM
+[ $buildIos -eq 1 ] && "$SCRIPTS_DIR/uwp.sh"
 
 # Deploy
-
-if [ $deploy -eq 1 ]; then "$SCRIPTS_DIR/deploy.sh"; fi
+[ $deploy -eq 1 ] && "$SCRIPTS_DIR/deploy.sh"

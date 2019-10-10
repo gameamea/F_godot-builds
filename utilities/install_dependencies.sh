@@ -29,6 +29,8 @@ isMint=0
 isPopOs=0
 isUbuntu=0
 
+detectOsRelease
+
 # Install system packages
 checkInString $DETECTED_OS 'pop!_os'
 if [ $result -gt 0 ]; then
