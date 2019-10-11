@@ -9,17 +9,17 @@
 
 set -euo pipefail
 
-if [ "$buildWithJavascriptSingleton" -eq 1 ]; then
-  SINGLETON_FLAG=''
-else
+if [ "$buildWithJavascriptSingleton" -eq 0 ]; then
   SINGLETON_FLAG='javascript_eval=no'
+else
+  SINGLETON_FLAG=''
 fi
 
 # Build Godot templates for Web (Javascript)
 echo_header "Building release export template for Web…"
-scons platform=javascript target=release tools=no $LTO_FLAG $SINGLETON_FLAG $SCONS_FLAGS
+cmdScons platform=javascript target=release tools=no $SINGLETON_FLAG $SCONS_FLAGS
 echo_success "Finished building release export templates for Web…."
 
 echo_header "Building debug export template for Web…"
-scons platform=javascript target=release_debug tools=no $LTO_FLAG $SINGLETON_FLAG $SCONS_FLAGS
+cmdScons platform=javascript target=release_debug tools=no $SINGLETON_FLAG $SCONS_FLAGS
 echo_success "Finished building debug export templates for Web…."

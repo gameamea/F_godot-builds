@@ -14,19 +14,19 @@ set -euo pipefail
 # ------------
 
 # if set to 1 no question will be ask and default value will be used
-isQuiet=1
+export isQuiet=1
 
 # set to 1 for enabling functionnalities
 export buildLinuxEditor=0      #OK noMono32 noMono64
 export buildLinuxTemplates=0   #OK noMono32 noMono64
-export buildWindowsEditor=0    #TODO:TEST no mono & TEST Mono
+export buildWindowsEditor=1    #TODO:TEST no mono & TEST Mono
 export buildWindowsTemplates=0 #TODO:TEST no mono & TEST Mono
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web platforms
 export buildAndroid=0 #OK noMono
-export buildWeb=1     #TODO
+export buildWeb=0     #OK noMono
 export buildIos=0     #TODO
 
 # Deploy
@@ -41,6 +41,11 @@ export buildWithMono=0 #TODO
 # Javascript
 # By default, the JavaScript singleton will be built into the engine. Since eval() calls can be a security concern.
 export buildWithJavascriptSingleton=1
+
+# EMSCRIPTEN version to update:
+# note: if latest is chosen, an new update will nearly be dowload each time
+export emscriptenVersion='latest'
+export emscriptenVersion='1.38.47'
 
 # `DIR` contains the directory where the script is located, regardless of where
 # it is run from. This makes it easy to run this set of build scripts from any
@@ -58,21 +63,30 @@ source "$UTILITIES_DIR/variables.sh"
 
 mkdir -p "$EDITOR_DIR" "$TEMPLATES_DIR"
 
-yesNoS "Do you want to Install or update dependencies" 0
+echo_header "${greenOnWhite}GODOT ENGINE BUILD SCRIPT"
+
+cd "$GODOT_DIR"
+
+yesNoS "${orangeOnBlack}Do you want to Install or update dependencies" 0
 if [ $result -eq 1 ]; then
   # Install or update dependencies
   "$UTILITIES_DIR/install_dependencies.sh"
 fi
 
-# Delete the existing Godot Git repository (it probably is from an old build)
-# then clone a fresh copy
-yesNoS "Do you want to remove existing source code and Get an update from git Repo " 0
+# Delete the existing Godot Git repository then clone a fresh copy
+yesNoS "${orangeOnBlack}Do you want to remove existing source code and Get an update from git Repo " 0
 if [ $result -eq 1 ]; then
   rm -rf "$GODOT_DIR"
   echo_header "Cloning Godot Git repository from $GODOT_ORIGIN"
   git clone --depth=1 "$GODOT_ORIGIN" "$GODOT_DIR"
+else
+  yesNoS "Do you want to pull from origin (branch: $GODOT_BRANCH)?" 0
+  if [ $result -eq 1 ]; then
+    git fetch origin
+    git checkout $GODOT_BRANCH
+    git pull origin
+  fi
 fi
-cd "$GODOT_DIR"
 
 # build Desktop Editor & Templates
 #-----

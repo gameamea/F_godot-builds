@@ -13,7 +13,7 @@ echo_header "Deploy Files"
 
 # create version file in the template dir
 touch "$TEMPLATES_DIR/version.txt"
-echo $GDVERSION >> "$TEMPLATES_DIR/version.txt"
+echo $GDVERSION > "$TEMPLATES_DIR/version.txt"
 
 label="Linux Editor"
 # --------
@@ -45,4 +45,11 @@ label="Android templates"
 # Copy export templates
 cpcheck "$GODOT_DIR/bin/android_debug.apk" "$TEMPLATES_DIR"
 cpcheck "$GODOT_DIR/bin/android_release.apk" "$TEMPLATES_DIR"
+if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
+
+label="Web templates"
+# --------
+# Copy export templates
+cpcheck "$GODOT_DIR/bin/godot.javascript.opt.zip" "$TEMPLATES_DIR/webassembly_release.zip"
+cpcheck "$GODOT_DIR/bin/godot.javascript.opt.debug.zip" "$TEMPLATES_DIR/webassembly_debug.zip"
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi

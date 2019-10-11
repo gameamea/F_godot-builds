@@ -54,6 +54,15 @@ function cpcheck() {
 }
 export -f cpcheck
 
+# #
+# # Use cp command, but checks if source exists and deletes target before
+function cmdScons() {
+
+  printf "\n${blueOnWhite}Running:${blueOnBlack}scons $*${resetColor}\n"
+  scons $*
+}
+export -f cmdScons
+
 #
 # # Ask user to continue or quit with an optional message.
 # # Usage:

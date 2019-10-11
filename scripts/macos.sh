@@ -18,7 +18,7 @@ if [ -z $bitsOpt ]; then bitsOpt=64; fi
 # The path to the OSXCross installation
 export OSXCROSS_ROOT="$TOOLS_DIR/osxcross"
 
-# Specify the macOS SDK version as SCons defaults to darwin14
+# Specify the macOS SDK version as cmdScons defaults to darwin14
 # and use Xcode Clang flags
 export SCONS_FLAGS="$SCONS_FLAGS osxcross_sdk=darwin15 CCFLAGS=-D__MACPORTS__"
 
@@ -26,7 +26,7 @@ export SCONS_FLAGS="$SCONS_FLAGS osxcross_sdk=darwin15 CCFLAGS=-D__MACPORTS__"
 
 if [ "$typeOpt" == "editor" ]; then
   echo_header "Building 64-bit editor for macOS…"
-  scons platform=osx bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
+  cmdScons platform=osx bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
   strip "$GODOT_DIR/bin/godot.osx.opt.tools.64"
 
   # Prepare the .app directory then archive it
@@ -46,9 +46,9 @@ fi
 
 if [ "$typeOpt" == "templates" ]; then
   echo_header "Building 64-bit debug export template for macOS…"
-  scons platform=osx bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS
+  cmdScons platform=osx bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS
   echo_header "Building 64-bit release export template for macOS…"
-  scons platform=osx bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS
+  cmdScons platform=osx bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS
   strip "$GODOT_DIR/bin/godot.osx.opt.debug.64" "$GODOT_DIR/bin/godot.osx.opt.64"
   mv "$GODOT_DIR/bin/godot.osx.opt.debug.64" "$TEMPLATES_DIR"
   mv "$GODOT_DIR/bin/godot.osx.opt.64" "$TEMPLATES_DIR"

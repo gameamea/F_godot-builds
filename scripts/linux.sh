@@ -13,7 +13,7 @@ if [ $build32Bits -eq 1 ]; then
   # Build 32 bits editor
   # -----
   echo_header "Building 32 bits editor for Linux…"
-  scons platform=x11 bits=32 tools=yes target=release_debug $SCONS_FLAGS
+  cmdScons platform=x11 bits=32 tools=yes target=release_debug $SCONS_FLAGS
   # Remove symbols and sections from files
   strip "$GODOT_DIR/bin/godot.x11.opt.tools.32"
   echo_success "Finished building 32 bits editor for Linux."
@@ -22,7 +22,7 @@ fi
 # Build 64 bits editor
 # -----
 echo_header "Building 64 bits editor for Linux…"
-scons platform=x11 bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
+cmdScons platform=x11 bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
 # Remove symbols and sections from files
 strip "$GODOT_DIR/bin/godot.x11.opt.tools.64"
 echo_success "Finished building 64 bits editor for Linux."
@@ -33,13 +33,13 @@ if [ $build32Bits -eq 1 ]; then
   # Build 32 bits export templates
   # --------------
   echo_header "Building 32 bits debug export template for Linux…"
-  scons platform=x11 bits=32 tools=no target=release_debug $SCONS_FLAGS
+  cmdScons platform=x11 bits=32 tools=no target=release_debug $SCONS_FLAGS
   # Remove symbols and sections from files
   strip "$GODOT_DIR/bin/godot.x11.opt.debug.32"
   echo_success "Finished building 32 bits debug export templates for Linux."
 
   echo_header "Building 32 bits release export template for Linux…"
-  scons platform=x11 bits=32 tools=no target=release $SCONS_FLAGS
+  cmdScons platform=x11 bits=32 tools=no target=release $SCONS_FLAGS
   # Remove symbols and sections from files
   strip "$GODOT_DIR/bin/godot.x11.opt.32"
   echo_success "Finished building 32 bits release export templates for Linux."
@@ -48,13 +48,13 @@ fi
 # Build 64 bits export templates
 # --------------
 echo_header "Building 64 bits debug export template for Linux…"
-scons platform=x11 bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS
+cmdScons platform=x11 bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS
 # Remove symbols and sections from files
 strip "$GODOT_DIR/bin/godot.x11.opt.debug.64"
 echo_success "Finished building 64 bits debug export templates for Linux."
 
 echo_header "Building 64 bits release export template for Linux…"
-scons platform=x11 bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS
+cmdScons platform=x11 bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS
 # Remove symbols and sections from files
 strip "$GODOT_DIR/bin/godot.x11.opt.64"
 echo_success "Finished building 64 bits release export templates for Linux."

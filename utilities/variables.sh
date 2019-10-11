@@ -16,14 +16,19 @@
 #
 # git repo to pull from
 # GODOT original
-GODOT_ORIGIN="https://github.com/godotengine/godot.git"
-# My fork
-GODOT_ORIGIN="git@github.com:gameamea/F_godot-builds.git"
+# GODOT_ORIGIN="https://github.com/godotengine/godot.git"
+#GODOT_BRANCH="master"
+# Frug version : 3.2 with editor auto formatter
+GODOT_ORIGIN="https://github.com/frugs/godot.git"
+GODOT_BRANCH="gdscript_auto_formatter"
 
 # Android tools path
 # If these 2 variables are not set, the tools will be downloaded inside the folder set in TOOLS_DIR
 export ANDROID_HOME="/opt/android-sdk"
 export ANDROID_NDK_ROOT="/opt/android-ndk"
+
+#TODO export MINGW32_PREFIX="/path/to/i686-w64-mingw32-gcc"
+#TODO export MINGW64_PREFIX="/path/to/x86_64-w64-mingw32-gcc"
 
 # Specify the number of CPU threads to use as the first command line argument
 # If not set, defaults to 1.5 times the number of CPU threads

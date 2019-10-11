@@ -17,12 +17,12 @@ export ISCC="$TOOLS_DIR/innosetup/ISCC.exe"
 
 if [ $build32Bits -eq 1 ]; then
   echo_header "Building 32-bit editor for Windows…"
-  scons platform=windows bits=32 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
+  cmdScons platform=windows bits=32 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
   strip "$GODOT_DIR/bin/godot.windows.opt.tools.32.exe"
 
   echo_header "Packaging 32-bit editors for Windows…"
-  mkdir -p "$EDITOR_DIR/x86_64/Godot"
-  mv "$GODOT_DIR/bin/godot.windows.opt.tools.64.exe" "$EDITOR_DIR/x86_64/Godot/godot.exe"
+  mkdir -p "$EDITOR_DIR/x86/Godot"
+  mv "$GODOT_DIR/bin/godot.windows.opt.tools.32.exe" "$EDITOR_DIR/x86/Godot/godot.exe"
 
   # Create 32-bit ZIP archives
   cd "$EDITOR_DIR/x86"
@@ -46,23 +46,23 @@ if [ $build32Bits -eq 1 ]; then
   echo_success "Finished building editor for Windows."
 
   echo_header "Building 32-bit debug export template for Windows…"
-  scons platform=windows bits=32 tools=no target=release_debug $SCONS_FLAGS
+  cmdScons platform=windows bits=32 tools=no target=release_debug $SCONS_FLAGS
   echo_header "Building 32-bit release export template for Windows…"
-  scons platform=windows bits=32 tools=no target=release $SCONS_FLAGS
+  cmdScons platform=windows bits=32 tools=no target=release $SCONS_FLAGS
 
   strip "$GODOT_DIR/bin/godot.windows.opt.debug.32.exe"
   strip "$GODOT_DIR/bin/godot.windows.opt.32.exe"
 
-  echo_success "Finsished building 64-bit export templates for Windows."
+  echo_success "Finished building 32-bit export templates for Windows."
 fi
 
 echo_header "Building 64-bit editor for Windows…"
-scons platform=windows bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
+cmdScons platform=windows bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
 strip "$GODOT_DIR/bin/godot.windows.opt.tools.64.exe"
 
 echo_header "Packaging 64-bit editors for Windows…"
-mkdir -p "$EDITOR_DIR/x86/Godot"
-mv "$GODOT_DIR/bin/godot.windows.opt.tools.32.exe" "$EDITOR_DIR/x86/Godot/godot.exe"
+mkdir -p "$EDITOR_DIR/x86_64/Godot"
+mv "$GODOT_DIR/bin/godot.windows.opt.tools.64.exe" "$EDITOR_DIR/x86_64/Godot/godot.exe"
 
 # Create 64-bit ZIP archives
 cd "$EDITOR_DIR/x86_64"
@@ -86,11 +86,11 @@ rmdir "$EDITOR_DIR/Output"
 echo_success "Finished building editor for Windows."
 
 echo_header "Building 64-bit debug export template for Windows…"
-scons platform=windows bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS
+cmdScons platform=windows bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS
 echo_header "Building 64-bit release export template for Windows…"
-scons platform=windows bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS
+cmdScons platform=windows bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS
 
 strip "$GODOT_DIR/bin/godot.windows.opt.debug.64.exe"
 strip "$GODOT_DIR/bin/godot.windows.opt.64.exe"
 
-echo_success "Finsished building 64-bit export templates for Windows."
+echo_success "Finished building 64-bit export templates for Windows."

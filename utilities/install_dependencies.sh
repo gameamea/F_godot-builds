@@ -10,15 +10,12 @@
 
 set -euo pipefail
 
+mkdir -p "$TOOLS_DIR"
+
 # Path to the Xcode DMG image
 export XCODE_DMG="$DIR/Xcode_7.3.1.dmg"
 
 echo_header "Installing dependencies (administrative privileges may be required)…"
-
-# Display a warning message if no Xcode DMG is found
-if [ ! -f "$XCODE_DMG" ]; then
-  echo -e "\e[1;33mNOTE:\e[0m Couldn't find a Xcode 7.3.1 DMG image.\nIf you want to build for macOS and iOS, download it from here (requires a free Apple Developer ID):\n\e[1mhttps://developer.apple.com/download/more/\e[0m\n"
-fi
 
 isArchLike=0
 isUbuntuLike=0
@@ -63,47 +60,74 @@ if [ $result -gt 0 ]; then
   isArchLike=1
 fi
 
-if [ $isArchLike -eq 1 ]; then
-  # Arch linux
-  sudo pacman -S scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu alsa-lib pulseaudio yasm
-elif [ $isUbuntuLike -eq 1 ]; then
-  ## Debian / Ubuntu
-  sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
+yesNoS "Do you want to download (or upate) all packages for your OS" 0
+if [ $result -eq 1 ]; then
+  echo_header "Installing main dependencies"
+  if [ $isArchLike -eq 1 ]; then
+    # Arch linux
+    sudo pacman -S scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu alsa-lib pulseaudio yasm
+  elif [ $isUbuntuLike -eq 1 ]; then
+    ## Debian / Ubuntu
+    sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
+  fi
+  ## Fedora
+  # TODO TEST if present
+  # sudo dnf install scons pkgconfig libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel mesa-libGL-devel mesa-libGLU-devel alsa-lib-devel pulseaudio-libs-devel libudev-devel yasm
+
+  ## FreeBSD
+  # TODO TEST if present
+  # sudo pkg install scons pkgconf xorg-libraries libXcursor libXrandr libXi xorgproto libGLU alsa-lib pulseaudio yasm
+
+  ## Gentoo
+  # TODO TEST if present
+  # emerge -an dev-util/scons x11-libs/libX11 x11-libs/libXcursor x11-libs/libXinerama x11-libs/libXi media-libs/mesa media-libs/glu media-libs/alsa-lib media-sound/pulseaudio dev-lang/yasm
+
+  ## Mageia
+  # TODO TEST if present
+  # urpmi scons task-c++-devel pkgconfig "pkgconfig(alsa)" "pkgconfig(glu)" "pkgconfig(libpulse)" "pkgconfig(udev)" "pkgconfig(x11)" "pkgconfig(xcursor)" "pkgconfig(xinerama)" "pkgconfig(xi)" "pkgconfig(xrandr)" yasm
+
+  ## OpenBSD
+  # TODO TEST if present
+  # pkg_add python scons llvm yasm
+
+  ## openSUSE
+  # TODO TEST if present
+  # sudo zypper install scons pkgconfig libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel Mesa-libGL-devel alsa-devel libpulse-devel libudev-devel libGLU1 yasm
+
+  ## Solus
+  # TODO TEST if present
+  # sudo eopkg install -c system.devel scons libxcursor-devel libxinerama-devel libxi-devel libxrandr-devel mesalib-devel libglu alsa-lib pulseaudio pulseaudio-devel yasm
+
+  if [ $buildWindowsEditor -eq 1 ] || [ $buildWindowsTemplates -eq 1 ]; then
+    echo_header "Installing Windows Cross compiler"
+    if [ $isArchLike -eq 1 ]; then
+      yay -S mingw-w64-gcc
+      pacman -S wine
+    elif [ $isUbuntuLike -eq 1 ]; then
+      apt install mingw-w64
+      apt install wine
+
+      # Fedora
+      # TODO TEST if present
+      # dnf install mingw64-gcc-c++ mingw64-winpthreads-static mingw32-gcc-c++ mingw32-winpthreads-static
+      # dnf install wine
+
+      # Mageia
+      # TODO TEST if present
+      # urpmi mingw64-gcc-c++ mingw64-winpthreads-static mingw32-gcc-c++ mingw32-winpthreads-static
+      # urpmi wine
+
+      # macOS
+      # TODO TEST if present
+      # brew install mingw-w64
+      # brew install wine
+    fi
+  fi
 fi
 
-## Fedora
-# TODO TEST if present
-# sudo dnf install scons pkgconfig libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel mesa-libGL-devel mesa-libGLU-devel alsa-lib-devel pulseaudio-libs-devel libudev-devel yasm
-
-## FreeBSD
-# TODO TEST if present
-# sudo pkg install scons pkgconf xorg-libraries libXcursor libXrandr libXi xorgproto libGLU alsa-lib pulseaudio yasm
-
-## Gentoo
-# TODO TEST if present
-# emerge -an dev-util/scons x11-libs/libX11 x11-libs/libXcursor x11-libs/libXinerama x11-libs/libXi media-libs/mesa media-libs/glu media-libs/alsa-lib media-sound/pulseaudio dev-lang/yasm
-
-## Mageia
-# TODO TEST if present
-# urpmi scons task-c++-devel pkgconfig "pkgconfig(alsa)" "pkgconfig(glu)" "pkgconfig(libpulse)" "pkgconfig(udev)" "pkgconfig(x11)" "pkgconfig(xcursor)" "pkgconfig(xinerama)" "pkgconfig(xi)" "pkgconfig(xrandr)" yasm
-
-## OpenBSD
-# TODO TEST if present
-# pkg_add python scons llvm yasm
-
-## openSUSE
-# TODO TEST if present
-# sudo zypper install scons pkgconfig libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel Mesa-libGL-devel alsa-devel libpulse-devel libudev-devel libGLU1 yasm
-
-## Solus
-# TODO TEST if present
-# sudo eopkg install -c system.devel scons libxcursor-devel libxinerama-devel libxi-devel libxrandr-devel mesalib-devel libglu alsa-lib pulseaudio pulseaudio-devel yasm
-
-mkdir -p "$TOOLS_DIR"
-
-# Install InnoSetup
 if [ $buildWindowsEditor -eq 1 ] || [ $buildWindowsTemplates -eq 1 ]; then
   if [ ! -d "$TOOLS_DIR/innosetup" ]; then
+    # Install InnoSetup
     echo_header "Downloading InnoSetup…"
     curl -o "$TOOLS_DIR/innosetup.zip" "https://archive.hugo.pro/.public/godot-builds/innosetup-5.5.9-unicode.zip"
     unzip -q "$TOOLS_DIR/innosetup.zip" -d "$TOOLS_DIR"
@@ -134,8 +158,12 @@ fi
 
 # If the user provides an Xcode DMG image, install OSXCross
 # (which includes darling-dmg) and cctools-port
-if [ -f "$XCODE_DMG" ]; then
-  if [ $buildMacosEditor -eq 1 ] || [ $buildMacosTemplates -eq 1 ]; then
+if [ $buildMacosEditor -eq 1 ] || [ $buildMacosTemplates -eq 1 ]; then
+
+  # Display a warning message if no Xcode DMG is found
+  if [ ! -f "$XCODE_DMG" ]; then
+    echo -e "\e[1;33mNOTE:\e[0m Couldn't find a Xcode 7.3.1 DMG image.\nIf you want to build for macOS and iOS, download it from here (requires a free Apple Developer ID):\n\e[1mhttps://developer.apple.com/download/more/\e[0m\n"
+  else
     if [ ! -d "$TOOLS_DIR/osxcross" ]; then
       # OSXCross (for macOS builds)
       echo_header "Installing OSXCross…"
@@ -150,8 +178,13 @@ if [ -f "$XCODE_DMG" ]; then
       echo_header "OSXCross is already installed."
     fi
   fi
+fi
+if [ $buildIos -eq 1 ]; then
 
-  if [ $buildIos -eq 1 ]; then
+  # Display a warning message if no Xcode DMG is found
+  if [ ! -f "$XCODE_DMG" ]; then
+    echo -e "\e[1;33mNOTE:\e[0m Couldn't find a Xcode 7.3.1 DMG image.\nIf you want to build for macOS and iOS, download it from here (requires a free Apple Developer ID):\n\e[1mhttps://developer.apple.com/download/more/\e[0m\n"
+  else
     if [ ! -d "$TOOLS_DIR/cctools-port" ]; then
       # cctools-port (for iOS builds)
       echo_header "Installing cctools-port…"
@@ -162,4 +195,43 @@ if [ -f "$XCODE_DMG" ]; then
       echo_header "cctools-port is already installed."
     fi
   fi
+fi
+
+if [ $buildWeb -eq 1 ]; then
+  # install emscripten
+  # ------
+
+  if [ ! -d "$TOOLS_DIR/emscripten" ]; then
+    mkdir -p "$TOOLS_DIR/emscripten"
+  fi
+  cd "$TOOLS_DIR/emscripten"
+
+  if [ ! -f "emsdk/emsdk_env.sh" ]; then
+    echo_header "Installing Emscripten"
+
+    # Get the emsdk repo
+    git clone https://github.com/emscripten-core/emsdk.git
+
+  else
+    echo_header "Updating Emscripten"
+  fi
+
+  cd emsdk
+  git pull
+
+  # NOTE :
+  # specify which backend you want to use, either fastcomp or upstream
+  # (without specifying the backend, the current default is used)
+
+  # Download and install the SDK tools.
+  #./emsdk install ${emscriptenVersion}-fastcomp
+  ./emsdk install ${emscriptenVersion}-upstream
+
+  # Set up the compiler configuration to point to the "$version" SDK.
+  #./emsdk activate ${emscriptenVersion}-fastcomp
+  ./emsdk activate ${emscriptenVersion}-upstream
+
+  # Activate PATH and other environment variables in the current terminal
+  #source ./emsdk_env.sh
+  source ./emsdk_env.sh --build=Release
 fi
