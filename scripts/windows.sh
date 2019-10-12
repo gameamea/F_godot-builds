@@ -8,89 +8,70 @@
 #------
 
 set -euo pipefail
+# line just for easier comparison with linux.h
 
-# The path to the Inno Setup compiler (ISCC.exe)
-export ISCC="$TOOLS_DIR/innosetup/ISCC.exe"
+if [ $buildWindowsEditor -eq 1 ]; then
+  if [ $build32Bits -eq 1 ]; then
+    # Build 32 bits editor
+    # -----
+    label="32-bit editor for Windows"
+    echo_header "Running $label"
+    cmdScons platform=windows bits=32 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
+    # Remove symbols and sections from files
+    strip "$GODOT_DIR/bin/godot.windows.opt.tools.32.exe"
+    mkdir -p "$EDITOR_DIR/x86/Godot"
+    cpcheck "$GODOT_DIR/bin/godot.windows.opt.tools.32.exe" "$EDITOR_DIR/x86/Godot/godot.exe"
+    if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+  fi
 
-# NOTE: LTO is not available for 32-bit targets, so it is disabled when
-# building for these targets
-
-if [ $build32Bits -eq 1 ]; then
-  echo_header "Building 32-bit editor for Windows…"
-  cmdScons platform=windows bits=32 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
-  strip "$GODOT_DIR/bin/godot.windows.opt.tools.32.exe"
-
-  echo_header "Packaging 32-bit editors for Windows…"
-  mkdir -p "$EDITOR_DIR/x86/Godot"
-  mv "$GODOT_DIR/bin/godot.windows.opt.tools.32.exe" "$EDITOR_DIR/x86/Godot/godot.exe"
-
-  # Create 32-bit ZIP archives
-  cd "$EDITOR_DIR/x86"
-  zip -r9 "Godot-Windows-x86.zip" "Godot"
-
-  # Prepare Windows installer generation
-  echo_header "Generating Windows installers…"
-  cd "$EDITOR_DIR"
-  cp "$RESOURCES_DIR/windows/godot.iss" "."
-
-  # Generate 32-bit Windows installer
-  mv "$EDITOR_DIR/x86/Godot/godot.exe" "."
-  wine "$ISCC" "godot.iss" /DApp32Bit
-
-  # Move installers to the artifacts path
-  mv "$EDITOR_DIR/Output/godot-windows-installer-x86.exe" "$EDITOR_DIR/Godot-Windows-x86.exe"
-
-  # Remove temporary directories
-  rmdir "$EDITOR_DIR/x86"
-  rmdir "$EDITOR_DIR/Output"
-  echo_success "Finished building editor for Windows."
-
-  echo_header "Building 32-bit debug export template for Windows…"
-  cmdScons platform=windows bits=32 tools=no target=release_debug $SCONS_FLAGS
-  echo_header "Building 32-bit release export template for Windows…"
-  cmdScons platform=windows bits=32 tools=no target=release $SCONS_FLAGS
-
-  strip "$GODOT_DIR/bin/godot.windows.opt.debug.32.exe"
-  strip "$GODOT_DIR/bin/godot.windows.opt.32.exe"
-
-  echo_success "Finished building 32-bit export templates for Windows."
+  # Build 64 bits editor
+  # -----
+  label="64-bit editor for Windows"
+  echo_header "Running $label"
+  cmdScons platform=windows bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
+  # Remove symbols and sections from files
+  strip "$GODOT_DIR/bin/godot.windows.opt.tools.64.exe"
+  mkdir -p "$EDITOR_DIR/x86_64/Godot"
+  cpcheck "$GODOT_DIR/bin/godot.windows.opt.tools.64.exe" "$EDITOR_DIR/x86_64/Godot/godot.exe"
+  if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 fi
 
-echo_header "Building 64-bit editor for Windows…"
-cmdScons platform=windows bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS
-strip "$GODOT_DIR/bin/godot.windows.opt.tools.64.exe"
+if [ $buildWindowsTemplates -eq 1 ]; then
+  if [ $build32Bits -eq 1 ]; then
+    # Build 32 bits export templates
+    # --------------
+    label="32-bit debug export template for Windows"
+    echo_header "Running $label"
+    cmdScons platform=windows bits=32 tools=no target=release_debug $SCONS_FLAGS
+    # Remove symbols and sections from files
+    strip "$GODOT_DIR/bin/godot.windows.opt.debug.32.exe"
+    if [ $? -eq 0 ]; then result=1; else result=0; fi
+    if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 
-echo_header "Packaging 64-bit editors for Windows…"
-mkdir -p "$EDITOR_DIR/x86_64/Godot"
-mv "$GODOT_DIR/bin/godot.windows.opt.tools.64.exe" "$EDITOR_DIR/x86_64/Godot/godot.exe"
+    label="32-bit release export template for Windows"
+    echo_header "Running $label"
+    cmdScons platform=windows bits=32 tools=no target=release $SCONS_FLAGS
+    # Remove symbols and sections from files
+    strip "$GODOT_DIR/bin/godot.windows.opt.32.exe"
+    if [ $? -eq 0 ]; then result=1; else result=0; fi
+    if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+  fi
 
-# Create 64-bit ZIP archives
-cd "$EDITOR_DIR/x86_64"
-zip -r9 "Godot-Windows-x86_64.zip" "Godot"
+  # Build 64 bits export templates
+  # --------------
+  label="64-bit debug export template for Windows"
+  echo_header "Running $label"
+  cmdScons platform=windows bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS
+  # Remove symbols and sections from files
+  strip "$GODOT_DIR/bin/godot.windows.opt.debug.64.exe"
+  if [ $? -eq 0 ]; then result=1; else result=0; fi
+  if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 
-# Prepare Windows installer generation
-echo_header "Generating Windows installers…"
-cd "$EDITOR_DIR"
-cp "$RESOURCES_DIR/windows/godot.iss" "."
-
-# Generate 64-bit Windows installer
-mv "$EDITOR_DIR/x86_64/Godot/godot.exe" "."
-wine "$ISCC" "godot.iss"
-
-# Move installers to the artifacts path
-mv "$EDITOR_DIR/Output/godot-windows-installer-x86_64.exe" "$EDITOR_DIR/Godot-Windows-x86_64.exe"
-
-# Remove temporary directories
-rmdir "$EDITOR_DIR/x86_64"
-rmdir "$EDITOR_DIR/Output"
-echo_success "Finished building editor for Windows."
-
-echo_header "Building 64-bit debug export template for Windows…"
-cmdScons platform=windows bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS
-echo_header "Building 64-bit release export template for Windows…"
-cmdScons platform=windows bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS
-
-strip "$GODOT_DIR/bin/godot.windows.opt.debug.64.exe"
-strip "$GODOT_DIR/bin/godot.windows.opt.64.exe"
-
-echo_success "Finished building 64-bit export templates for Windows."
+  label="64-bit release export template for Windows"
+  echo_header "Running $label"
+  cmdScons platform=windows bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS
+  # Remove symbols and sections from files
+  strip "$GODOT_DIR/bin/godot.windows.opt.64.exe"
+  if [ $? -eq 0 ]; then result=1; else result=0; fi
+  if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+fi

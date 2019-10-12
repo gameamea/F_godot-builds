@@ -16,10 +16,14 @@ else
 fi
 
 # Build Godot templates for Web (Javascript)
-echo_header "Building release export template for Web…"
+label="Building release export template for Web"
+echo_header "Running $label"
 cmdScons platform=javascript target=release tools=no $SINGLETON_FLAG $SCONS_FLAGS
-echo_success "Finished building release export templates for Web…."
+if [ $? -eq 0 ]; then result=1; else result=0; fi
+if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 
-echo_header "Building debug export template for Web…"
+label="Building debug export template for Web"
+echo_header "Running $label"
 cmdScons platform=javascript target=release_debug tools=no $SINGLETON_FLAG $SCONS_FLAGS
-echo_success "Finished building debug export templates for Web…."
+if [ $? -eq 0 ]; then result=1; else result=0; fi
+if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi

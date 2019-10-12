@@ -27,8 +27,9 @@ GODOT_BRANCH="gdscript_auto_formatter"
 export ANDROID_HOME="/opt/android-sdk"
 export ANDROID_NDK_ROOT="/opt/android-ndk"
 
-#TODO export MINGW32_PREFIX="/path/to/i686-w64-mingw32-gcc"
-#TODO export MINGW64_PREFIX="/path/to/x86_64-w64-mingw32-gcc"
+# uncomment only if MINGW is not in path
+#export MINGW64_PREFIX="/path/to/x86_64-w64-mingw32-gcc"
+#export MINGW32_PREFIX="/path/to/i686-w64-mingw32-gcc"
 
 # Specify the number of CPU threads to use as the first command line argument
 # If not set, defaults to 1.5 times the number of CPU threads
@@ -77,6 +78,20 @@ export BUILD_DATE="$(git show -s --format=%cd --date=short)"
 export BUILD_COMMIT="$(git rev-parse --short=9 HEAD)"
 # The final version string
 export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
+
+# Path to the Xcode DMG image
+export XCODE_DMG="$DIR/Xcode_7.3.1.dmg"
+
+# The path to the OSXCross installation
+export OSXCROSS_ROOT="$TOOLS_DIR/osxcross"
+
+# The paths to the Android SDK and NDK, only overridden if the user
+# does not already have these variables set
+export ANDROID_HOME="${ANDROID_HOME:-"$TOOLS_DIR/android"}"
+export ANDROID_NDK_ROOT="${ANDROID_NDK_ROOT:-"$TOOLS_DIR/android/ndk-bundle"}"
+
+# The path to the Inno Setup compiler (ISCC.exe)
+export ISCC="$TOOLS_DIR/innosetup/ISCC.exe"
 
 # used by some functions as return result
 export result=1

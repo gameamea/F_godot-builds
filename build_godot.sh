@@ -13,24 +13,26 @@ set -euo pipefail
 # these values can be changed to choose what to do in the build process
 # ------------
 
-# if set to 1 no question will be ask and default value will be used
-export isQuiet=1
+# if set to 1, no question will be ask and default value will be used
+export isQuiet=0
+# if set to 1, process will be stopped when something fails
+export stopOnFail=1
 
 # set to 1 for enabling functionnalities
 export buildLinuxEditor=0      #OK noMono32 noMono64
 export buildLinuxTemplates=0   #OK noMono32 noMono64
-export buildWindowsEditor=1    #TODO:TEST no mono & TEST Mono
-export buildWindowsTemplates=0 #TODO:TEST no mono & TEST Mono
+export buildWindowsEditor=0   #OK noMono32 noMono64
+export buildWindowsTemplates=0 #OK noMono32 noMono64
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web platforms
-export buildAndroid=0 #OK noMono
-export buildWeb=0     #OK noMono
+export buildAndroid=1 #OK noMono
+export buildWeb=1     #OK noMono
 export buildIos=0     #TODO
 
 # Deploy
-export deploy=0 #TODO: update code after each sucessfull build process added
+export deploy=1 #TODO: update code after each sucessfull build process added
 
 # Build options
 
@@ -44,7 +46,7 @@ export buildWithJavascriptSingleton=1
 
 # EMSCRIPTEN version to update:
 # note: if latest is chosen, an new update will nearly be dowload each time
-export emscriptenVersion='latest'
+# export emscriptenVersion='latest'
 export emscriptenVersion='1.38.47'
 
 # `DIR` contains the directory where the script is located, regardless of where

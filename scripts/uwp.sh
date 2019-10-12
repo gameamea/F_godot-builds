@@ -9,10 +9,4 @@
 
 set -euo pipefail
 
-typeOpt=$1
-bitsOpt=$2
-monoOpt=$3
-if [ -z $typeOpt ]; then typeOpt="editor"; fi
-if [ -z $bitsOpt ]; then bitsOpt=64; fi
-
 echo_error "NOT IMPLEMENTED"

@@ -32,6 +32,7 @@ export -f echo_info
 # # Output a error message
 echo_warning() {
   echo -e "\n${orangeOnBlack}$1${resetColor}\n"
+  [ $stopOnFail -eq 1 ] && exit 1
 }
 export -f echo_warning
 
@@ -39,6 +40,7 @@ export -f echo_warning
 # # Output a error message
 echo_error() {
   echo -e "\n${redOnBlack}$1${resetColor}\n"
+  [ $stopOnFail -eq 1 ] && exit 1
 }
 export -f echo_error
 

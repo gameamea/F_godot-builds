@@ -9,33 +9,51 @@
 
 set -euo pipefail
 
-# The paths to the Android SDK and NDK, only overridden if the user
-# does not already have these variables set
-export ANDROID_HOME="${ANDROID_HOME:-"$TOOLS_DIR/android"}"
-export ANDROID_NDK_ROOT="${ANDROID_NDK_ROOT:-"$TOOLS_DIR/android/ndk-bundle"}"
-
 # Build Godot templates for Android
-echo_header "1/7 Building ARMv7 release export template for Android…"
+label="1/7 Building ARMv7 release export template for Android"
+echo_header "Running $label"
 cmdScons platform=android target=release android_arch=armv7 $LTO_FLAG $SCONS_FLAGS
-echo_header "2/7 Building ARMv8 release export template for Android…"
-cmdScons platform=android target=release android_arch=arm64v8 $LTO_FLAG $SCONS_FLAGS
-echo_header "3/7 Building x86 release export template for Android…"
-cmdScons platform=android target=release android_arch=x86 $LTO_FLAG $SCONS_FLAGS
-echo_success "Finished building release export templates for Android."
+if [ $? -eq 0 ]; then result=1; else result=0; fi
+if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 
-echo_header "4/7 Building ARMv7 debug export template for Android…"
+label="2/7 Building ARMv8 release export template for Android"
+echo_header "Running $label"
+cmdScons platform=android target=release android_arch=arm64v8 $LTO_FLAG $SCONS_FLAGS
+if [ $? -eq 0 ]; then result=1; else result=0; fi
+if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+
+label="3/7 Building x86 release export template for Android"
+echo_header "Running $label"
+cmdScons platform=android target=release android_arch=x86 $LTO_FLAG $SCONS_FLAGS
+
+if [ $? -eq 0 ]; then result=1; else result=0; fi
+if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+
+label="4/7 Building ARMv7 debug export template for Android"
+echo_header "Running $label"
 cmdScons platform=android target=release_debug android_arch=armv7 $LTO_FLAG $SCONS_FLAGS
-echo_header "5/7 Building ARMv8 debug export template for Android…"
+if [ $? -eq 0 ]; then result=1; else result=0; fi
+if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+
+label="5/7 Building ARMv8 debug export template for Android"
+echo_header "Running $label"
 cmdScons platform=android target=release_debug android_arch=arm64v8 $LTO_FLAG $SCONS_FLAGS
-echo_header "6/7 Building x86 debug export template for Android…"
+if [ $? -eq 0 ]; then result=1; else result=0; fi
+if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+
+label="6/7 Building x86 debug export template for Android"
+echo_header "Running $label"
 cmdScons platform=android target=release_debug android_arch=x86 $LTO_FLAG $SCONS_FLAGS
-echo_success "Finished building debug export templates for Android."
+if [ $? -eq 0 ]; then result=1; else result=0; fi
+if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 
 # Package export templates into APKs
-echo_header "7/7 Packaging Android export templates into APKs…"
+label="7/7 Packaging Android export templates into APKs"
+echo_header "Running $label"
 cd "$GODOT_DIR/platform/android/java"
 # remove build content, if not, build will produce no apk
 rm -Rf "build/"
 ./gradlew build
 cd "../../.."
-echo_success "Finished Packaging Android export templates."
+if [ $? -eq 0 ]; then result=1; else result=0; fi
+if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
