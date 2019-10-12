@@ -19,27 +19,27 @@ export isQuiet=0
 export stopOnFail=1
 
 # set to 1 for enabling functionnalities
-export buildLinuxEditor=0      #OK noMono32 noMono64
+export buildLinuxEditor=1      #OK noMono32 noMono64
 export buildLinuxTemplates=0   #OK noMono32 noMono64
-export buildWindowsEditor=0   #OK noMono32 noMono64
+export buildWindowsEditor=0    #OK noMono32 noMono64
 export buildWindowsTemplates=0 #OK noMono32 noMono64
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web platforms
-export buildAndroid=1 #OK noMono
-export buildWeb=1     #OK noMono
+export buildAndroid=0 #OK noMono
+export buildWeb=0     #OK noMono
 export buildIos=0     #TODO
 
 # Deploy
-export deploy=1 #TODO: update code after each sucessfull build process added
+export deploy=0 #TODO: update code after each sucessfull build process added
 
 # Build options
 
 # Also build 32 bits version if possible
 export build32Bits=1
 # Mono
-export buildWithMono=0 #TODO
+export buildWithMono=1 #TODO
 # Javascript
 # By default, the JavaScript singleton will be built into the engine. Since eval() calls can be a security concern.
 export buildWithJavascriptSingleton=1

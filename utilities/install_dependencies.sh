@@ -129,6 +129,18 @@ if [ $result -eq 1 ]; then
   fi
 fi
 
+# Install Mono
+# ----------
+if [ $buildWithMono -eq 1 ]; then
+  label="Mono"
+  yesNoS "Do you want to setup $label" 0
+  if [ $result -eq 1 ]; then
+    # import necessary certificates for NuGet to perform HTTPS requests
+    mozroots --import --sync
+  fi
+  # TODO: test build with mono missing to check for dependencies
+fi
+
 # Install InnoSetup
 # ----------
 if [ $buildWindowsEditor -eq 1 ] || [ $buildWindowsTemplates -eq 1 ]; then
@@ -153,7 +165,6 @@ fi
 
 # Install Android SDK
 # ----------
-
 if [ $buildAndroid -eq 1 ]; then
   label="Android SDK"
   yesNoS "Do you want to install $label" 0
