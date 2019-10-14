@@ -53,9 +53,10 @@ cd "$GODOT_DIR"
 mkdir -p platform/android/java/libs/armeabi
 mkdir -p platform/android/java/libs/x86
 
-# remove this stuff, will be created anew
-rm -rf $TEMPLATES_DIR
-rm -rf $EDITOR_DIR
+# remove this stuff, a new will be created
+mkdir -p platform/android/java/build
+#rm -rf $TEMPLATES_DIR
+#rm -rf $EDITOR_DIR
 mkdir -p $TEMPLATES_DIR
 mkdir -p $EDITOR_DIR
 
@@ -66,29 +67,22 @@ echo ""
 # Build editor
 
 # TODO BUILD ON MAC
-yesNoS "Building Linux 64"
-if [ $result -eq 1 ]; then
-  cmdScons $SCONS_FLAGS p=x11 target=release_debug tools=yes bits=64
-  cp bin/godot.x11.opt.tools.64 $EDITOR_DIR/godot_x11.64
-  upx $EDITOR_DIR/godot_x11.64 # may fails on some linux distros
-fi
 
-yesNoS "Building Linux 32"
+yesNoS "Building Linux 32 Editor"
 if [ $result -eq 1 ]; then
   cmdScons $SCONS_FLAGS p=x11 target=release_debug tools=yes bits=32
   cp bin/godot.x11.opt.tools.32 $EDITOR_DIR/godot_x11.32
   upx $EDITOR_DIR/godot_x11.32 # may fails on some linux distros
 fi
 
-yesNoS "Building Windows 64"
+yesNoS "Building Linux 64 Editor"
 if [ $result -eq 1 ]; then
-  cmdScons $SCONS_FLAGS p=windows target=release_debug tools=yes bits=64
-  cp bin/godot.windows.opt.tools.64.exe $EDITOR_DIR/godot_win64.exe
-  x86_64-w64-mingw32-strip $EDITOR_DIR/godot_win64.exe
-  upx $EDITOR_DIR/godot_win64.exe
+  cmdScons $SCONS_FLAGS p=x11 target=release_debug tools=yes bits=64
+  cp bin/godot.x11.opt.tools.64 $EDITOR_DIR/godot_x11.64
+  upx $EDITOR_DIR/godot_x11.64 # may fails on some linux distros
 fi
 
-yesNoS "Building Windows 32"
+yesNoS "Building Windows 32 Editor"
 if [ $result -eq 1 ]; then
   cmdScons $SCONS_FLAGS p=windows target=release_debug tools=yes bits=32
   cp bin/godot.windows.opt.tools.32.exe $EDITOR_DIR/godot_win32.exe
@@ -96,50 +90,12 @@ if [ $result -eq 1 ]; then
   upx $EDITOR_DIR/godot_win64.exe
 fi
 
-# Build templates
-
-# TODO BUILD ON MAC
-
-yesNoS "Building Windows 32 Release and Debug"
+yesNoS "Building Windows 64 Editor"
 if [ $result -eq 1 ]; then
-  cmdScons $SCONS_FLAGS p=windows target=release tools=no bits=32
-  strip bin/godot.windows.opt.32.exe
-  cp bin/godot.windows.opt.32.exe $TEMPLATES_DIR/windows_32_release.exe
-  upx $TEMPLATES_DIR/windows_32_release.exe
-  cmdScons $SCONS_FLAGS p=windows target=release_debug tools=no bits=32
-  cp bin/godot.windows.opt.debug.32.exe $TEMPLATES_DIR/windows_32_debug.exe
-  strip bin/godot.windows.opt.debug.32.exe
-  upx $TEMPLATES_DIR/windows_32_debug.exe
-fi
-
-yesNoS "Building Windows 64 Release and Debug (UPX does not support it yet)"
-if [ $result -eq 1 ]; then
-  cmdScons $SCONS_FLAGS p=windows target=release tools=no bits=64
-  cp bin/godot.windows.opt.64.exe $TEMPLATES_DIR/windows_64_release.exe
-  x86_64-w64-mingw32-strip $TEMPLATES_DIR/windows_64_release.exe
-  cmdScons $SCONS_FLAGS p=windows target=release_debug tools=no bits=64
-  cp bin/godot.windows.opt.debug.64.exe $TEMPLATES_DIR/windows_64_debug.exe
-  x86_64-w64-mingw32-strip $TEMPLATES_DIR/windows_64_debug.exe
-fi
-
-yesNoS "Building Linux 64 Release and Debug"
-if [ $result -eq 1 ]; then
-  cmdScons $SCONS_FLAGS p=x11 target=release tools=no bits=64
-  cp bin/godot.x11.opt.64 $TEMPLATES_DIR/linux_x11_64_release
-  upx $TEMPLATES_DIR/linux_x11_64_release
-  cmdScons $SCONS_FLAGS p=x11 target=release_debug tools=no bits=64
-  cp bin/godot.x11.opt.debug.64 $TEMPLATES_DIR/linux_x11_64_debug
-  upx $TEMPLATES_DIR/linux_x11_64_debug
-fi
-
-yesNoS "Building Linux 32 Release and Debug"
-if [ $result -eq 1 ]; then
-  cmdScons $SCONS_FLAGS p=x11 target=release tools=no bits=32
-  cp bin/godot.x11.opt.32 $TEMPLATES_DIR/linux_x11_32_release
-  upx $TEMPLATES_DIR/linux_x11_32_release
-  cmdScons $SCONS_FLAGS p=x11 target=release_debug tools=no bits=32
-  cp bin/godot.x11.opt.debug.32 $TEMPLATES_DIR/linux_x11_32_debug
-  upx $TEMPLATES_DIR/linux_x11_32_debug
+  cmdScons $SCONS_FLAGS p=windows target=release_debug tools=yes bits=64
+  cp bin/godot.windows.opt.tools.64.exe $EDITOR_DIR/godot_win64.exe
+  x86_64-w64-mingw32-strip $EDITOR_DIR/godot_win64.exe
+  upx $EDITOR_DIR/godot_win64.exe
 fi
 
 yesNoS "Building Server for 32 and 64 bits (always in debug)"
@@ -152,7 +108,54 @@ if [ $result -eq 1 ]; then
   upx $TEMPLATES_DIR/linux_server_32
 fi
 
-yesNoS "Building Android"
+
+# Build templates
+
+# TODO BUILD ON MAC
+
+yesNoS "Building Linux 32 Release and Debug Template"
+if [ $result -eq 1 ]; then
+  cmdScons $SCONS_FLAGS p=x11 target=release tools=no bits=32
+  cp bin/godot.x11.opt.32 $TEMPLATES_DIR/linux_x11_32_release
+  upx $TEMPLATES_DIR/linux_x11_32_release
+  cmdScons $SCONS_FLAGS p=x11 target=release_debug tools=no bits=32
+  cp bin/godot.x11.opt.debug.32 $TEMPLATES_DIR/linux_x11_32_debug
+  upx $TEMPLATES_DIR/linux_x11_32_debug
+fi
+
+yesNoS "Building Linux 64 Release and Debug Template"
+if [ $result -eq 1 ]; then
+  cmdScons $SCONS_FLAGS p=x11 target=release tools=no bits=64
+  cp bin/godot.x11.opt.64 $TEMPLATES_DIR/linux_x11_64_release
+  upx $TEMPLATES_DIR/linux_x11_64_release
+  cmdScons $SCONS_FLAGS p=x11 target=release_debug tools=no bits=64
+  cp bin/godot.x11.opt.debug.64 $TEMPLATES_DIR/linux_x11_64_debug
+  upx $TEMPLATES_DIR/linux_x11_64_debug
+fi
+
+yesNoS "Building Windows 32 Release and Debug Template"
+if [ $result -eq 1 ]; then
+  cmdScons $SCONS_FLAGS p=windows target=release tools=no bits=32
+  strip bin/godot.windows.opt.32.exe
+  cp bin/godot.windows.opt.32.exe $TEMPLATES_DIR/windows_32_release.exe
+  upx $TEMPLATES_DIR/windows_32_release.exe
+  cmdScons $SCONS_FLAGS p=windows target=release_debug tools=no bits=32
+  cp bin/godot.windows.opt.debug.32.exe $TEMPLATES_DIR/windows_32_debug.exe
+  strip bin/godot.windows.opt.debug.32.exe
+  upx $TEMPLATES_DIR/windows_32_debug.exe
+fi
+
+yesNoS "Building Windows 64 Release and Debug Template"
+if [ $result -eq 1 ]; then
+  cmdScons $SCONS_FLAGS p=windows target=release tools=no bits=64
+  cp bin/godot.windows.opt.64.exe $TEMPLATES_DIR/windows_64_release.exe
+  x86_64-w64-mingw32-strip $TEMPLATES_DIR/windows_64_release.exe
+  cmdScons $SCONS_FLAGS p=windows target=release_debug tools=no bits=64
+  cp bin/godot.windows.opt.debug.64.exe $TEMPLATES_DIR/windows_64_debug.exe
+  x86_64-w64-mingw32-strip $TEMPLATES_DIR/windows_64_debug.exe
+fi
+
+yesNoS "Building Android Template"
 if [ $result -eq 1 ]; then
   cmdScons $SCONS_FLAGS platform=android target=release android_arch=armv7
   cmdScons $SCONS_FLAGS platform=android target=release android_arch=arm64v8
@@ -165,7 +168,7 @@ if [ $result -eq 1 ]; then
   cd "../../.."
 fi
 
-yesNoS "Building Javascript"
+yesNoS "Building Javascript Template"
 if [ $result -eq 1 ]; then
   cmdScons $SCONS_FLAGS p=javascript target=release
   cp bin/godot.javascript.opt.html godot.html
