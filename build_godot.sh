@@ -20,16 +20,16 @@ export stopOnFail=1
 
 # set to 1 for enabling functionnalities
 export buildLinuxEditor=1      #OK noMono32 noMono64
-export buildLinuxTemplates=0   #OK noMono32 noMono64
-export buildWindowsEditor=0    #OK noMono32 noMono64
-export buildWindowsTemplates=0 #OK noMono32 noMono64
+export buildLinuxTemplates=1   #OK noMono32 noMono64
+export buildWindowsEditor=1    #OK noMono32 noMono64
+export buildWindowsTemplates=1 #OK noMono32 noMono64
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 export buildServer=0           #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web platforms
-export buildAndroid=0 #OK noMono
-export buildWeb=0     #OK noMono
+export buildAndroid=1 #OK noMono
+export buildWeb=1     #OK noMono
 export buildIos=0     #TODO
 
 # Deploy

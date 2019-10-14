@@ -21,38 +21,34 @@ if [ $result -eq 1 ]; then
   label="dependencies"
   echo_header "Installing $label"
   if [ $isArchLike -eq 1 ]; then
-    # Arch linux
-    sudo pacman -S scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu alsa-lib pulseaudio yasm upx
+    ## Arch linux
+    sudo pacman -S --force upx scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu alsa-lib pulseaudio yasm
   elif [ $isUbuntuLike -eq 1 ]; then
     ## Debian / Ubuntu
-    sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm upx-ucl
+    sudo apt-get install upx-ucl build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
+
+    # macOS
+    # TODO Add package install
+
     ## Fedora
     # TODO TEST if present
-    # sudo dnf install scons pkgconfig libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel mesa-libGL-devel mesa-libGLU-devel alsa-lib-devel pulseaudio-libs-devel libudev-devel yasm
-
-    ## FreeBSD
-    # TODO TEST if present
-    # sudo pkg install scons pkgconf xorg-libraries libXcursor libXrandr libXi xorgproto libGLU alsa-lib pulseaudio yasm
-
-    ## Gentoo
-    # TODO TEST if present
-    # emerge -an dev-util/scons x11-libs/libX11 x11-libs/libXcursor x11-libs/libXinerama x11-libs/libXi media-libs/mesa media-libs/glu media-libs/alsa-lib media-sound/pulseaudio dev-lang/yasm
+    # sudo dnf install upx scons pkgconfig libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel mesa-libGL-devel mesa-libGLU-devel alsa-lib-devel pulseaudio-libs-devel libudev-devel yasm
 
     ## Mageia
     # TODO TEST if present
-    # urpmi scons task-c++-devel pkgconfig "pkgconfig(alsa)" "pkgconfig(glu)" "pkgconfig(libpulse)" "pkgconfig(udev)" "pkgconfig(x11)" "pkgconfig(xcursor)" "pkgconfig(xinerama)" "pkgconfig(xi)" "pkgconfig(xrandr)" yasm
-
-    ## OpenBSD
-    # TODO TEST if present
-    # pkg_add python scons llvm yasm
-
-    ## openSUSE
-    # TODO TEST if present
-    # sudo zypper install scons pkgconfig libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel Mesa-libGL-devel alsa-devel libpulse-devel libudev-devel libGLU1 yasm
+    # urpmi scons upx task-c++-devel pkgconfig "pkgconfig(alsa)" "pkgconfig(glu)" "pkgconfig(libpulse)" "pkgconfig(udev)" "pkgconfig(x11)" "pkgconfig(xcursor)" "pkgconfig(xinerama)" "pkgconfig(xi)" "pkgconfig(xrandr)" yasm
 
     ## Solus
     # TODO TEST if present
-    # sudo eopkg install -c system.devel scons libxcursor-devel libxinerama-devel libxi-devel libxrandr-devel mesalib-devel libglu alsa-lib pulseaudio pulseaudio-devel yasm
+    # sudo eopkg install -c upx system.devel scons libxcursor-devel libxinerama-devel libxi-devel libxrandr-devel mesalib-devel libglu alsa-lib pulseaudio pulseaudio-devel yasm
+
+    ## Gentoo
+    # TODO TEST if present
+    # emerge -an upx dev-util/scons x11-libs/libX11 x11-libs/libXcursor x11-libs/libXinerama x11-libs/libXi media-libs/mesa media-libs/glu media-libs/alsa-lib media-sound/pulseaudio dev-lang/yasm
+
+    ## openSUSE
+    # TODO TEST if present
+    # sudo zypper install upx scons pkgconfig libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel Mesa-libGL-devel alsa-devel libpulse-devel libudev-devel libGLU1 yasm
 
     if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
     if [ $result -eq 1 ]; then echo_success "$label installed successfully"; else echo_warning "$label installed with error"; fi
@@ -61,26 +57,38 @@ if [ $result -eq 1 ]; then
     label="Windows Cross compiler"
     echo_header "Installing $label"
     if [ $isArchLike -eq 1 ]; then
-      yay -S mingw-w64-gcc
-      pacman -S wine
+      ## Arch linux
+      yay -S --force mingw-w64-gcc
+      sudo pacman -S --force wine
     elif [ $isUbuntuLike -eq 1 ]; then
-      apt install mingw-w64
-      apt install wine
+      ## Debian / Ubuntu
+      sudo apt install mingw-w64
+      sudo apt install wine
 
-      # Fedora
+      ## macOS
+      # TODO TEST if present
+      # brew install mingw-w64
+      # brew install wine
+
+      ## Fedora
       # TODO TEST if present
       # dnf install mingw64-gcc-c++ mingw64-winpthreads-static mingw32-gcc-c++ mingw32-winpthreads-static
       # dnf install wine
 
-      # Mageia
+      ## Mageia
+      # TODO Add package install
+
+      ## Solus
+      # TODO Add package install
+
+      ## Gentoo
+      # TODO Add package install
+
+      ## openSUSE
       # TODO TEST if present
       # urpmi mingw64-gcc-c++ mingw64-winpthreads-static mingw32-gcc-c++ mingw32-winpthreads-static
       # urpmi wine
 
-      # macOS
-      # TODO TEST if present
-      # brew install mingw-w64
-      # brew install wine
     fi
     if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
     if [ $result -eq 1 ]; then echo_success "$label installed successfully"; else echo_warning "$label installed with error"; fi
@@ -95,6 +103,29 @@ if [ $buildWithMono -eq 1 ]; then
   if [ $result -eq 1 ]; then
     # import necessary certificates for NuGet to perform HTTPS requests
     mozroots --import --sync
+    if [ $isArchLike -eq 1 ]; then
+      sudo pacman -S --force mono
+    elif [ $isUbuntuLike -eq 1 ]; then
+      sudo apt install mono
+    fi
+    # macOS
+    # TODO Add package install
+
+    # Fedora
+    # TODO Add package install
+
+    ## Mageia
+    # TODO Add package install
+
+    ## Solus
+    # TODO Add package install
+
+    ## Gentoo
+    # TODO Add package install
+
+    ## openSUSE
+    # TODO Add package install
+
   fi
   # TODO: test build with mono missing to check for dependencies
 fi
@@ -110,7 +141,7 @@ if [ $buildWindowsEditor -eq 1 ] || [ $buildWindowsTemplates -eq 1 ]; then
       echo_header "Downloading $label"
       #TODO create a download url
       # curl -o "$TOOLS_DIR/innosetup.zip" "https://archive.hugo.pro/.public/godot-builds/innosetup-5.5.9-unicode.zip"
-      cp "/home/laurent/Téléchargements/Windows/InnoSetup.zip" "$TOOLS_DIR"
+      cp "/home/laurent/Téléchargements/Windows/InnoSetup.zip" "$TOOLS_DIR/innosetup.zip"
       unzip -q "$TOOLS_DIR/innosetup.zip" -d "$TOOLS_DIR"
       rm "$TOOLS_DIR/innosetup.zip"
       if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
