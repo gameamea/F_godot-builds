@@ -110,3 +110,46 @@ export redOnWhite="\e[31;107m"
 export greenOnWhite="\e[32;107m"
 export orangeOnWhite="\e[33;107m"
 export blueOnWhite="\e[34;107m"
+
+# info about linux system and desktop
+export isArchLike=0
+export isUbuntuLike=0
+export isArch=0
+export isArco=0
+export isManjaro=0
+export isMint=0
+export isPopOs=0
+export isUbuntu=0
+
+detectOsRelease
+
+checkInString $DETECTED_OS 'pop!_os'
+if [ $result -gt 0 ]; then
+  export isPopOs=1
+  export isUbuntuLike=1
+fi
+checkInString $DETECTED_OS 'ubuntu'
+if [ $result -gt 0 ]; then
+  export isUbuntu=1
+  export isUbuntuLike=1
+fi
+checkInString $DETECTED_OS 'mint'
+if [ $result -gt 0 ]; then
+  export isMint=1
+  export isUbuntuLike=1
+fi
+checkInString $DETECTED_OS 'arch'
+if [ $result -gt 0 ]; then
+  export isArch=1
+  export isArchLike=1
+fi
+checkInString $DETECTED_OS 'manjaro'
+if [ $result -gt 0 ]; then
+  export isManjaro=1
+  export isArchLike=1
+fi
+checkInString $DETECTED_OS 'arcolinux'
+if [ $result -gt 0 ]; then
+  export isArco=1
+  export isArchLike=1
+fi

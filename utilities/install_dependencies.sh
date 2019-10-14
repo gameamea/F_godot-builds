@@ -14,48 +14,6 @@ mkdir -p "$TOOLS_DIR"
 
 echo_header "Installing dependencies (administrative privileges may be required)"
 
-isArchLike=0
-isUbuntuLike=0
-isArch=0
-isArco=0
-isManjaro=0
-isMint=0
-isPopOs=0
-isUbuntu=0
-
-detectOsRelease
-
-checkInString $DETECTED_OS 'pop!_os'
-if [ $result -gt 0 ]; then
-  isPopOs=1
-  isUbuntuLike=1
-fi
-checkInString $DETECTED_OS 'ubuntu'
-if [ $result -gt 0 ]; then
-  isUbuntu=1
-  isUbuntuLike=1
-fi
-checkInString $DETECTED_OS 'mint'
-if [ $result -gt 0 ]; then
-  isMint=1
-  isUbuntuLike=1
-fi
-checkInString $DETECTED_OS 'arch'
-if [ $result -gt 0 ]; then
-  isArch=1
-  isArchLike=1
-fi
-checkInString $DETECTED_OS 'manjaro'
-if [ $result -gt 0 ]; then
-  isManjaro=1
-  isArchLike=1
-fi
-checkInString $DETECTED_OS 'arcolinux'
-if [ $result -gt 0 ]; then
-  isArco=1
-  isArchLike=1
-fi
-
 # Install system packages
 # ----------
 yesNoS "Do you want to download (or upate) all packages for your OS" 0
@@ -64,10 +22,10 @@ if [ $result -eq 1 ]; then
   echo_header "Installing $label"
   if [ $isArchLike -eq 1 ]; then
     # Arch linux
-    sudo pacman -S scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu alsa-lib pulseaudio yasm
+    sudo pacman -S scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu alsa-lib pulseaudio yasm upx
   elif [ $isUbuntuLike -eq 1 ]; then
     ## Debian / Ubuntu
-    sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
+    sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm upx-ucl
     ## Fedora
     # TODO TEST if present
     # sudo dnf install scons pkgconfig libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel mesa-libGL-devel mesa-libGLU-devel alsa-lib-devel pulseaudio-libs-devel libudev-devel yasm

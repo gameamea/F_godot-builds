@@ -25,6 +25,7 @@ export buildWindowsEditor=0    #OK noMono32 noMono64
 export buildWindowsTemplates=0 #OK noMono32 noMono64
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
+export buildServer=0           #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web platforms
 export buildAndroid=0 #OK noMono
@@ -99,6 +100,8 @@ fi
 [ $buildWindowsEditor -eq 1 ] && "$SCRIPTS_DIR/windows.sh"
 # MacOS
 [ $buildMacosEditor -eq 1 ] && "$SCRIPTS_DIR/macos.sh"
+# Server
+[ $buildMacosEditor -eq 1 ] && "$SCRIPTS_DIR/server.sh"
 
 # build Other Templates
 #-----
@@ -113,3 +116,8 @@ fi
 
 # Deploy
 [ $deploy -eq 1 ] && "$SCRIPTS_DIR/deploy.sh"
+
+# Doc
+[ $deploy -eq 1 ] && "$SCRIPTS_DIR/doc.sh"
+
+echo_header "${blueOnWhite}All Operations finished.${resetColor}"
