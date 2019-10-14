@@ -25,6 +25,7 @@ if [ $result -eq 1 ]; then
     sudo pacman -S --force upx scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu alsa-lib pulseaudio yasm
   elif [ $isUbuntuLike -eq 1 ]; then
     ## Debian / Ubuntu
+    # TODO: following command must be tested
     sudo apt-get install upx-ucl build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
 
     # macOS
@@ -58,11 +59,13 @@ if [ $result -eq 1 ]; then
     echo_header "Installing $label"
     if [ $isArchLike -eq 1 ]; then
       ## Arch linux
-      yay -S --force mingw-w64-gcc
+      yay -S --force mingw-w64-crt mingw-w64-gcc
+
       sudo pacman -S --force wine
     elif [ $isUbuntuLike -eq 1 ]; then
       ## Debian / Ubuntu
-      sudo apt install mingw-w64
+      # TODO: following command must be tested
+      sudo apt install mingw-w64-crt mingw-w64
       sudo apt install wine
 
       ## macOS
@@ -106,6 +109,7 @@ if [ $buildWithMono -eq 1 ]; then
     if [ $isArchLike -eq 1 ]; then
       sudo pacman -S --force mono
     elif [ $isUbuntuLike -eq 1 ]; then
+      # TODO: following command must be tested
       sudo apt install mono
     fi
     # macOS
