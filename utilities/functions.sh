@@ -57,9 +57,20 @@ function cpcheck() {
 export -f cpcheck
 
 # #
-# # Use cp command, but checks if source exists and deletes target before
-function cmdScons() {
+# # command for binaries size optimisation using strip and upx
+function cmdUpxStrip() {
+  if [ $optimisationOn -eq 0 ]; then
+    echo_info "optimisation deactivated"
+  else
+    strip $*
+    upx $*
+  fi
+}
+export -f cmdUpxStrip
 
+# #
+# # command for building using scons
+function cmdScons() {
   printf "\n${blueOnWhite}Running:${blueOnBlack}scons $*${resetColor}\n"
   scons $*
 }

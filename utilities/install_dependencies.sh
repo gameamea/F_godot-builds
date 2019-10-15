@@ -179,6 +179,14 @@ if [ $buildAndroid -eq 1 ]; then
       echo_info "$label is already installed using this script."
     fi
   fi
+
+  label="Mono for Android"
+  yesNoS "Do you want to build $label" 0
+  if [ $result -eq 1 ]; then
+    "$TOOLS_DIR/godot-mono-builds/build_mono"
+    if [ $? -eq 0 ] && [ -d "$TOOLS_DIR/mono/mono-installs/android-x86-release" ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
+    if [ $result -eq 1 ]; then echo_success "$label installed successfully"; else echo_warning "$label installed with error"; fi
+  fi
 fi
 
 # Install OSXCross

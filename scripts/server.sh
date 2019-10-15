@@ -9,11 +9,19 @@
 
 set -euo pipefail
 
-echo_warning "TO FINISH"
+# Build SERVER release_debug export template (No release version for server)
+if [ $build32Bits -eq 1 ]; then
+  label="Building 32 bits SERVER release export template"
+  echo_header "Running $label"
+  cmdScons platform=server bits=32 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+  cmdUpxStrip $TEMPLATES_DIR/linux_server_32
+  if [ $? -eq 0 ]; then result=1; else result=0; fi
+  if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+fi
 
-scons -j4 p=server target=release_debug tools=no bits=64
-cp bin/godot_server.server.opt.debug.64 $TEMPLATES_DIR/linux_server_64
-upx $TEMPLATES_DIR/linux_server_64
-scons -j4 p=server target=release_debug tools=no bits=32
-cp bin/godot_server.server.opt.debug.32 $TEMPLATES_DIR/linux_server_32
-upx $TEMPLATES_DIR/linux_server_32
+label="Building 64 bits SERVER release export template"
+echo_header "Running $label"
+cmdScons platform=server bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+cmdUpxStrip $TEMPLATES_DIR/linux_server_64
+if [ $? -eq 0 ]; then result=1; else result=0; fi
+if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi

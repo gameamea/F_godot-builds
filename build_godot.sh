@@ -17,6 +17,10 @@ set -euo pipefail
 export isQuiet=0
 # if set to 1, process will be stopped when something fails
 export stopOnFail=1
+# if set to 1, binaries size will be optimised
+export optimisationOn=1
+# default answer to yesNo questions
+export defaultYN=0
 
 # set to 1 for enabling functionnalities
 export buildLinuxEditor=1      #OK noMono32 noMono64
@@ -51,8 +55,7 @@ export buildWithJavascriptSingleton=1
 export emscriptenVersion='1.38.47'
 
 # `DIR` contains the directory where the script is located, regardless of where
-# it is run from. This makes it easy to run this set of build scripts from any
-# location
+# it is run from. This makes it easy to run this set of build scripts from any location
 # NOTE: can not be moved in variables.sh
 export DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # The directory where utility scripts are located
@@ -70,20 +73,20 @@ echo_header "${greenOnWhite}GODOT ENGINE BUILD SCRIPT"
 
 cd "$GODOT_DIR"
 
-yesNoS "${orangeOnBlack}Do you want to Install or update dependencies" 0
+yesNoS "${orangeOnBlack}Do you want to Install or update dependencies" $defaultYN
 if [ $result -eq 1 ]; then
   # Install or update dependencies
   "$UTILITIES_DIR/install_dependencies.sh"
 fi
 
 # Delete the existing Godot Git repository then clone a fresh copy
-yesNoS "${orangeOnBlack}Do you want to remove existing source code and Get an update from git Repo " 0
+yesNoS "${orangeOnBlack}Do you want to remove existing source code and Get an update from git Repo " $defaultYN
 if [ $result -eq 1 ]; then
   rm -rf "$GODOT_DIR"
   echo_header "Cloning Godot Git repository from $GODOT_ORIGIN"
   git clone --depth=1 "$GODOT_ORIGIN" "$GODOT_DIR"
 else
-  yesNoS "Do you want to pull from origin (branch: $GODOT_BRANCH)?" 0
+  yesNoS "Do you want to pull from origin (branch: $GODOT_BRANCH)?" $defaultYN
   if [ $result -eq 1 ]; then
     git fetch origin
     git checkout $GODOT_BRANCH

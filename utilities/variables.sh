@@ -22,10 +22,20 @@
 GODOT_ORIGIN="https://github.com/frugs/godot.git"
 GODOT_BRANCH="gdscript_auto_formatter"
 
+# mono extensions
+export buildWithMono="${buildWithMono:-0}"
+if [ "$buildWithMono" -eq 1 ]; then
+  export MONO_FLAG='module_mono_enabled=yes'
+  export MONO_EXT='.mono'
+else
+  export MONO_FLAG=''
+  export MONO_EXT=''
+fi
+
 # Android tools path
 # If these 2 variables are not set, the tools will be downloaded inside the folder set in TOOLS_DIR
-export ANDROID_HOME="/opt/android-sdk"
-export ANDROID_NDK_ROOT="/opt/android-ndk"
+export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-"/opt/android-sdk"}"
+export ANDROID_NDK_ROOT="${ANDROID_NDK_ROOT:-"/opt/android-ndk"}"
 
 # uncomment only if MINGW is not in path
 #export MINGW64_PREFIX="/path/to/x86_64-w64-mingw32-gcc"
@@ -37,6 +47,10 @@ export ANDROID_NDK_ROOT="/opt/android-ndk"
 # change to use all threads
 export THREADS=$(nproc)
 
+# `DIR` contains the directory where the script is located, regardless of where
+# it is run from. This makes it easy to run this set of build scripts from any location
+export DIR="${DIR:-"/mnt/R/Apps_Sources/GodotEngine/godot-builds"}"
+
 # The directory where the Godot Git repository will be cloned
 #export GODOT_DIR="/tmp/godot"
 export GODOT_DIR="$(dirname $DIR)/_godot"
@@ -44,10 +58,10 @@ export GODOT_DIR="$(dirname $DIR)/_godot"
 # The directory where build artifacts will be copied
 # EDITOR_DIR and TEMPLATES_DIR are used by platform-specific scripts
 export ARTIFACTS_DIR="${ARTIFACTS_DIR:-"$DIR/artifacts"}"
-export EDITOR_DIR="$ARTIFACTS_DIR/editor"
+export EDITOR_DIR="$ARTIFACTS_DIR/editor${MONO_EXT}"
 #export TEMPLATES_DIR="$ARTIFACTS_DIR/templates"
 export GDVERSION=$(getGDVersion "$GODOT_DIR")
-export TEMPLATES_DIR="$HOME/.local/share/godot/templates/$GDVERSION"
+export TEMPLATES_DIR="$HOME/.local/share/godot/templates/${GDVERSION}${MONO_EXT}"
 
 # SCons flags to use in all build commands
 export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
@@ -72,26 +86,31 @@ export TOOLS_DIR="$DIR/tools"
 
 # Set the environment variables used in build naming
 
-# Commit date (not the system date!)
-export BUILD_DATE="$(git show -s --format=%cd --date=short)"
-# Short (9-character) commit hash
-export BUILD_COMMIT="$(git rev-parse --short=9 HEAD)"
-# The final version string
-export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
-
 # Path to the Xcode DMG image
 export XCODE_DMG="$DIR/Xcode_7.3.1.dmg"
 
 # The path to the OSXCross installation
 export OSXCROSS_ROOT="$TOOLS_DIR/osxcross"
 
-# The paths to the Android SDK and NDK, only overridden if the user
-# does not already have these variables set
+# The paths to the Android SDK and NDK, only overridden if the user does not already have these variables set
 export ANDROID_HOME="${ANDROID_HOME:-"$TOOLS_DIR/android"}"
 export ANDROID_NDK_ROOT="${ANDROID_NDK_ROOT:-"$TOOLS_DIR/android/ndk-bundle"}"
 
 # The path to the Inno Setup compiler (ISCC.exe)
 export ISCC="$TOOLS_DIR/innosetup/ISCC.exe"
+
+# The path to the mono dependencies
+export TOOLS_MONO_DIR="$TOOLS_DIR/mono"
+
+# The path to The mono sources for build
+export MONO_SOURCE_ROOT="/mnt/R/Apps_Sources/mono"
+
+# Commit date (not the system date!)
+export BUILD_DATE="$(git show -s --format=%cd --date=short)"
+# Short (9-character) commit hash
+export BUILD_COMMIT="$(git rev-parse --short=9 HEAD)"
+# The final version string
+export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
 
 # used by some functions as return result
 export result=1

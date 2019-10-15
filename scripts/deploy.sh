@@ -13,7 +13,7 @@ echo_header "Deploy Files"
 
 # create version file in the template dir
 touch "$TEMPLATES_DIR/version.txt"
-echo $GDVERSION > "$TEMPLATES_DIR/version.txt"
+echo ${GDVERSION}${MONO_EXT} > "$TEMPLATES_DIR/version.txt"
 
 # update version in innosetup config file
 sed -i "s/#define MyAppVersion.*/#define MyAppVersion \"$GDVERSION\"/g" "$RESOURCES_DIR/windows/godot.iss"
@@ -146,6 +146,13 @@ label="MacOs 64 bit templates"
 # Copy MacOs 64 bit export templates
 cpcheck "$GODOT_DIR/bin/godot.osx.opt.64" "$TEMPLATES_DIR"
 cpcheck "$GODOT_DIR/bin/godot.osx.opt.debug.64" "$TEMPLATES_DIR"
+if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
+
+label="Server templates"
+# --------
+# Copy Server export templates
+cpcheck "bin/godot_server.server.opt.debug.32" "$TEMPLATES_DIR/linux_server_32"
+cpcheck "$GODOT_DIR/bin/godot_server.server.opt.debug.64" "$TEMPLATES_DIR/linux_server_64"
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
 
 label="Android templates"
