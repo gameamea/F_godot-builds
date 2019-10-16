@@ -41,7 +41,7 @@ if [ $buildMacosTemplates -eq 1 ]; then
   if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 
-  label="Building 64 bits release  export template for macOS"
+  label="Building 64 bits release export template for macOS"
   echo_header "Running $label"
   resultFile="$GODOT_DIR/bin/godot.osx.opt.64"
   rm -f $resultFile

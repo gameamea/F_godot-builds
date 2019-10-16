@@ -36,7 +36,7 @@ cpcheck "$GODOT_DIR/bin/godot.x11.opt.debug.32${MONO_EXT}" "$TEMPLATES_DIR"
 cpcheck "$GODOT_DIR/bin/godot.x11.opt.32${MONO_EXT}" "$TEMPLATES_DIR"
 if [ $buildWithMono -eq 1 ]; then
   ### Copy Mono Linux Templates Data Folder
-  cpcheck "$GODOT_DIR/bin/data.mono.x11.32.debug" "$TEMPLATES_DIR" -r
+  cpcheck "$GODOT_DIR/bin/data.mono.x11.32.release_debug" "$TEMPLATES_DIR" -r
   cpcheck "$GODOT_DIR/bin/data.mono.x11.32.release" "$TEMPLATES_DIR" -r
 fi
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
@@ -58,7 +58,7 @@ cpcheck "$GODOT_DIR/bin/godot.x11.opt.debug.64${MONO_EXT}" "$TEMPLATES_DIR"
 cpcheck "$GODOT_DIR/bin/godot.x11.opt.64${MONO_EXT}" "$TEMPLATES_DIR"
 if [ $buildWithMono -eq 1 ]; then
   ### Copy Mono Linux Templates Data Folder
-  cpcheck "$GODOT_DIR/bin/data.mono.x11.64.debug" "$TEMPLATES_DIR" -r
+  cpcheck "$GODOT_DIR/bin/data.mono.x11.64.release_debug" "$TEMPLATES_DIR" -r
   cpcheck "$GODOT_DIR/bin/data.mono.x11.64.release" "$TEMPLATES_DIR" -r
 fi
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
@@ -97,11 +97,11 @@ rmdir "$EDITOR_DIR/Output"
 ### Copy Windows 32 bit export templates
 label="Windows 32 bit templates"
 echo_header "Deploying $label"
-cpcheck "$GODOT_DIR/bin/godot.windows.opt.32${MONO_EXT}.exe" "$TEMPLATES_DIR/windows_32_release${MONO_EXT}.exe"
 cpcheck "$GODOT_DIR/bin/godot.windows.opt.debug.32${MONO_EXT}.exe" "$TEMPLATES_DIR/windows_32_debug${MONO_EXT}.exe"
+cpcheck "$GODOT_DIR/bin/godot.windows.opt.32${MONO_EXT}.exe" "$TEMPLATES_DIR/windows_32_release${MONO_EXT}.exe"
 if [ $buildWithMono -eq 1 ]; then
   ### Copy Mono Windows Templates Data Folder
-  cpcheck "$GODOT_DIR/bin/data.mono.windows.32.debug" "$TEMPLATES_DIR" -r
+  cpcheck "$GODOT_DIR/bin/data.mono.windows.32.release_debug" "$TEMPLATES_DIR" -r
   cpcheck "$GODOT_DIR/bin/data.mono.windows.32.release" "$TEMPLATES_DIR" -r
 fi
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
@@ -141,7 +141,7 @@ cpcheck "$GODOT_DIR/bin/godot.windows.opt.debug.64${MONO_EXT}.exe" "$TEMPLATES_D
 cpcheck "$GODOT_DIR/bin/godot.windows.opt.64${MONO_EXT}.exe" "$TEMPLATES_DIR/windows_64_release${MONO_EXT}.exe"
 if [ $buildWithMono -eq 1 ]; then
   ### Copy Mono Windows Templates Data Folder
-  cpcheck "$GODOT_DIR/bin/data.mono.windows.64.debug" "$TEMPLATES_DIR" -r
+  cpcheck "$GODOT_DIR/bin/data.mono.windows.64.release_debug" "$TEMPLATES_DIR" -r
   cpcheck "$GODOT_DIR/bin/data.mono.windows.64.release" "$TEMPLATES_DIR" -r
 fi
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
@@ -167,8 +167,8 @@ if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else ech
 label="MacOs 64 bit templates"
 echo_header "Deploying $label"
 ### TODO Add mono options for mono and mono data folder copy
-cpcheck "$GODOT_DIR/bin/godot.osx.opt.64" "$TEMPLATES_DIR"
 cpcheck "$GODOT_DIR/bin/godot.osx.opt.debug.64" "$TEMPLATES_DIR"
+cpcheck "$GODOT_DIR/bin/godot.osx.opt.64" "$TEMPLATES_DIR"
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
 
 ## --------
@@ -192,6 +192,6 @@ if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else ech
 ### Copy Web export templates
 label="Web templates"
 echo_header "Deploying $label"
-cpcheck "$GODOT_DIR/bin/godot.javascript.opt.zip" "$TEMPLATES_DIR/webassembly_release.zip"
 cpcheck "$GODOT_DIR/bin/godot.javascript.opt.debug.zip" "$TEMPLATES_DIR/webassembly_debug.zip"
+cpcheck "$GODOT_DIR/bin/godot.javascript.opt.zip" "$TEMPLATES_DIR/webassembly_release.zip"
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
