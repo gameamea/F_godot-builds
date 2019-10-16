@@ -14,26 +14,28 @@ set -euo pipefail
 # ------------
 
 # if set to 1, no question will be ask and default value will be used
-export isQuiet=0
+export isQuiet=1
 # if set to 1, process will be stopped when something fails
-export stopOnFail=1
+export stopOnFail=0
 # if set to 1, binaries size will be optimised
 export optimisationOn=1
 # default answer to yesNo questions
-export defaultYN=0
+export defaultYN=1
+# default answer to yesNo questions for important elements
+export importantYN=0
 
 # set to 1 for enabling functionnalities
-export buildLinuxEditor=1      #OK noMono32 noMono64
-export buildLinuxTemplates=1   #OK noMono32 noMono64
-export buildWindowsEditor=1    #OK noMono32 noMono64
-export buildWindowsTemplates=1 #OK noMono32 noMono64
+export buildLinuxEditor=1      #OK normal32 normal64 no_mono32
+export buildLinuxTemplates=1   #OK normal32 normal64 no_mono32
+export buildWindowsEditor=1    #OK normal32 normal64 mono HS
+export buildWindowsTemplates=1 #OK normal32 normal64 mono HS
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
-export buildServer=0           #TODO:TEST no mono & TEST Mono
+export buildServer=1           #OK normal32 normal64 no_mono
 
 # Mobile/Web platforms
-export buildAndroid=1 #OK noMono
-export buildWeb=1     #OK noMono
+export buildAndroid=1 #OK noMono TEST Mono
+export buildWeb=1     #OK noMono no_mono
 export buildIos=0     #TODO
 
 # Deploy
@@ -71,16 +73,18 @@ mkdir -p "$EDITOR_DIR" "$TEMPLATES_DIR"
 
 echo_header "${greenOnWhite}GODOT ENGINE BUILD SCRIPT"
 
+echo_info "${orangeOnWhite}Source folder: $GODOT_DIR"
+
 cd "$GODOT_DIR"
 
-yesNoS "${orangeOnBlack}Do you want to Install or update dependencies" $defaultYN
+yesNoS "${orangeOnBlack}Do you want to Install or update dependencies" $importantYN
 if [ $result -eq 1 ]; then
   # Install or update dependencies
   "$UTILITIES_DIR/install_dependencies.sh"
 fi
 
 # Delete the existing Godot Git repository then clone a fresh copy
-yesNoS "${orangeOnBlack}Do you want to remove existing source code and Get an update from git Repo " $defaultYN
+yesNoS "${orangeOnBlack}Do you want to remove existing source code and Get an update from git Repo " $importantYN
 if [ $result -eq 1 ]; then
   rm -rf "$GODOT_DIR"
   echo_header "Cloning Godot Git repository from $GODOT_ORIGIN"

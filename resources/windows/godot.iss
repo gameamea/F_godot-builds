@@ -1,3 +1,5 @@
+;TODO Add mono options for mono and mono data folder copy
+
 #define MyAppName "Godot Engine"
 #define MyAppVersion "3.2.alpha"
 #define MyAppPublisher "Godot Engine contributors"
