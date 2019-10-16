@@ -67,7 +67,7 @@ function yesNoS() {
   fi
 }
 
-printf "\n***********\nGODOT MONO BARE BUILD\n***********\n"
+printf "\n***********\nGODOT BARE BUILD\n***********\n"
 printf "\nSource folder: $GODOT_DIR\n"
 cd "$GODOT_DIR"
 

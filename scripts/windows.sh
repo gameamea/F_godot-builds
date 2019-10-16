@@ -10,14 +10,6 @@
 set -euo pipefail
 # line just for easier comparison with linux.h
 
-if [ "$buildWithMono" -eq 1 ]; then
-  MONO_FLAG='module_mono_enabled=yes'
-  MONO_EXT='.mono'
-else
-  MONO_FLAG=''
-  MONO_EXT=''
-fi
-
 if [ $buildWindowsEditor -eq 1 ]; then
   if [ $build32Bits -eq 1 ]; then
     if [ "$buildWithMono" -eq 1 ]; then

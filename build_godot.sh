@@ -46,7 +46,7 @@ export deploy=0 #TODO: update code after each sucessfull build process added
 # Also build 32 bits version if possible
 export build32Bits=1
 # Mono
-export buildWithMono=1 #TODO
+export buildWithMono=0 #TODO
 # Javascript
 # By default, the JavaScript singleton will be built into the engine. Since eval() calls can be a security concern.
 export buildWithJavascriptSingleton=1
