@@ -69,8 +69,12 @@ export TEMPLATES_DIR="$HOME/.local/share/godot/templates/${GDVERSION}${MONO_EXT}
 export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
 
 # Link optimisation flag (64 bits only).
-# is set to yes LINKING PROCESS TAKES MUCH MORE TIME
-export LTO_FLAG='use_lto=yes'
+if [ "x$optimisationOn" = "x1"]; then
+  # LINKING PROCESS TAKES MUCH MORE TIME
+  export LTO_FLAG='use_lto=yes'
+else
+  export LTO_FLAG=''
+fi
 
 # ------------
 # variables

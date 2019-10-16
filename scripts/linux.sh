@@ -42,6 +42,7 @@ if [ $buildLinuxEditor -eq 1 ]; then
     if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
   fi
 fi
+
 # Build 32 bits export templates
 # --------------
 if [ $buildLinuxTemplates -eq 1 ]; then
@@ -54,7 +55,7 @@ if [ $buildLinuxTemplates -eq 1 ]; then
     else
       resultFile="$GODOT_DIR/bin/godot.x11.opt.debug.32${MONO_EXT}"
       rm -f $resultFile
-      cmdScons platform=x11 bits=32 tools=no target=debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+      cmdScons platform=x11 bits=32 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
       # Remove symbols and sections from files
       cmdUpxStrip $resultFile
       if [ $? -eq 0 ]; then result=1; else result=0; fi
@@ -64,7 +65,7 @@ if [ $buildLinuxTemplates -eq 1 ]; then
       echo_header "Running $label"
       resultFile="$GODOT_DIR/bin/godot.x11.opt.32${MONO_EXT}"
       rm -f $resultFile
-      cmdScons platform=x11 bits=32 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+      cmdScons platform=x11 bits=32 tools=no target=release $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
       # Remove symbols and sections from files
       cmdUpxStrip $resultFile
       if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
@@ -106,7 +107,7 @@ if [ $buildLinuxTemplates -eq 1 ]; then
   echo_header "Running $label"
   resultFile="$GODOT_DIR/bin/godot.x11.opt.debug.64${MONO_EXT}"
   rm -f $resultFile
-  cmdScons platform=x11 bits=64 tools=no target=debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+  cmdScons platform=x11 bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
   # Remove symbols and sections from files
   cmdUpxStrip $resultFile
   if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
@@ -116,7 +117,7 @@ if [ $buildLinuxTemplates -eq 1 ]; then
   echo_header "Running $label"
   resultFile="$GODOT_DIR/bin/godot.x11.opt.64${MONO_EXT}"
   rm -f $resultFile
-  cmdScons platform=x11 bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+  cmdScons platform=x11 bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
   # Remove symbols and sections from files
   cmdUpxStrip $resultFile
   if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h

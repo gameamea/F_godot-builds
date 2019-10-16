@@ -25,7 +25,7 @@ export isQuiet=0
 # if set to 1, process will be stopped when something fails
 export stopOnFail=0
 # if set to 1, binaries size will be optimised
-export optimisationOn=1
+export optimisationOn=0
 # default answer to yesNo questions
 export defaultYN=1
 # default answer to yesNo questions for important elements
