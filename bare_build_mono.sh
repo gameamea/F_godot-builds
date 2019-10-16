@@ -3,11 +3,11 @@
 # This script is intended to run on Linux or OSX. Cygwin might work.
 
 # if set to 1, no question will be ask and default value will be used
-export isQuiet=0
+export isQuiet=1
 # if set to 1, process will be stopped when something fails
 export stopOnFail=1
 # if set to 1, binaries size will be optimised
-export optimisationOn=0
+export optimisationOn=1
 # default answer to yesNo questions
 export defaultYN=1
 
@@ -58,6 +58,7 @@ function cmdUpxStrip() {
 function yesNoS() {
   if [ "x$isQuiet" = "x1" ]; then
     result=$2
+    printf "\n$1\n"
   else
     if [ "$1" = "" ]; then message="Confirm "; else message=$1; fi
     message="$message (Y/N)"
@@ -73,6 +74,8 @@ function yesNoS() {
 }
 
 printf "\n***********\nGODOT MONO BARE BUILD\n***********\n"
+printf "\nSource folder: $GODOT_DIR\n"
+
 cd "$GODOT_DIR"
 
 # git does not allow empty dirs, so create those
@@ -172,4 +175,3 @@ if [ $result -eq 1 ]; then
   ./gradlew build
   cd "../../.."
 fi
-
