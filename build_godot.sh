@@ -1,9 +1,16 @@
 #!/bin/bash
 #
 # This script compiles and packages Godot for various platforms.
+# Using This script for build is preferable
+#------
 #
-# Copyright © 2017 Hugo Locurcio and contributors - CC0 1.0 Universal
+# This script is licensed under CC0 1.0 Universal:
+# https://creativecommons.org/publicdomain/zero/1.0/
+#
+# Copyright © 2017 Hugo Locurcio and contributors - CC0 1.0 Universal - for the base version
+# Copyright © 2019 Laurent Ongaro and contributors - CC0 1.0 Universal - for the updated version
 # See `LICENSE.md` included in the source distribution for details.
+#------
 
 set -euo pipefail
 
@@ -14,7 +21,7 @@ set -euo pipefail
 # ------------
 
 # if set to 1, no question will be ask and default value will be used
-export isQuiet=1
+export isQuiet=0
 # if set to 1, process will be stopped when something fails
 export stopOnFail=0
 # if set to 1, binaries size will be optimised
@@ -43,11 +50,11 @@ export deploy=0 #TODO: update code after each sucessfull build process added
 
 # Build options
 
-# Also build 32 bits version if possible
+# Build 32 bits version if possible
 export build32Bits=1
-# Mono
+# Build with mono
 export buildWithMono=0 #TODO
-# Javascript
+# Web/Javascript
 # By default, the JavaScript singleton will be built into the engine. Since eval() calls can be a security concern.
 export buildWithJavascriptSingleton=1
 

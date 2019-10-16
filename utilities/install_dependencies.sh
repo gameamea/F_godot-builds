@@ -2,10 +2,11 @@
 
 #------
 # This script installs dependencies required to compile Godot.
-# Only Fedora, Arch like and Ubuntu Like OS are currently supported.
+# Only Arch like and Ubuntu Like OS are currently supported.
 #
-# This script is licensed under CC0 1.0 Universal:
-# https://creativecommons.org/publicdomain/zero/1.0/
+# Copyright © 2017 Hugo Locurcio and contributors - CC0 1.0 Universal - for the base version
+# Copyright © 2019 Laurent Ongaro and contributors - CC0 1.0 Universal - for the updated version
+# See `LICENSE.md` included in the source distribution for details.
 #------
 
 set -euo pipefail

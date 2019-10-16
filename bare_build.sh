@@ -1,6 +1,13 @@
 #!/usr/bin/bash
 
 # This script is intended to run on Linux or OSX. Cygwin might work.
+#------
+# Bare build script for Godot. Used for testing purpose.
+# Using main script is preferable
+#
+# Copyright © 2019 Laurent Ongaro and contributors - CC0 1.0 Universal
+# This script is licensed under CC0 1.0 Universal:
+#------
 
 # if set to 1, no question will be ask and default value will be used
 export isQuiet=1
@@ -90,7 +97,7 @@ echo ""
 
 yesNoS "Building Linux 32 Editor" $defaultYN #TEST OK
 if [ $result -eq 1 ]; then
-  cmdScons $SCONS_FLAGS p=x11 target=release_debug tools=yes bits=32
+  cmdScons $SCONS_FLAGS p=x11 tools=yes target=release_debug bits=32
   cp bin/godot.x11.opt.tools.32 $EDITOR_DIR/godot_x11.32
   cmdUpxStrip $EDITOR_DIR/godot_x11.32 # may fails on some linux distros
 fi
@@ -107,7 +114,7 @@ fi
 
 yesNoS "Building Linux 64 Editor" $defaultYN #TEST OK
 if [ $result -eq 1 ]; then
-  cmdScons $SCONS_FLAGS p=x11 target=release_debug tools=yes bits=64
+  cmdScons $SCONS_FLAGS p=x11 tools=yes target=release_debug bits=64
   cp bin/godot.x11.opt.tools.64 $EDITOR_DIR/godot_x11.64
   cmdUpxStrip $EDITOR_DIR/godot_x11.64 # may fails on some linux distros
 fi
@@ -124,7 +131,7 @@ fi
 
 yesNoS "Building Windows 32 Editor" $defaultYN #TEST OK
 if [ $result -eq 1 ]; then
-  cmdScons $SCONS_FLAGS p=windows target=release_debug tools=yes bits=32
+  cmdScons $SCONS_FLAGS p=windows tools=yes target=release_debug bits=32
   cp bin/godot.windows.opt.tools.32.exe $EDITOR_DIR/godot_win32.exe
   x86_64-w64-mingw32-strip $EDITOR_DIR/godot_win32.exe
   cmdUpxStrip $EDITOR_DIR/godot_win32.exe
@@ -144,7 +151,7 @@ fi
 
 yesNoS "Building Windows 64 Editor" $defaultYN #TEST OK
 if [ $result -eq 1 ]; then
-  cmdScons $SCONS_FLAGS p=windows target=release_debug tools=yes bits=64
+  cmdScons $SCONS_FLAGS p=windows tools=yes target=release_debug bits=64
   cp bin/godot.windows.opt.tools.64.exe $EDITOR_DIR/godot_win64.exe
   x86_64-w64-mingw32-strip $EDITOR_DIR/godot_win64.exe
   cmdUpxStrip $EDITOR_DIR/godot_win64.exe

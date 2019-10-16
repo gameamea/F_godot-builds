@@ -3,7 +3,8 @@
 #------
 # This script compiles Godot for Android.
 #
-# Copyright © 2017 Hugo Locurcio and contributors - CC0 1.0 Universal
+# Copyright © 2017 Hugo Locurcio and contributors - CC0 1.0 Universal - for the base version
+# Copyright © 2019 Laurent Ongaro and contributors - CC0 1.0 Universal - for the updated version
 # See `LICENSE.md` included in the source distribution for details.
 #------
 

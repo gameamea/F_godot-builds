@@ -3,8 +3,8 @@
 #------
 # Helper functions
 #
-# This script is licensed under CC0 1.0 Universal:
-# https://creativecommons.org/publicdomain/zero/1.0/
+# Copyright © 2019 Laurent Ongaro and contributors - CC0 1.0 Universal
+# See `LICENSE.md` included in the source distribution for details.
 #------
 
 # #
