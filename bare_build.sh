@@ -14,8 +14,8 @@ export defaultYN=1
 export DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # various godot versions
-export GODOT_DIR="$(dirname $DIR)/godot_(Frugs_auto_formatter)"
-export GODOT_DIR="$(dirname $DIR)/godot_(Official)"
+#export GODOT_DIR="$(dirname $DIR)/godot_(Frugs_auto_formatter)"
+#export GODOT_DIR="$(dirname $DIR)/godot_(Official)"
 export GODOT_DIR="$(dirname $DIR)/_godot"
 
 export ARTIFACTS_DIR="${ARTIFACTS_DIR:-"$DIR/artifacts"}"

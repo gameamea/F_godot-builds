@@ -53,9 +53,9 @@ export DIR="${DIR:-"/mnt/R/Apps_Sources/GodotEngine/godot-builds"}"
 
 # The directory where the Godot Git repository will be cloned
 # various godot versions
-export GODOT_DIR="$(dirname $DIR)/godot_(Frugs_auto_formatter)"
+#export GODOT_DIR="$(dirname $DIR)/godot_(Frugs_auto_formatter)"
+#export GODOT_DIR="$(dirname $DIR)/godot_(Official)"
 export GODOT_DIR="$(dirname $DIR)/_godot"
-export GODOT_DIR="$(dirname $DIR)/godot_(Official)"
 
 # The directory where build artifacts will be copied
 # EDITOR_DIR and TEMPLATES_DIR are used by platform-specific scripts
