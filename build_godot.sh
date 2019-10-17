@@ -90,21 +90,7 @@ source "$UTILITIES_DIR/variables.sh"
 # Deploy
 export deploy=1 #TODO: update code after each sucessfull build process added
 
-# ------------
-# BUILD OPTIONS
-#
-# these values can be changed to change the build process
-# ------------
-# Build 32 bits version if possible
-export build32Bits=1
-
-# Build with mono  if possible
-export buildWithMono=0 #TODO
-
-# Web/Javascript option
-# By default, the JavaScript singleton will be built into the engine. Since eval() calls can be a security concern.
-export buildWithJavascriptSingleton=1
-
+# log file name
 export deployLogOK="$DIR/deploy_OK_$(date +%Y-%m-%d).log"
 export deployLogHS="$DIR/deploy_HS_$(date +%Y-%m-%d).log"
 

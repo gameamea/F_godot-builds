@@ -10,7 +10,14 @@
 
 set -euo pipefail
 noBuild=0
+
 echo_info "NOTE: Linux binaries usually won’t run on distributions that are older than the distribution they were built on. If you wish to distribute binaries that work on most distributions, you should build them on an old distribution such as Ubuntu 16.04. You can use a virtual machine or a container to set up a suitable build environment."
+# line just for easier comparison
+# line just for easier comparison
+# line just for easier comparison
+# line just for easier comparison
+# line just for easier comparison
+# line just for easier comparison
 
 # Build 32 bits editor
 # -----
@@ -31,7 +38,7 @@ if [ $buildLinuxEditor -eq 1 ]; then
         rm "$GODOT_DIR/bin/godot.x11.opt.tools.32.mono"
       fi
     fi
-    if [ ! "x$noBuild"="x1" ]; then
+    if [ $noBuild -eq 0 ]; then
       # Build the editor
       label="Building 32 bits editor${MONO_EXT} for Linux"
       echo_header "Running $label"

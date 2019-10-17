@@ -10,7 +10,6 @@
 
 set -euo pipefail
 noBuild=0
-# line just for easier comparison with linux.h
 
 if [ "$buildWithMono" -eq 1 ] && [ $isArchLike -eq 1 ]; then
   printf "\n${redOnBlack}Due to a bug on godot cross compiling, Windows binaries with mono can not be built on linux.${resetColor}"
@@ -39,7 +38,7 @@ if [ $buildWindowsEditor -eq 1 ]; then
         rm "$GODOT_DIR/bin/godot.windows.tools.32.mono.exe"
       fi
     fi
-    if [ ! "x$noBuild"="x1" ]; then
+    if [ $noBuild -eq 0 ]; then
       # Build the editor
       label="Building 32 bits editor${MONO_EXT} for Windows"
       echo_header "Running $label"
@@ -57,9 +56,9 @@ fi
 # Build 32 bits export templates
 # --------------
 if [ $buildWindowsTemplates -eq 1 ]; then
-  label="Building 32 bits debug export template${MONO_EXT} for Windows"
-  echo_header "Running $label"
   if [ $build32Bits -eq 1 ]; then
+    label="Building 32 bits debug export template${MONO_EXT} for Windows"
+    echo_header "Running $label"
     if [ "$buildWithMono" -eq 1 ] && [ $isArchLike -eq 1 ]; then
       printf "${orangeOnBlack}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
     else
