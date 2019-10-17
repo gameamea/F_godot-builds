@@ -13,15 +13,6 @@
 # these values can be changed to customize the build process
 # ------------
 
-#
-# git repo to pull from
-# GODOT original
-# GODOT_ORIGIN="https://github.com/godotengine/godot.git"
-#GODOT_BRANCH="master"
-# Frug version : 3.2 with editor auto formatter
-GODOT_ORIGIN="https://github.com/frugs/godot.git"
-GODOT_BRANCH="gdscript_auto_formatter"
-
 # mono extensions
 export buildWithMono="${buildWithMono:-0}"
 if [ "$buildWithMono" -eq 1 ]; then
@@ -58,10 +49,30 @@ fi
 export DIR="${DIR:-"/mnt/R/Apps_Sources/GodotEngine/godot-builds"}"
 
 # The directory where the Godot Git repository will be cloned
-# various godot versions
-#export GODOT_DIR="$(dirname $DIR)/godot_(Frugs_auto_formatter)"
-#export GODOT_DIR="$(dirname $DIR)/godot_(Official)"
-export GODOT_DIR="$(dirname $DIR)/_godot"
+# and the distant git repo to pull from
+# for various godot versions
+case 2 in
+  0)
+    export GODOT_DIR="$(dirname $DIR)/_godot"
+    # GODOT Frug version : 3.2 with editor auto formatter
+    export GODOT_BRANCH="gdscript_auto_formatter"
+    export GODOT_ORIGIN="https://github.com/frugs/godot.git"
+    ;;
+  1)
+    export GODOT_DIR="$(dirname $DIR)/godot_(Frugs_auto_formatter)"
+    # GODOT Frug version : 3.2 with editor auto formatter
+    export GODOT_BRANCH="gdscript_auto_formatter"
+    export GODOT_ORIGIN="https://github.com/frugs/godot.git"
+    ;;
+  2)
+    export GODOT_DIR="$(dirname $DIR)/godot_(Official)"
+    # GODOT original
+    export GODOT_ORIGIN="https://github.com/godotengine/godot.git"
+    export GODOT_BRANCH="master"
+    ;;
+esac
+#
+# git repo to pull from
 
 # The directory where build artifacts will be copied
 # EDITOR_DIR and TEMPLATES_DIR are used by platform-specific scripts

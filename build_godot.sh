@@ -21,7 +21,7 @@ set -euo pipefail
 # ------------
 
 # if set to 1, no question will be ask and default value will be used
-export isQuiet=0
+export isQuiet=1
 # if set to 1, process will be stopped when something fails
 export stopOnFail=0
 # if set to 1, binaries size will be optimised
@@ -32,37 +32,48 @@ export defaultYN=1
 export importantYN=0
 
 # set to 1 for enabling functionnalities
-export buildLinuxEditor=1      #OK normal32 normal64 TEST Mono
-export buildLinuxTemplates=1   #OK normal32 normal64 TEST Mono
-export buildWindowsEditor=1    #OK normal32 normal64 TEST Mono
-export buildWindowsTemplates=1 #OK normal32 normal64 TEST Mono
+export buildLinuxEditor=0      # normal32:OK normal64:OK mono64 mono32_unavailable
+export buildLinuxTemplates=0   # normal32:OK normal64:OK mono64 mono32_unavailable
+export buildWindowsEditor=1    # normal32:OK normal64:OK mono:BUG
+export buildWindowsTemplates=1 # normal32:OK normal64:OK mono:BUG
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
-export buildServer=0           #OK normal32 normal64 mono_unavailable
+export buildUWPEditor=0        #TODO:TEST no mono & TEST Mono
+export buildUWPTemplates=0     #TODO:TEST no mono & TEST Mono
 
-# Mobile/Web platforms
-export buildAndroid=0 #OK noMono TEST Mono
-export buildWeb=1     #OK noMono no_mono
+# Mobile/Web/Other platforms
+export buildServer=1  # normal32:OK normal64:OK mono_unavailable
+export buildAndroid=1 # normal32:OK normal64:OK TEST Mono
+export buildWeb=0     # normal32:OK normal64:OK mono_unavailable
 export buildIos=0     #TODO
+export buildDoc=0     #TODO
 
 # Deploy
 export deploy=0 #TODO: update code after each sucessfull build process added
 
-# Build options
-
+# ------------
+# BUILD OPTIONS
+#
+# these values can be changed to change the build process
+# ------------
 # Build 32 bits version if possible
 export build32Bits=1
-# Build with mono
+
+# Build with mono  if possible
 export buildWithMono=1 #TODO
-# Web/Javascript
+
+# Web/Javascript option
 # By default, the JavaScript singleton will be built into the engine. Since eval() calls can be a security concern.
 export buildWithJavascriptSingleton=1
 
-# EMSCRIPTEN version to update:
+# EMSCRIPTEN version to update on dependencies:
 # note: if latest is chosen, an new update will nearly be dowload each time
 # export emscriptenVersion='latest'
 export emscriptenVersion='1.38.47'
 
+# ------------
+# UMOVABLE VARIABLES
+# ------------
 # `DIR` contains the directory where the script is located, regardless of where
 # it is run from. This makes it easy to run this set of build scripts from any location
 # NOTE: can not be moved in variables.sh
@@ -70,6 +81,9 @@ export DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # The directory where utility scripts are located
 export UTILITIES_DIR="$DIR/utilities"
 
+# ------------
+# START
+# ------------
 # add some functions
 source "$UTILITIES_DIR/functions.sh"
 
@@ -109,29 +123,29 @@ fi
 #-----
 
 # Linux
-[ $buildLinuxEditor -eq 1 ] && "$SCRIPTS_DIR/linux.sh"
+if [ $buildLinuxEditor -eq 1 ] || [ $buildLinuxTemplates -eq 1 ]; then "$SCRIPTS_DIR/linux.sh"; fi
 # Windows
-[ $buildWindowsEditor -eq 1 ] && "$SCRIPTS_DIR/windows.sh"
+if [ $buildWindowsEditor -eq 1 ] || [ $buildWindowsTemplates -eq 1 ]; then "$SCRIPTS_DIR/windows.sh"; fi
 # MacOS
-[ $buildMacosEditor -eq 1 ] && "$SCRIPTS_DIR/macos.sh"
+if [ $buildMacosEditor -eq 1 ] || [ $buildMacosTemplates -eq 1 ]; then "$SCRIPTS_DIR/macos.sh"; fi
+# UWP
+if [ $buildUWPEditor -eq 1 ] || [ $buildUWPTemplates -eq 1 ]; then "$SCRIPTS_DIR/uwp.sh"; fi
 
 # build Other Templates
 #-----
 # Server
-[ $buildMacosEditor -eq 1 ] && "$SCRIPTS_DIR/server.sh"
+[ $buildServer -eq 1 ] && "$SCRIPTS_DIR/server.sh"
 # Android
 [ $buildAndroid -eq 1 ] && "$SCRIPTS_DIR/android.sh"
 # Web
 [ $buildWeb -eq 1 ] && "$SCRIPTS_DIR/web.sh"
 # IOS
 [ $buildIos -eq 1 ] && "$SCRIPTS_DIR/ios.sh"
-# UWP
-[ $buildIos -eq 1 ] && "$SCRIPTS_DIR/uwp.sh"
+
+# Doc
+[ $buildDoc -eq 1 ] && "$SCRIPTS_DIR/doc.sh"
 
 # Deploy
 [ $deploy -eq 1 ] && "$SCRIPTS_DIR/deploy.sh"
-
-# Doc
-[ $deploy -eq 1 ] && "$SCRIPTS_DIR/doc.sh"
 
 echo_header "${blueOnWhite}All Operations finished.${resetColor}"

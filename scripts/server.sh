@@ -9,6 +9,11 @@
 
 set -euo pipefail
 
+if [ "$buildWithMono" -eq 1 ]; then
+  echo_info "Mono version of Server templates are not available."
+  exit 0 # if 1, built process will be stopped
+fi
+
 # Build 32 bits server template
 # -----
 if [ $build32Bits -eq 1 ]; then

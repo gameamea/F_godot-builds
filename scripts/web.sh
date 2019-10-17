@@ -15,6 +15,11 @@ else
   SINGLETON_FLAG=''
 fi
 
+if [ "$buildWithMono" -eq 1 ]; then
+  echo_info "Mono version of Web templates are not available."
+  exit 0 # if 1, built process will be stopped
+fi
+
 # Build Godot templates for Web (Javascript)
 label="Building debug export template for Web"
 echo_header "Running $label"

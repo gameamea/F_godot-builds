@@ -11,6 +11,14 @@
 set -euo pipefail
 # line just for easier comparison with linux.h
 
+if [ "$buildWithMono" -eq 1 ] && [ $isArchLike -eq 1 ]; then
+  printf "\n${redOnBlack}Due to a bug on godot cross compiling, Windows binaries with mono can not be built on linux.${resetColor}"
+  # missing files on mono install : 'mono-2.0-sgen.lib' 'monosgen-2.0.lib'
+  # more info
+  # https://github.com/godotengine/godot/issues/31793
+  exit 0
+fi
+
 # Build 32 bits editor
 # -----
 if [ $buildWindowsEditor -eq 1 ]; then
