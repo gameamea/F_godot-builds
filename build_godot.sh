@@ -32,16 +32,16 @@ export defaultYN=1
 export importantYN=0
 
 # set to 1 for enabling functionnalities
-export buildLinuxEditor=1      #OK normal32 normal64 no_mono32
-export buildLinuxTemplates=1   #OK normal32 normal64 no_mono32
-export buildWindowsEditor=1    #OK normal32 normal64 mono HS
-export buildWindowsTemplates=1 #OK normal32 normal64 mono HS
+export buildLinuxEditor=1      #OK normal32 normal64 TEST Mono
+export buildLinuxTemplates=1   #OK normal32 normal64 TEST Mono
+export buildWindowsEditor=1    #OK normal32 normal64 TEST Mono
+export buildWindowsTemplates=1 #OK normal32 normal64 TEST Mono
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
-export buildServer=1           #OK normal32 normal64 no_mono
+export buildServer=0           #OK normal32 normal64 mono_unavailable
 
 # Mobile/Web platforms
-export buildAndroid=1 #OK noMono TEST Mono
+export buildAndroid=0 #OK noMono TEST Mono
 export buildWeb=1     #OK noMono no_mono
 export buildIos=0     #TODO
 
@@ -53,7 +53,7 @@ export deploy=0 #TODO: update code after each sucessfull build process added
 # Build 32 bits version if possible
 export build32Bits=1
 # Build with mono
-export buildWithMono=0 #TODO
+export buildWithMono=1 #TODO
 # Web/Javascript
 # By default, the JavaScript singleton will be built into the engine. Since eval() calls can be a security concern.
 export buildWithJavascriptSingleton=1

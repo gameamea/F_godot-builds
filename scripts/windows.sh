@@ -19,7 +19,7 @@ set -euo pipefail
         label="Generate the glue for 32 bits editor for Windows"
         echo_header "Running $label"
         if [ $isArchLike -eq 1 ]; then
-          echo_info "${orangeOnWhite}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
+          echo_info "${blueOnWhite}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
           result=0
         else
           # Generate the glue
@@ -50,7 +50,7 @@ if [ $buildWindowsTemplates -eq 1 ]; then
   echo_header "Running $label"
   if [ $build32Bits -eq 1 ]; then
     #if [ $isWindows64 -eq 1 ]; then
-    #  echo_info "${orangeOnWhite}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
+    #  echo_info "${blueOnWhite}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
     #  result=0
     #else
     resultFile="$GODOT_DIR/bin/godot.windows.opt.debug.32${MONO_EXT}.exe"

@@ -19,7 +19,7 @@ if [ $buildLinuxEditor -eq 1 ]; then
       label="Generate the glue for 32 bits editor for Linux"
       echo_header "Running $label"
       if [ $isArchLike -eq 1 ]; then
-        echo_info "${orangeOnWhite}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
+        echo_info "${blueOnWhite}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
         result=0
       else
         # Generate the glue
@@ -50,7 +50,7 @@ if [ $buildLinuxTemplates -eq 1 ]; then
     label="Building 32 bits debug export template${MONO_EXT} for Linux"
     echo_header "Running $label"
     if [ "$buildWithMono" -eq 1 ] && [ $isArchLike -eq 1 ]; then
-      echo_info "${orangeOnWhite}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
+      echo_info "${blueOnWhite}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
       result=0
     else
       resultFile="$GODOT_DIR/bin/godot.x11.opt.debug.32${MONO_EXT}"

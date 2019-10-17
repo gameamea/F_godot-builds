@@ -32,20 +32,26 @@ else
   export MONO_EXT=''
 fi
 
-# Android tools path
-# If these 2 variables are not set, the tools will be downloaded inside the folder set in TOOLS_DIR
-export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-"/opt/android-sdk"}"
-export ANDROID_NDK_ROOT="${ANDROID_NDK_ROOT:-"/opt/android-ndk"}"
-
-# uncomment only if MINGW is not in path
-#export MINGW64_PREFIX="/path/to/x86_64-w64-mingw32-gcc"
-#export MINGW32_PREFIX="/path/to/i686-w64-mingw32-gcc"
-
 # Specify the number of CPU threads to use as the first command line argument
 # If not set, defaults to 1.5 times the number of CPU threads
 #export THREADS="${1:-"$(($(nproc) * 3 / 2))"}"
 # change to use all threads
 export THREADS=$(nproc)
+
+# SCons flags to use in all build commands
+export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
+
+# Link optimisation flag (64 bits only).
+if [ "x$optimisationOn" = "x1"]; then
+  # LINKING PROCESS TAKES MUCH MORE TIME
+  export LTO_FLAG='use_lto=yes'
+else
+  export LTO_FLAG=''
+fi
+
+# uncomment only if MINGW is not in path
+#export MINGW64_PREFIX="/path/to/x86_64-w64-mingw32-gcc"
+#export MINGW32_PREFIX="/path/to/i686-w64-mingw32-gcc"
 
 # `DIR` contains the directory where the script is located, regardless of where
 # it is run from. This makes it easy to run this set of build scripts from any location
@@ -65,17 +71,6 @@ export EDITOR_DIR="$ARTIFACTS_DIR/editor${MONO_EXT}"
 export GDVERSION=$(getGDVersion "$GODOT_DIR")
 export TEMPLATES_DIR="$HOME/.local/share/godot/templates/${GDVERSION}${MONO_EXT}"
 
-# SCons flags to use in all build commands
-export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
-
-# Link optimisation flag (64 bits only).
-if [ "x$optimisationOn" = "x1"]; then
-  # LINKING PROCESS TAKES MUCH MORE TIME
-  export LTO_FLAG='use_lto=yes'
-else
-  export LTO_FLAG=''
-fi
-
 # ------------
 # variables
 #
@@ -90,6 +85,16 @@ export RESOURCES_DIR="$DIR/resources"
 # The directory where SDKs and tools like InnoSetup are located
 export TOOLS_DIR="$DIR/tools"
 
+# The path to the mono dependencies
+export TOOLS_MONO_DIR="${TOOLS_MONO_DIR:-"$TOOLS_DIR/mono"}"
+# Some folder used by mono prefixes
+export MONO_PREFIX_LINUX="$TOOLS_MONO_DIR/linux"
+export MONO_PREFIX_WINDOWS="$TOOLS_MONO_DIR/windows"
+export MONO_PREFIX_ANDROID="$TOOLS_MONO_DIR/android/mono-installs"
+
+# The path to The mono sources for build
+export MONO_SOURCE_ROOT="/mnt/R/Apps_Sources/mono"
+
 # Set the environment variables used in build naming
 
 # Path to the Xcode DMG image
@@ -98,18 +103,19 @@ export XCODE_DMG="$DIR/Xcode_7.3.1.dmg"
 # The path to the OSXCross installation
 export OSXCROSS_ROOT="$TOOLS_DIR/osxcross"
 
-# The paths to the Android SDK and NDK, only overridden if the user does not already have these variables set
-export ANDROID_HOME="${ANDROID_HOME:-"$TOOLS_DIR/android"}"
-export ANDROID_NDK_ROOT="${ANDROID_NDK_ROOT:-"$TOOLS_DIR/android/ndk-bundle"}"
+# The paths to the Android SDK and NDK
+# only overridden if the user does not already have these variables set
+# If these 2 variables are not set, the tools will be downloaded inside the folder set in TOOLS_DIR
+export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-"/opt/android-sdk"}"
+export ANDROID_NDK_ROOT="${ANDROID_NDK_ROOT:-"/opt/android-ndk"}"
+export ANDROID_HOME="$ANDROID_SDK_ROOT"
+[ ! -r "$ANDROID_HOME" ] && export ANDROID_HOME="${ANDROID_HOME:-"$TOOLS_DIR/android"}"
 
 # The path to the Inno Setup compiler (ISCC.exe)
 export ISCC="$TOOLS_DIR/innosetup/ISCC.exe"
 
-# The path to the mono dependencies
-export TOOLS_MONO_DIR="$TOOLS_DIR/mono"
-
-# The path to The mono sources for build
-export MONO_SOURCE_ROOT="/mnt/R/Apps_Sources/mono"
+# The path to emscripten
+export EMSCRIPTEN_ROOT="/usr/lib/emscripten"
 
 # Commit date (not the system date!)
 export BUILD_DATE="$(git show -s --format=%cd --date=short)"
