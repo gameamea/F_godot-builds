@@ -32,8 +32,8 @@ export defaultYN=1
 export importantYN=0
 
 # set to 1 for enabling functionnalities
-export buildLinuxEditor=0      # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildLinuxTemplates=0   # normal32:OK normal64:OK mono64:OK mono32:unavailable
+export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:unavailable
+export buildLinuxTemplates=1   # normal32:OK normal64:OK mono64:OK mono32:unavailable
 export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
 export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
@@ -43,14 +43,13 @@ export buildUWPTemplates=0     #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web/Other platforms
 export buildServer=0  # normal32:OK normal64:OK mono:unavailable
-export buildServer=0  # normal32:OK normal64:OK mono:unavailable
-export buildAndroid=1 # normal32:OK normal64:OK mono:BUG JS (Cannot create service of type PayloadSerializer )
+export buildAndroid=0 # normal32:OK normal64:OK mono:BUG JS (Cannot create service of type PayloadSerializer )
 export buildWeb=0     # normal32:OK normal64:OK mono:unavailable
 export buildIos=0     #TODO
 export buildDoc=0     #TODO
 
 # Deploy
-export deploy=0 #TODO: update code after each sucessfull build process added
+export deploy=1 #TODO: update code after each sucessfull build process added
 
 # ------------
 # BUILD OPTIONS
@@ -58,10 +57,10 @@ export deploy=0 #TODO: update code after each sucessfull build process added
 # these values can be changed to change the build process
 # ------------
 # Build 32 bits version if possible
-export build32Bits=1
+export build32Bits=0
 
-# Build with mono  if possible
-export buildWithMono=0 #TODO
+# Build with mono if possible
+export buildWithMono=1
 
 # Web/Javascript option
 # By default, the JavaScript singleton will be built into the engine. Since eval() calls can be a security concern.
@@ -82,19 +81,43 @@ export DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # The directory where utility scripts are located
 export UTILITIES_DIR="$DIR/utilities"
 
-# ------------
-# START
-# ------------
 # add some functions
 source "$UTILITIES_DIR/functions.sh"
 
 # init variables and settings
 source "$UTILITIES_DIR/variables.sh"
 
+# Deploy
+export deploy=1 #TODO: update code after each sucessfull build process added
+
+# ------------
+# BUILD OPTIONS
+#
+# these values can be changed to change the build process
+# ------------
+# Build 32 bits version if possible
+export build32Bits=1
+
+# Build with mono  if possible
+export buildWithMono=0 #TODO
+
+# Web/Javascript option
+# By default, the JavaScript singleton will be built into the engine. Since eval() calls can be a security concern.
+export buildWithJavascriptSingleton=1
+
+export deployLogOK="$DIR/deploy_OK_$(date +%Y-%m-%d).log"
+export deployLogHS="$DIR/deploy_HS_$(date +%Y-%m-%d).log"
+
+# ------------
+# START
+# ------------
+# init logs
+initLog $deployLogHS
+initLog $deployLogOK
+
 mkdir -p "$EDITOR_DIR" "$TEMPLATES_DIR"
 
 echo_header "${greenOnWhite}GODOT ENGINE BUILD SCRIPT"
-
 echo_info "${blueOnWhite}Source folder: $GODOT_DIR"
 
 cd "$GODOT_DIR"
@@ -120,8 +143,8 @@ else
   fi
 fi
 
-# quick build test
-if true; then
+# exeemple of a quick build for testing purpose
+if false; then
   scons platform=android target=release android_arch=armv7
   scons platform=android target=release android_arch=arm64v8
   cd platform/android/java

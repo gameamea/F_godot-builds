@@ -72,8 +72,6 @@ case 0 in
     export GODOT_BRANCH="master"
     ;;
 esac
-#
-# git repo to pull from
 
 # The directory where build artifacts will be copied
 # EDITOR_DIR and TEMPLATES_DIR are used by platform-specific scripts
@@ -141,6 +139,12 @@ export BUILD_DATE="$(git show -s --format=%cd --date=short)"
 export BUILD_COMMIT="$(git rev-parse --short=9 HEAD)"
 # The final version string
 export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
+
+# deploy log : store the files that were missing on deloy/copy
+# the file is stored in the script folder
+export deployDate=$(date +%Y-%m-%d)
+export deployLogOK="./deploy_OK_$deployDate.log"
+export deployLogHS="./deploy_HS_$deployDate.log"
 
 # used by some functions as return result
 export result=1

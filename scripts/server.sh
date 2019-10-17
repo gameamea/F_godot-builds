@@ -19,7 +19,7 @@ fi
 if [ $build32Bits -eq 1 ]; then
   label="Building 32 bits SERVER release export template"
   echo_header "Running $label"
-  resultFile="$TEMPLATES_DIR/linux_server_32"
+  resultFile="$GODOT_DIR/bin/godot_server.server.opt.debug.32"
   rm -f $resultFile
   cmdScons platform=server bits=32 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
   cmdUpxStrip $resultFile
@@ -31,7 +31,7 @@ fi
 # -----
 label="Building 64 bits SERVER release export template"
 echo_header "Running $label"
-resultFile="$TEMPLATES_DIR/linux_server_64"
+resultFile="$GODOT_DIR/bin/godot_server.server.opt.debug.64"
 rm -f $resultFile
 cmdScons platform=server bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
 cmdUpxStrip $resultFile

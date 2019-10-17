@@ -8,9 +8,56 @@
 #------
 
 # #
+# # init a log file by adding an header
+function initLog() {
+  if [ -z $1 ]; then exit; fi
+  rm -f $1
+  touch $1
+  content="--------------\n"
+  content="${content}GODOT BUILD SCRIPT\n"
+  content="${content}---------------\n"
+  content="${content}Date: $deployDate\n"
+  content="${content}GODOT_DIR: $GODOT_DIR\n"
+  content="${content}GODOT_BRANCH: $GODOT_BRANCH\n"
+  content="${content}GODOT_ORIGIN: $GODOT_ORIGIN\n"
+  content="${content}MONO_SOURCE_ROOT: $MONO_SOURCE_ROOT\n"
+  content="${content}BUILD_VERSION:$BUILD_VERSION\n"
+  content="${content}\n"
+  content="${content}buildLinuxEditor: $buildLinuxEditor\n"
+  content="${content}buildLinuxTemplates: $buildLinuxTemplates\n"
+  content="${content}buildWindowsEditor: $buildWindowsEditor\n"
+  content="${content}buildWindowsTemplates: $buildWindowsTemplates\n"
+  content="${content}buildMacosEditor: $buildMacosEditor\n"
+  content="${content}buildMacosTemplates: $buildMacosTemplates\n"
+  content="${content}buildUWPEditor: $buildUWPEditor\n"
+  content="${content}buildUWPTemplates: $buildUWPTemplates\n"
+  content="${content}buildServer: $buildServer\n"
+  content="${content}buildAndroid: $buildAndroid\n"
+  content="${content}buildWeb: $buildWeb\n"
+  content="${content}buildIos: $buildIos\n"
+  content="${content}buildDoc: $buildDoc\n"
+  content="${content}\n"
+  content="${content}build32Bits: $build32Bits\n"
+  content="${content}buildWithMono: $buildWithMono\n"
+  content="${content}buildWithJavascriptSingleton: $buildWithJavascriptSingleton\n"
+  content="${content}deploy: $deploy\n"
+  content="${content}\n"
+  content="${content}isQuiet: $isQuiet\n"
+  content="${content}stopOnFail: $stopOnFail\n"
+  content="${content}optimisationOn: $optimisationOn\n"
+  content="${content}---------------\n\n"
+  echo -e "$content" >> $1
+}
+export -f initLog
+
+# #
 # # Output an underlined line in standard output
 echo_header() {
   echo -e "\n-------\n${blackOnOrange}$1${resetColor}\n-------\n"
+  zeDate=$(date +%Y-%m-%d:%H:%I:%S)
+
+  echo "***** $zeDate:: $1 *****" >> $deployLogOK
+  echo "***** $zeDate:: $1 *****" >> $deployLogHS
 }
 export -f echo_header
 
@@ -32,7 +79,7 @@ export -f echo_info
 # # Output a error message
 echo_warning() {
   echo -e "\n${orangeOnBlack}$1${resetColor}\n"
-  [ $stopOnFail -eq 1 ] && exit 1
+  if [ $stopOnFail -eq 1 ]; then exit 1; fi
 }
 export -f echo_warning
 
@@ -40,18 +87,23 @@ export -f echo_warning
 # # Output a error message
 echo_error() {
   echo -e "\n${redOnBlack}$1${resetColor}\n"
-  [ $stopOnFail -eq 1 ] && exit 1
+  if [ $stopOnFail -eq 1 ]; then exit 1; fi
 }
 export -f echo_error
 
 # #
 # # Use cp command, but checks if source exists and deletes target before
+# # add file to app log
 function cpcheck() {
   if [ -r $1 ]; then
+    echo $1 >> $deployLogOK
     cp --remove-destination $*
     result=1
+    echo_info "Copying $1 ...PASSED"
   else
+    echo $1 >> $deployLogHS
     result=0
+    echo_info "Copying $1 ...FAILED"
   fi
 }
 export -f cpcheck
