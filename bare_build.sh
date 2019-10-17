@@ -50,7 +50,7 @@ export TOOLS_DIR="${TOOLS_DIR:-"$DIR/tools"}"
 export TOOLS_MONO_DIR="${TOOLS_MONO_DIR:-"$TOOLS_DIR/mono"}"
 export MONO_PREFIX_LINUX="$TOOLS_MONO_DIR/linux"
 export MONO_PREFIX_WINDOWS="$TOOLS_MONO_DIR/windows"
-export MONO_PREFIX_ANDROID="$TOOLS_MONO_DIR/android/mono-installs"
+export MONO_PREFIX_ANDROID="$TOOLS_MONO_DIR/android"
 
 export EMSCRIPTEN_ROOT="/usr/lib/emscripten"
 

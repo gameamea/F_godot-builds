@@ -33,7 +33,7 @@ export THREADS=$(nproc)
 export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
 
 # Link optimisation flag
-if [ "x$optimisationOn" = "x1"]; then
+if [ $optimisationOn -eq 1 ]; then
   # LINKING PROCESS TAKES MUCH MORE TIME
   export LTO_FLAG="use_lto=yes"
 else
@@ -51,22 +51,23 @@ export DIR="${DIR:-"/mnt/R/Apps_Sources/GodotEngine/godot-builds"}"
 # The directory where the Godot Git repository will be cloned
 # and the distant git repo to pull from
 # for various godot versions
-case 2 in
+case 0 in
   0)
+    # system dependant/config independant) version (the symlink can be changed on différent PC)
     export GODOT_DIR="$(dirname $DIR)/_godot"
     # GODOT Frug version : 3.2 with editor auto formatter
     export GODOT_BRANCH="gdscript_auto_formatter"
     export GODOT_ORIGIN="https://github.com/frugs/godot.git"
     ;;
   1)
-    export GODOT_DIR="$(dirname $DIR)/godot_(Frugs_auto_formatter)"
     # GODOT Frug version : 3.2 with editor auto formatter
+    export GODOT_DIR="$(dirname $DIR)/godot_(Frugs_auto_formatter)"
     export GODOT_BRANCH="gdscript_auto_formatter"
     export GODOT_ORIGIN="https://github.com/frugs/godot.git"
     ;;
   2)
-    export GODOT_DIR="$(dirname $DIR)/godot_(Official)"
     # GODOT original
+    export GODOT_DIR="$(dirname $DIR)/godot_(Official)"
     export GODOT_ORIGIN="https://github.com/godotengine/godot.git"
     export GODOT_BRANCH="master"
     ;;
@@ -102,7 +103,7 @@ export TOOLS_MONO_DIR="${TOOLS_MONO_DIR:-"$TOOLS_DIR/mono"}"
 if [ "$buildWithMono" -eq 1 ]; then
   export MONO_PREFIX_LINUX=" mono_prefix=$TOOLS_MONO_DIR/linux"
   export MONO_PREFIX_WINDOWS=" mono_prefix=$TOOLS_MONO_DIR/windows"
-  export MONO_PREFIX_ANDROID=" mono_prefix=$TOOLS_MONO_DIR/android/mono-installs"
+  export MONO_PREFIX_ANDROID=" mono_prefix=$TOOLS_MONO_DIR/android"
 else
   export MONO_PREFIX_LINUX=""
   export MONO_PREFIX_WINDOWS=""

@@ -49,7 +49,7 @@ export TOOLS_DIR="${TOOLS_DIR:-"$DIR/tools"}"
 export TOOLS_MONO_DIR="${TOOLS_MONO_DIR:-"$TOOLS_DIR/mono"}"
 export MONO_PREFIX_LINUX="$TOOLS_MONO_DIR/linux"
 export MONO_PREFIX_WINDOWS="$TOOLS_MONO_DIR/windows"
-export MONO_PREFIX_ANDROID="$TOOLS_MONO_DIR/android/mono-installs"
+export MONO_PREFIX_ANDROID="$TOOLS_MONO_DIR/android"
 
 export EMSCRIPTEN_ROOT="/usr/lib/emscripten"
 
@@ -213,15 +213,15 @@ fi
 yesNoS "Building MONO Android Template" $defaultYN # ÉCHEC - Pb compil gradlew build
 #Cannot create service of type PayloadSerializer using ToolingBuildSessionScopeServices.createPayloadSerializer() as there is a problem with parameter #2 of type PayloadClassLoaderFactory.
 if [ $result -eq 1 ]; then
-  cmdScons platform=android target=release_debug android_arch=x86_64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-x86_64-debug
-  cmdScons platform=android target=release_debug android_arch=x86 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-x86-debug
-  cmdScons platform=android target=release_debug android_arch=armv7 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-armeabi-v7a-debug
-  cmdScons platform=android target=release_debug android_arch=arm64v8 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-arm64-v8a-debug
+  cmdScons platform=android target=release_debug android_arch=x86_64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/mono-installs/android-x86_64-debug
+  cmdScons platform=android target=release_debug android_arch=x86 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/mono-installs/android-x86-debug
+  cmdScons platform=android target=release_debug android_arch=armv7 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/mono-installs/android-armeabi-v7a-debug
+  cmdScons platform=android target=release_debug android_arch=arm64v8 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/mono-installs/android-arm64-v8a-debug
 
-  cmdScons platform=android target=release android_arch=x86_64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-x86_64-release
-  cmdScons platform=android target=release android_arch=x86 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-x86-release
-  cmdScons platform=android target=release android_arch=armv7 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-armeabi-v7a-release
-  cmdScons platform=android target=release android_arch=arm64v8 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-arm64-v8a-release
+  cmdScons platform=android target=release android_arch=x86_64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/mono-installs/android-x86_64-release
+  cmdScons platform=android target=release android_arch=x86 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/mono-installs/android-x86-release
+  cmdScons platform=android target=release android_arch=armv7 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/mono-installs/android-armeabi-v7a-release
+  cmdScons platform=android target=release android_arch=arm64v8 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/mono-installs/android-arm64-v8a-release
   cd "platform/android/java"
   ./gradlew build
   cd "../../.."

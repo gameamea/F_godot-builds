@@ -32,19 +32,20 @@ export defaultYN=1
 export importantYN=0
 
 # set to 1 for enabling functionnalities
-export buildLinuxEditor=0      # normal32:OK normal64:OK mono64 mono32_unavailable
-export buildLinuxTemplates=0   # normal32:OK normal64:OK mono64 mono32_unavailable
-export buildWindowsEditor=1    # normal32:OK normal64:OK mono:BUG
-export buildWindowsTemplates=1 # normal32:OK normal64:OK mono:BUG
+export buildLinuxEditor=0      # normal32:OK normal64:OK mono64:OK mono32:unavailable
+export buildLinuxTemplates=0   # normal32:OK normal64:OK mono64:OK mono32:unavailable
+export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
+export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 export buildUWPEditor=0        #TODO:TEST no mono & TEST Mono
 export buildUWPTemplates=0     #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web/Other platforms
-export buildServer=1  # normal32:OK normal64:OK mono_unavailable
-export buildAndroid=1 # normal32:OK normal64:OK TEST Mono
-export buildWeb=0     # normal32:OK normal64:OK mono_unavailable
+export buildServer=0  # normal32:OK normal64:OK mono:unavailable
+export buildServer=0  # normal32:OK normal64:OK mono:unavailable
+export buildAndroid=1 # normal32:OK normal64:OK mono:BUG JS (Cannot create service of type PayloadSerializer )
+export buildWeb=0     # normal32:OK normal64:OK mono:unavailable
 export buildIos=0     #TODO
 export buildDoc=0     #TODO
 
@@ -60,7 +61,7 @@ export deploy=0 #TODO: update code after each sucessfull build process added
 export build32Bits=1
 
 # Build with mono  if possible
-export buildWithMono=1 #TODO
+export buildWithMono=0 #TODO
 
 # Web/Javascript option
 # By default, the JavaScript singleton will be built into the engine. Since eval() calls can be a security concern.
@@ -117,6 +118,16 @@ else
     git checkout $GODOT_BRANCH
     git pull origin
   fi
+fi
+
+# quick build test
+if true; then
+  scons platform=android target=release android_arch=armv7
+  scons platform=android target=release android_arch=arm64v8
+  cd platform/android/java
+  rm -Rf "$GODOT_DIR/platform/android/java/build/"
+  ./gradlew build
+  exit
 fi
 
 # build Desktop Editor & Templates

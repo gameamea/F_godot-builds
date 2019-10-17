@@ -9,6 +9,7 @@
 #------
 
 set -euo pipefail
+noBuild=0
 # line just for easier comparison with linux.h
 
 if [ "$buildWithMono" -eq 1 ] && [ $isArchLike -eq 1 ]; then
