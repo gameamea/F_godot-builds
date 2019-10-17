@@ -32,8 +32,8 @@ export defaultYN=1
 export importantYN=0
 
 # set to 1 for enabling functionnalities
-export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildLinuxTemplates=1   # normal32:OK normal64:OK mono64:OK mono32:unavailable
+export buildLinuxEditor=0      # normal32:OK normal64:OK mono64:OK mono32:unavailable
+export buildLinuxTemplates=0   # normal32:OK normal64:OK mono64:OK mono32:unavailable
 export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
 export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono

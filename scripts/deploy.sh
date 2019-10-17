@@ -27,6 +27,8 @@ if [ $buildWithMono -eq 1 ]; then
   ### Copy Mono Linux Editor Data Folder
   ### check if GodotSharp is identical with 32 ou 64 bit built
   cpcheck "$GODOT_DIR/bin/GodotSharp" "$EDITOR_DIR" -r
+  # change name to match godot standard
+  [ -r "$EDITOR_DIR/godot_32${MONO_EXT}" ] && mv "$EDITOR_DIR/godot_32${MONO_EXT}" "$EDITOR_DIR/godot_32-mono"
 fi
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
 ### Copy Linux 32 bit export templates
@@ -49,6 +51,8 @@ if [ $buildWithMono -eq 1 ]; then
   ### Copy Mono Linux Editor Data Folder
   ### check if GodotSharp is identical with 32 ou 64 bit built
   cpcheck "$GODOT_DIR/bin/GodotSharp" "$EDITOR_DIR" -r
+  # change name to match godot standard
+  [ -r "$EDITOR_DIR/godot${MONO_EXT}" ] && mv "$EDITOR_DIR/godot${MONO_EXT}" "$EDITOR_DIR/godot-mono"
 fi
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
 ### Copy Linux 64 bit export templates
@@ -93,8 +97,8 @@ if [ $result -eq 1 ]; then
   if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
 fi
 ### Remove temporary directories
-rm -R "$EDITOR_DIR/x86"
-rm -R "$EDITOR_DIR/Output"
+rm -Rf "$EDITOR_DIR/x86"
+rm -Rf "$EDITOR_DIR/Output"
 
 ### Copy Windows 32 bit export templates
 label="Windows 32 bit templates"
@@ -135,8 +139,8 @@ if [ $result -eq 1 ]; then
   if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
 fi
 ### Remove temporary directories
-rm -R "$EDITOR_DIR/x86_64"
-rm -R "$EDITOR_DIR/Output"
+rm -Rf "$EDITOR_DIR/x86_64"
+rm -Rf "$EDITOR_DIR/Output"
 
 ### Copy Windows 64 bit export templates
 label="Windows 64 bit templates"
