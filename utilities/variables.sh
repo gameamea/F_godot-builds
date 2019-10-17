@@ -25,11 +25,11 @@ GODOT_BRANCH="gdscript_auto_formatter"
 # mono extensions
 export buildWithMono="${buildWithMono:-0}"
 if [ "$buildWithMono" -eq 1 ]; then
-  export MONO_FLAG='module_mono_enabled=yes'
-  export MONO_EXT='.mono'
+  export MONO_FLAG=" module_mono_enabled=yes"
+  export MONO_EXT=".mono"
 else
-  export MONO_FLAG=''
-  export MONO_EXT=''
+  export MONO_FLAG=""
+  export MONO_EXT=""
 fi
 
 # Specify the number of CPU threads to use as the first command line argument
@@ -41,12 +41,12 @@ export THREADS=$(nproc)
 # SCons flags to use in all build commands
 export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
 
-# Link optimisation flag (64 bits only).
+# Link optimisation flag
 if [ "x$optimisationOn" = "x1"]; then
   # LINKING PROCESS TAKES MUCH MORE TIME
-  export LTO_FLAG='use_lto=yes'
+  export LTO_FLAG="use_lto=yes"
 else
-  export LTO_FLAG=''
+  export LTO_FLAG=""
 fi
 
 # uncomment only if MINGW is not in path
@@ -88,9 +88,15 @@ export TOOLS_DIR="$DIR/tools"
 # The path to the mono dependencies
 export TOOLS_MONO_DIR="${TOOLS_MONO_DIR:-"$TOOLS_DIR/mono"}"
 # Some folder used by mono prefixes
-export MONO_PREFIX_LINUX="$TOOLS_MONO_DIR/linux"
-export MONO_PREFIX_WINDOWS="$TOOLS_MONO_DIR/windows"
-export MONO_PREFIX_ANDROID="$TOOLS_MONO_DIR/android/mono-installs"
+if [ "$buildWithMono" -eq 1 ]; then
+  export MONO_PREFIX_LINUX=" mono_prefix=$TOOLS_MONO_DIR/linux"
+  export MONO_PREFIX_WINDOWS=" mono_prefix=$TOOLS_MONO_DIR/windows"
+  export MONO_PREFIX_ANDROID=" mono_prefix=$TOOLS_MONO_DIR/android/mono-installs"
+else
+  export MONO_PREFIX_LINUX=""
+  export MONO_PREFIX_WINDOWS=""
+  export MONO_PREFIX_ANDROID=""
+fi
 
 # The path to The mono sources for build
 export MONO_SOURCE_ROOT="/mnt/R/Apps_Sources/mono"

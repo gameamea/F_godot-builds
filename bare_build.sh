@@ -26,12 +26,12 @@ export THREADS=$(nproc)
 # SCons flags to use in all build commands
 export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
 
-# Link optimisation flag (64 bits only).
+# Link optimisation flag
 if [ "x$optimisationOn" = "x1"]; then
   # LINKING PROCESS TAKES MUCH MORE TIME
-  export LTO_FLAG='use_lto=yes'
+  export LTO_FLAG="use_lto=yes"
 else
-  export LTO_FLAG=''
+  export LTO_FLAG=""
 fi
 
 export DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

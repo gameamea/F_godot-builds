@@ -26,12 +26,12 @@ export THREADS=$(nproc)
 # SCons flags to use in all build commands
 export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
 
-# Link optimisation flag (64 bits only).
+# Link optimisation flag
 if [ "x$optimisationOn" = "x1"]; then
   # LINKING PROCESS TAKES MUCH MORE TIME
-  export LTO_FLAG='use_lto=yes'
+  export LTO_FLAG="use_lto=yes"
 else
-  export LTO_FLAG=''
+  export LTO_FLAG=""
 fi
 
 export DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -45,7 +45,6 @@ export ARTIFACTS_DIR="${ARTIFACTS_DIR:-"$DIR/artifacts"}"
 export EDITOR_DIR="$ARTIFACTS_DIR/editor.mono"
 export TEMPLATES_DIR="$ARTIFACTS_DIR/templates.mono"
 export TOOLS_DIR="${TOOLS_DIR:-"$DIR/tools"}"
-
 
 export TOOLS_MONO_DIR="${TOOLS_MONO_DIR:-"$TOOLS_DIR/mono"}"
 export MONO_PREFIX_LINUX="$TOOLS_MONO_DIR/linux"
@@ -136,23 +135,23 @@ echo "NOT AVAILABLE:Building MONO Linux 32 bits templates"
 yesNoS "Building MONO Linux 64 Editor" $defaultYN #TEST OK
 if [ $result -eq 1 ]; then
   # Build temporary binary
-  cmdScons platform=x11 tools=yes target=release_debug bits=64 mono_glue=no copy_mono_root=yes $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_LINUX
+  cmdScons platform=x11 tools=yes target=release_debug bits=64 mono_glue=no copy_mono_root=yes $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   # Generate glue sources
   bin\godot.x11.opt.tools.32.mono --generate-mono-glue modules/mono/mono-installs/glue
   # Build binaries normally
-  cmdScons platform=x11 tools=yes target=release_debug bits=64 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_LINUX
+  cmdScons platform=x11 tools=yes target=release_debug bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   cp bin/godot.x11.opt.tools.64.mono $EDITOR_DIR/godot_x11.64.mono
   cmdUpxStrip $EDITOR_DIR/godot_x11.64.mono # may fails on some linux distros
   # MONO DATA Folder: GodotSharp
 fi
 yesNoS "Building MONO Linux 64 Release and Debug Template" $defaultYN #TEST OK
 if [ $result -eq 1 ]; then
-  cmdScons platform=x11 target=release_debug tools=no bits=64 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_LINUX
+  cmdScons platform=x11 target=release_debug tools=no bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   cp bin/godot.x11.opt.debug.64.mono $TEMPLATES_DIR/linux_x11_64_debug.mono
   cmdUpxStrip $TEMPLATES_DIR/linux_x11_64_debug.mono
   # MONO DATA Folder: data.mono.x11.64.debug
 
-  cmdScons platform=x11 target=release tools=no bits=64 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_LINUX
+  cmdScons platform=x11 target=release tools=no bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   cp bin/godot.x11.opt.64.mono $TEMPLATES_DIR/linux_x11_64_release.mono
   cmdUpxStrip $TEMPLATES_DIR/linux_x11_64_release.mono
   # MONO DATA Folder: data.mono.x11.64.release
@@ -181,7 +180,7 @@ echo "NOT AVAILABLE:Building MONO Windows 32 bits templates"
 yesNoS "Building MONO Windows 64 Editor" $defaultYN # ECHEC : erreur de build
 # RuntimeError: Could not find mono library in: /mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/windows/lib:
 if [ $result -eq 1 ]; then
-  cmdScons platform=windows tools=yes target=release_debug bits=64 copy_mono_root=yes $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_WINDOWS
+  cmdScons platform=windows tools=yes target=release_debug bits=64 copy_mono_root=yes $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_WINDOWS
   cp bin/godot.windows.opt.tools.64.mono.exe $EDITOR_DIR/godot_win64.mono.exe
   x86_64-w64-mingw32-strip $EDITOR_DIR/godot_win64.mono.mono.exe
   cmdUpxStrip $EDITOR_DIR/godot_win64.mono.exe
@@ -190,11 +189,11 @@ yesNoS "Building MONO Windows 64 Release and Debug Template" $defaultYN
 # ECHEC : erreur de build
 # RuntimeError: Could not find mono library in: /mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/windows/lib:
 if [ $result -eq 1 ]; then
-  cmdScons platform=windows target=release_debug tools=no bits=64 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_WINDOWS
+  cmdScons platform=windows target=release_debug tools=no bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_WINDOWS
   cp bin/godot.windows.opt.debug.64.mono.exe $TEMPLATES_DIR/windows_64_debug.mono.exe
   x86_64-w64-mingw32-strip $TEMPLATES_DIR/windows_64_debug.mono.exe
 
-  cmdScons platform=windows target=release tools=no bits=64 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_WINDOWS
+  cmdScons platform=windows target=release tools=no bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_WINDOWS
   cp bin/godot.windows.opt.64.mono.exe $TEMPLATES_DIR/windows_64_release.mono.exe
   x86_64-w64-mingw32-strip $TEMPLATES_DIR/windows_64_release.mono.exe
 fi
@@ -202,11 +201,11 @@ fi
 yesNoS "Building MONO Linux Server for 32 and 64 bits" $defaultYN # ECHEC: erreur de build
 # AssertionError:
 if [ $result -eq 1 ]; then
-  cmdScons platform=server target=release_debug tools=no bits=32 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_LINUX
+  cmdScons platform=server target=release_debug tools=no bits=32 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   cp bin/godot_server.x11.opt.debug.32 $TEMPLATES_DIR/linux_server_32
   cmdUpxStrip $TEMPLATES_DIR/linux_server_32
 
-  cmdScons platform=server target=release_debug tools=no bits=64 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_LINUX
+  cmdScons platform=server target=release_debug tools=no bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   cp bin/godot_server.x11.opt.debug.64 $TEMPLATES_DIR/linux_server_64
   cmdUpxStrip $TEMPLATES_DIR/linux_server_64
 fi
@@ -214,15 +213,15 @@ fi
 yesNoS "Building MONO Android Template" $defaultYN # ÉCHEC - Pb compil gradlew build
 #Cannot create service of type PayloadSerializer using ToolingBuildSessionScopeServices.createPayloadSerializer() as there is a problem with parameter #2 of type PayloadClassLoaderFactory.
 if [ $result -eq 1 ]; then
-  cmdScons platform=android target=release_debug android_arch=x86_64 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_ANDROID/android-x86_64-release
-  cmdScons platform=android target=release_debug android_arch=x86 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_ANDROID/android-x86-release
-  cmdScons platform=android target=release_debug android_arch=armv7 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_ANDROID/android-armeabi-v7a-debug
-  cmdScons platform=android target=release_debug android_arch=arm64v8 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_ANDROID/android-arm64-v8a-debug
+  cmdScons platform=android target=release_debug android_arch=x86_64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-x86_64-debug
+  cmdScons platform=android target=release_debug android_arch=x86 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-x86-debug
+  cmdScons platform=android target=release_debug android_arch=armv7 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-armeabi-v7a-debug
+  cmdScons platform=android target=release_debug android_arch=arm64v8 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-arm64-v8a-debug
 
-  cmdScons platform=android target=release android_arch=x86_64 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_ANDROID/android-x86_64-debug
-  cmdScons platform=android target=release android_arch=x86 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_ANDROID/android-x86-debug
-  cmdScons platform=android target=release android_arch=armv7 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_ANDROID/android-armeabi-v7a-release
-  cmdScons platform=android target=release android_arch=arm64v8 $LTO_FLAG $SCONS_FLAGS mono_prefix=$MONO_PREFIX_ANDROID/android-arm64-v8a-release
+  cmdScons platform=android target=release android_arch=x86_64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-x86_64-release
+  cmdScons platform=android target=release android_arch=x86 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-x86-release
+  cmdScons platform=android target=release android_arch=armv7 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-armeabi-v7a-release
+  cmdScons platform=android target=release android_arch=arm64v8 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_ANDROID/android-arm64-v8a-release
   cd "platform/android/java"
   ./gradlew build
   cd "../../.."

@@ -80,7 +80,7 @@ mkdir -p "$EDITOR_DIR" "$TEMPLATES_DIR"
 
 echo_header "${greenOnWhite}GODOT ENGINE BUILD SCRIPT"
 
-echo_info "${orangeOnWhite}Source folder: $GODOT_DIR"
+echo_info "${blueOnWhite}Source folder: $GODOT_DIR"
 
 cd "$GODOT_DIR"
 
@@ -114,18 +114,18 @@ fi
 [ $buildWindowsEditor -eq 1 ] && "$SCRIPTS_DIR/windows.sh"
 # MacOS
 [ $buildMacosEditor -eq 1 ] && "$SCRIPTS_DIR/macos.sh"
-# Server
-[ $buildMacosEditor -eq 1 ] && "$SCRIPTS_DIR/server.sh"
 
 # build Other Templates
 #-----
+# Server
+[ $buildMacosEditor -eq 1 ] && "$SCRIPTS_DIR/server.sh"
 # Android
 [ $buildAndroid -eq 1 ] && "$SCRIPTS_DIR/android.sh"
 # Web
 [ $buildWeb -eq 1 ] && "$SCRIPTS_DIR/web.sh"
 # IOS
 [ $buildIos -eq 1 ] && "$SCRIPTS_DIR/ios.sh"
-# UWM
+# UWP
 [ $buildIos -eq 1 ] && "$SCRIPTS_DIR/uwp.sh"
 
 # Deploy

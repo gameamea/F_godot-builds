@@ -19,27 +19,29 @@ if [ $buildLinuxEditor -eq 1 ]; then
       label="Generate the glue for 32 bits editor for Linux"
       echo_header "Running $label"
       if [ $isArchLike -eq 1 ]; then
-        echo_info "${blueOnWhite}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
-        result=0
+        printf "${orangeOnBlack}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
+        noBuild=1
       else
         # Generate the glue
-        cmdScons platform=x11 bits=32 tools=yes target=release_debug mono_glue=no $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+        cmdScons platform=x11 bits=32 tools=yes target=release_debug mono_glue=no $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_LINUX
         "$GODOT_DIR/bin/godot.x11.opt.tools.32.mono" --generate-mono-glue "$GODOT_DIR/modules/mono/glue"
         if [ $? -eq 0 ]; then result=1; else result=0; fi
         if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
         rm "$GODOT_DIR/bin/godot.x11.opt.tools.32.mono"
       fi
     fi
-    # Build the editor
-    label="Building 32 bits editor${MONO_EXT} for Linux"
-    echo_header "Running $label"
-    resultFile="$GODOT_DIR/bin/godot.x11.opt.tools.32${MONO_EXT}"
-    rm -f $resultFile
-    cmdScons platform=x11 bits=32 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
-    # Remove symbols and sections from files
-    cmdUpxStrip $resultFile
-    if [ $? -eq 0 ]; then result=1; else result=0; fi
-    if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+    if [ ! "x$noBuild"="x1" ]; then
+      # Build the editor
+      label="Building 32 bits editor${MONO_EXT} for Linux"
+      echo_header "Running $label"
+      resultFile="$GODOT_DIR/bin/godot.x11.opt.tools.32${MONO_EXT}"
+      rm -f $resultFile
+      cmdScons platform=x11 bits=32 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_LINUX
+      # Remove symbols and sections from files
+      cmdUpxStrip $resultFile
+      if [ $? -eq 0 ]; then result=1; else result=0; fi
+      if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+    fi
   fi
 fi
 
@@ -50,12 +52,11 @@ if [ $buildLinuxTemplates -eq 1 ]; then
     label="Building 32 bits debug export template${MONO_EXT} for Linux"
     echo_header "Running $label"
     if [ "$buildWithMono" -eq 1 ] && [ $isArchLike -eq 1 ]; then
-      echo_info "${blueOnWhite}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
-      result=0
+      printf "${orangeOnBlack}32 bit version of mono is not available on this platform. Can not Built${resetColor}"
     else
       resultFile="$GODOT_DIR/bin/godot.x11.opt.debug.32${MONO_EXT}"
       rm -f $resultFile
-      cmdScons platform=x11 bits=32 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+      cmdScons platform=x11 bits=32 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_LINUX
       # Remove symbols and sections from files
       cmdUpxStrip $resultFile
       if [ $? -eq 0 ]; then result=1; else result=0; fi
@@ -65,7 +66,7 @@ if [ $buildLinuxTemplates -eq 1 ]; then
       echo_header "Running $label"
       resultFile="$GODOT_DIR/bin/godot.x11.opt.32${MONO_EXT}"
       rm -f $resultFile
-      cmdScons platform=x11 bits=32 tools=no target=release $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+      cmdScons platform=x11 bits=32 tools=no target=release $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_LINUX
       # Remove symbols and sections from files
       cmdUpxStrip $resultFile
       if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
@@ -81,7 +82,7 @@ if [ $buildLinuxEditor -eq 1 ]; then
     # Generate the glue
     label="Generate the glue for 64 bits editor for Linux"
     echo_header "Running $label"
-    cmdScons platform=x11 bits=64 tools=yes target=release_debug mono_glue=no $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+    cmdScons platform=x11 bits=64 tools=yes target=release_debug mono_glue=no $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_LINUX
     "$GODOT_DIR/bin/godot.x11.opt.tools.64.mono" --generate-mono-glue "$GODOT_DIR/modules/mono/glue"
     if [ $? -eq 0 ]; then result=1; else result=0; fi
     if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
@@ -93,7 +94,7 @@ if [ $buildLinuxEditor -eq 1 ]; then
   echo_header "Running $label"
   resultFile="$GODOT_DIR/bin/godot.x11.opt.tools.64${MONO_EXT}"
   rm -f $resultFile
-  cmdScons platform=x11 bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+  cmdScons platform=x11 bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_LINUX
   # Remove symbols and sections from files
   cmdUpxStrip $resultFile
   if [ $? -eq 0 ]; then result=1; else result=0; fi
@@ -107,7 +108,7 @@ if [ $buildLinuxTemplates -eq 1 ]; then
   echo_header "Running $label"
   resultFile="$GODOT_DIR/bin/godot.x11.opt.debug.64${MONO_EXT}"
   rm -f $resultFile
-  cmdScons platform=x11 bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+  cmdScons platform=x11 bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_LINUX
   # Remove symbols and sections from files
   cmdUpxStrip $resultFile
   if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
@@ -117,7 +118,7 @@ if [ $buildLinuxTemplates -eq 1 ]; then
   echo_header "Running $label"
   resultFile="$GODOT_DIR/bin/godot.x11.opt.64${MONO_EXT}"
   rm -f $resultFile
-  cmdScons platform=x11 bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS $MONO_FLAG
+  cmdScons platform=x11 bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_LINUX
   # Remove symbols and sections from files
   cmdUpxStrip $resultFile
   if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
