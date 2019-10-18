@@ -25,15 +25,15 @@ export isQuiet=1
 # if set to 1, process will be stopped when something fails
 export stopOnFail=0
 # if set to 1, binaries size will be optimised
-export optimisationOn=0
+export optimisationOn=1
 # default answer to yesNo questions
 export defaultYN=1
 # default answer to yesNo questions for important elements
 export importantYN=0
 
 # set to 1 for enabling functionnalities
-export buildLinuxEditor=0      # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildLinuxTemplates=0   # normal32:OK normal64:OK mono64:OK mono32:unavailable
+export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:unavailable
+export buildLinuxTemplates=1   # normal32:OK normal64:OK mono64:OK mono32:unavailable
 export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
 export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
