@@ -56,19 +56,19 @@ case 0 in
   0)
     # system dependant/config independant) version (the symlink can be changed on différent PC)
     export GODOT_DIR="$(dirname $DIR)/_godot"
-    # GODOT Frug version : 3.2 with editor auto formatter
-    export GODOT_BRANCH="gdscript_auto_formatter"
-    export GODOT_ORIGIN="https://github.com/frugs/godot.git"
+    # GODOT Gameamea version : 3.2 with editor auto formatter (taken from Frug version)
+    export GODOT_BRANCH="gdscript_format_updated"
+    export GODOT_ORIGIN="https://github.com/gameamea/F_godot.git"
     ;;
   1)
-    # GODOT Frug version : 3.2 with editor auto formatter
-    export GODOT_DIR="$(dirname $DIR)/godot_(Frugs_auto_formatter)"
-    export GODOT_BRANCH="gdscript_auto_formatter"
-    export GODOT_ORIGIN="https://github.com/frugs/godot.git"
+    # GODOT Gameamea version : 3.2 with editor auto formatter (taken from Frug version)
+    export GODOT_DIR="$(dirname $DIR)/godot_gameamea"
+    export GODOT_BRANCH="gdscript_format_updated"
+    export GODOT_ORIGIN="https://github.com/gameamea/F_godot.git"
     ;;
   2)
     # GODOT original
-    export GODOT_DIR="$(dirname $DIR)/godot_(Official)"
+    export GODOT_DIR="$(dirname $DIR)/godot__official"
     export GODOT_ORIGIN="https://github.com/godotengine/godot.git"
     export GODOT_BRANCH="master"
     ;;
