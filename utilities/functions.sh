@@ -99,11 +99,11 @@ function cpcheck() {
     echo $1 >> $deployLogOK
     cp --remove-destination $*
     result=1
-    echo_info "Copying $1 ...PASSED"
+    echo_info "Copying $1 ...${greenOnWhite}PASSED"
   else
     echo $1 >> $deployLogHS
     result=0
-    echo_info "Copying $1 ...FAILED"
+    echo_info "Copying $1 ...${orangeOnWhite}FAILED"
   fi
 }
 export -f cpcheck
