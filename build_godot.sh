@@ -27,23 +27,23 @@ export stopOnFail=0
 # if set to 1, binaries size will be optimised
 export optimisationOn=1
 # default answer to yesNo questions
-export defaultYN=1
+export defaultYN=0
 # default answer to yesNo questions for important elements
 export importantYN=0
 
 # set to 1 for enabling functionnalities
 export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:unavailable
 export buildLinuxTemplates=1   # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
-export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
+export buildWindowsEditor=1    # normal32:OK normal64:OK mono:BUG cross build
+export buildWindowsTemplates=1 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 export buildUWPEditor=0        #TODO:TEST no mono & TEST Mono
 export buildUWPTemplates=0     #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web/Other platforms
-export buildServer=0  # normal32:OK normal64:OK mono:unavailable
-export buildAndroid=0 # normal32:OK normal64:OK mono:BUG JS (Cannot create service of type PayloadSerializer )
+export buildServer=1  # normal32:OK normal64:OK mono:unavailable
+export buildAndroid=1 # normal32:OK normal64:OK mono:BUG JS (Cannot create service of type PayloadSerializer )
 export buildWeb=0     # normal32:OK normal64:OK mono:unavailable
 export buildIos=0     #TODO
 export buildDoc=0     #TODO
