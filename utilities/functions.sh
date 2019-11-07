@@ -29,7 +29,6 @@ function initLog() {
   content="${content}buildWindowsTemplates: $buildWindowsTemplates\n"
   content="${content}buildMacosEditor: $buildMacosEditor\n"
   content="${content}buildMacosTemplates: $buildMacosTemplates\n"
-  content="${content}buildUWPEditor: $buildUWPEditor\n"
   content="${content}buildUWPTemplates: $buildUWPTemplates\n"
   content="${content}buildServer: $buildServer\n"
   content="${content}buildAndroid: $buildAndroid\n"

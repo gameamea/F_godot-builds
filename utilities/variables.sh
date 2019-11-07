@@ -68,7 +68,7 @@ case 0 in
     ;;
   2)
     # GODOT original
-    export GODOT_DIR="$(dirname $DIR)/godot__official"
+    export GODOT_DIR="$(dirname $DIR)/godot_official"
     export GODOT_ORIGIN="https://github.com/godotengine/godot.git"
     export GODOT_BRANCH="master"
     ;;
@@ -141,11 +141,11 @@ export BUILD_COMMIT="$(git rev-parse --short=9 HEAD)"
 # The final version string
 export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
 
-# deploy log : store the files that were missing on deloy/copy
+# Build log : store the files that were missing on deloy/copy
 # the file is stored in the script folder
 export deployDate=$(date +%Y-%m-%d)
-export deployLogOK="./deploy_OK_$deployDate.log"
-export deployLogHS="./deploy_HS_$deployDate.log"
+export deployLogOK="./build_OK_$deployDate.log"
+export deployLogHS="./build_HS_$deployDate.log"
 
 # used by some functions as return result
 export result=1

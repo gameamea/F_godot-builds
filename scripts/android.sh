@@ -11,6 +11,12 @@
 set -euo pipefail
 MONO_OPTIONS=""
 
+check="mono_static=yes"
+if [ $(echo $MONO_FLAG | grep -iF $check | wc -l) -gt 0 ]; then
+  echo_warning "Linking Mono statically is not currently supported on Android. It has been disabled."
+  MONO_FLAG=$(echo $MONO_FLAG | sed "s/$check/mono_static=no/g")
+fi
+
 # Build Godot debug templates for Android
 label="1/9 Building x86_64 debug export template for Android"
 echo_header "Running $label"

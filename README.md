@@ -9,12 +9,13 @@ Here are some technical details:
 
 ### Supported platforms
 
-- **Android** (ARMv7 only)
-- **Web** (emscripten)
-- **iOS** (ARMv8 + ARMv7) (NOT TESTED since the initial version of the script in 2017)
 - **Linux** (64-bit only)
 - **macOS** (64-bit only) (NOT TESTED since the initial version of the script in 2017)
 - **Windows** (64-bit + 32-bit) (NOT TESTED since the initial version of the script in 2017)
+- **Android** (ARMv7, ARMv8, x86, x64)
+- **Web** (emscripten)
+- **iOS** (ARMv8 + ARMv7) (NOT TESTED since the initial version of the script in 2017)
+- **Mono builds** can be enabled or not (when mono is available for the concerned binary).
 
 #### Additional notes
 
@@ -29,25 +30,38 @@ Here are some technical details:
 
 ### Directory structure
 
-| File / directory | Purpose                                                              |
-|-----------------:|----------------------------------------------------------------------|
-| `build_godot.sh` | The main build script.                                               |
-|     `resources/` | Contains resource files, such as Windows installer definition files. |
-|       `scripts/` | Contains the platform-specific build and packaging scripts.          |
-|     `utilities/` | Contains various utilities, such as for installing dependencies.     |
+| File / directory | Purpose                                                             |
+| ---------------: | ------------------------------------------------------------------- |
+| `build_godot.sh` | The main build script                                               |
+|     `resources/` | Contains resource files, such as Windows installer definition files |
+|       `scripts/` | Contains the platform-specific build and packaging scripts          |
+|         `tools/` | Contains various utilities, such as for installing dependencies     |
+|     `utilities/` | Contains script settings and helpers                                |
+
+### Log files
+
+The build process will log building operations and deployment results in 2 files stored in the main folder.
+They are named as followed:
+
+- 'build_OK_[date_of_the_day].log' for the successfull messages.
+- 'build_HS_[date_of_the_day].log' for the unsuccessfull messages.
 
 ### Setting it up
 
-This build system has been initially tested on Fedora 27 and Ubuntu 14.04,
-and then on the latest Arch Linux release available in september 2019
-Linux builds are performed in a Arch Linux distribution.
+This build system has been initially tested on Fedora 27 and Ubuntu 14.04, and then on the **latest Arch Linux release available in september 2019**
+Linux builds have been made in Arch Linux.
 
 #### Environment variables
 
-Overriding these variables is optional.
+Settings variables at the start of the main build script can be changed to customize the build process and the binaries to build.
+**It's advised to check their value before launching the process.**
 
-- `ARTIFACTS_DIR` can be set to an absolute path where build artifacts (binaries)
-will be placed.
+All the other variables used by the scripts can be found in the file './tools/variables.sh'. They can be changed too, but not necessarily.
+
+## TODO
+
+- test scripts on Ubuntu 16.04 to maximize templates compatability
+- finish missing platforms builds and tests (check the Todos in some files)
 
 ## License
 
