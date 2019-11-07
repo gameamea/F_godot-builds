@@ -46,7 +46,7 @@ They are named as followed:
 - 'build_OK_[date_of_the_day].log' for the successfull messages.
 - 'build_HS_[date_of_the_day].log' for the unsuccessfull messages.
 
-As these files are constantly updated during the build process, you can use them to know the current step in process.
+As these files are constantly updated during the build process, you can use them to know the current step in process (usefull when the console is flooded by compilation messages).
 
 ### Setting it up
 
