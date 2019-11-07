@@ -46,6 +46,8 @@ They are named as followed:
 - 'build_OK_[date_of_the_day].log' for the successfull messages.
 - 'build_HS_[date_of_the_day].log' for the unsuccessfull messages.
 
+As these files are constantly updated during the build process, you can use them to know the current step in process.
+
 ### Setting it up
 
 This build system has been initially tested on Fedora 27 and Ubuntu 14.04, and then on the **latest Arch Linux release available in september 2019**
