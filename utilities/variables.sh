@@ -52,25 +52,31 @@ export DIR="${DIR:-"/mnt/R/Apps_Sources/GodotEngine/godot-builds"}"
 # The directory where the Godot Git repository will be cloned
 # and the distant git repo to pull from
 # for various godot versions
-case 0 in
+case $gitRepoIndex in
   0)
+    # GODOT original
+    export GODOT_DIR="$(dirname $DIR)/godot_official"
+    export GODOT_ORIGIN="https://github.com/godotengine/godot.git"
+    export GODOT_BRANCH="master"
+    ;;
+  1)
     # system dependant/config independant) version (the symlink can be changed on différent PC)
     export GODOT_DIR="$(dirname $DIR)/_godot"
     # GODOT Gameamea version : 3.2 with editor auto formatter (taken from Frug version)
     export GODOT_BRANCH="gdscript_format_updated"
     export GODOT_ORIGIN="https://github.com/gameamea/F_godot.git"
     ;;
-  1)
+  2)
     # GODOT Gameamea version : 3.2 with editor auto formatter (taken from Frug version)
     export GODOT_DIR="$(dirname $DIR)/godot_gameamea"
     export GODOT_BRANCH="gdscript_format_updated"
     export GODOT_ORIGIN="https://github.com/gameamea/F_godot.git"
     ;;
-  2)
-    # GODOT original
-    export GODOT_DIR="$(dirname $DIR)/godot_official"
-    export GODOT_ORIGIN="https://github.com/godotengine/godot.git"
-    export GODOT_BRANCH="master"
+  3)
+    # GODOT Frug version : 3.2 with editor auto formatter (not up to date)
+    export GODOT_DIR="$(dirname $DIR)/godot_frugs"
+    export GODOT_ORIGIN="https://github.com/frugs/godot.git"
+    export GODOT_BRANCH="gdscript_auto_formatter"
     ;;
 esac
 
