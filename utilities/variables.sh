@@ -55,17 +55,17 @@ export DIR="${DIR:-"/mnt/R/Apps_Sources/GodotEngine/godot-builds"}"
 # for various godot versions
 case $gitRepoIndex in
   0)
-    # GODOT original
-    export GODOT_DIR="$(dirname $DIR)/godot_official"
-    export GODOT_ORIGIN="https://github.com/godotengine/godot.git"
-    export GODOT_BRANCH="master"
-    ;;
-  1)
     # system dependant/config independant) version (the symlink can be changed on différent PC)
     export GODOT_DIR="$(dirname $DIR)/_godot"
     # GODOT Gameamea version : 3.2 with editor auto formatter (taken from Frug version)
     export GODOT_BRANCH="gdscript_format_updated"
     export GODOT_ORIGIN="https://github.com/gameamea/F_godot.git"
+    ;;
+  1)
+    # GODOT original
+    export GODOT_DIR="$(dirname $DIR)/godot_official"
+    export GODOT_ORIGIN="https://github.com/godotengine/godot.git"
+    export GODOT_BRANCH="master"
     ;;
   2)
     # GODOT Gameamea version : 3.2 with editor auto formatter (taken from Frug version)

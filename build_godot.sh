@@ -54,7 +54,7 @@ export buildUWPTemplates=0     #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web/Other platforms
 export buildServer=0  # normal32:OK normal64:OK mono:unavailable
-export buildAndroid=0 # normal32:OK normal64:OK mono:BUG JS (Cannot create service of type PayloadSerializer )
+export buildAndroid=1 # normal32:OK normal64:OK mono:BUG JS (Cannot create service of type PayloadSerializer )
 export buildWeb=0     # normal32:OK normal64:OK mono:unavailable
 export buildIos=0     #TODO
 export buildDoc=0     #TODO
