@@ -43,7 +43,8 @@ function initLog() {
   content="${content}\n"
   content="${content}isQuiet: $isQuiet\n"
   content="${content}stopOnFail: $stopOnFail\n"
-  content="${content}optimisationOn: $optimisationOn\n"
+  content="${content}isBinSizeOptimised: $isBinSizeOptimised\n"
+  content="${content}isLinkingOptimised: $isLinkingOptimised\n"
   content="${content}---------------\n\n"
   echo -e "$content" >> $1
 }
@@ -98,11 +99,11 @@ function cpcheck() {
     echo $1 >> $deployLogOK
     cp --remove-destination $*
     result=1
-    echo_info "Copying $1 ...${greenOnWhite}PASSED"
+    echo_info "Copying $1 ...${greenOnBlack}PASSED"
   else
     echo $1 >> $deployLogHS
     result=0
-    echo_info "Copying $1 ...${orangeOnWhite}FAILED"
+    echo_info "Copying $1 ...${orangeOnBlack}FAILED"
   fi
 }
 export -f cpcheck
@@ -110,8 +111,8 @@ export -f cpcheck
 # #
 # # command for binaries size optimisation using strip and upx
 function cmdUpxStrip() {
-  if [ $optimisationOn -eq 0 ]; then
-    echo_info "optimisation deactivated"
+  if [ $isBinSizeOptimised -eq 0 ]; then
+    echo_info "binaries size optimisation deactivated"
   else
     strip $*
     upx $*

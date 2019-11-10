@@ -13,7 +13,9 @@
 # if set to 1, no question will be ask and default value will be used
 export isQuiet=0
 # if set to 1, binaries size will be optimised
-export optimisationOn=0
+export isBinSizeOptimised=1
+# if set to 1, linking will be optimised. NOTE: Process is very long
+export isLinkingOptimised=0
 # default answer to yesNo questions
 export defaultYN=1
 
@@ -27,7 +29,7 @@ export THREADS=$(nproc)
 export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
 
 # Link optimisation flag
-if [ "x$optimisationOn" = "x1"]; then
+if [ $isLinkingOptimised -eq 1 ]; then
   # LINKING PROCESS TAKES MUCH MORE TIME
   export LTO_FLAG="use_lto=yes"
 else
@@ -67,8 +69,8 @@ function cmdScons() {
 }
 
 function cmdUpxStrip() {
-  if [ $optimisationOn -eq 0 ]; then
-    echo "optimisation deactivated"
+  if [ $isBinSizeOptimised -eq 0 ]; then
+    echo "binaries size optimisation deactivated"
   else
     strip $*
     upx $*
