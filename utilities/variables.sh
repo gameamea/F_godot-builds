@@ -62,7 +62,7 @@ case $gitRepoIndex in
     export GODOT_ORIGIN="https://github.com/gameamea/F_godot.git"
     ;;
   1)
-    # GODOT original
+    # GODOT official
     export GODOT_DIR="$(dirname $DIR)/godot_official"
     export GODOT_ORIGIN="https://github.com/godotengine/godot.git"
     export GODOT_BRANCH="master"
@@ -102,6 +102,11 @@ export RESOURCES_DIR="$DIR/resources"
 
 # The directory where SDKs and tools like InnoSetup are located
 export TOOLS_DIR="$DIR/tools"
+
+# The directory where logs are stored
+export LOGS_DIR="$DIR/tools"
+mkdir -p $LOGS_DIR
+chmod 777 $LOGS_DIR
 
 # The path to the mono dependencies
 export TOOLS_MONO_DIR="${TOOLS_MONO_DIR:-"$TOOLS_DIR/mono"}"

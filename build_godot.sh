@@ -35,6 +35,8 @@ export defaultYN=0
 export importantYN=0
 # index of the git repo to use for build (see list in variables.sh). set to 0 to use official godot
 export gitRepoIndex=0
+#  if set to 1, Run './script/test.sh' file after initialisation instead of running normal process."
+export runTest=0
 
 # ------------
 # CHANGING BUILDS SETTINGS
@@ -83,7 +85,34 @@ export buildWithJavascriptSingleton=1
 # export emscriptenVersion='latest'
 export emscriptenVersion='1.38.47'
 
-# read command line options
+# ------------
+# UMOVABLE FUNCTIONS
+# ------------
+
+# print script usage and help
+function usage() {
+  echo ""
+  echo "Usage:"
+  echo "$(basename $0) [folder]"
+  echo "Result:"
+  echo " Build godot engine editor and templates from local source with several options."
+  echo "Command line options:"
+  echo " -h |--help  : Show this help."
+  echo " -q |--quiet : Stop asking for user input (automatic or batch mode)."
+  echo " -t |--test : Run './script/test.sh' file after initialisation instead of running normal process."
+  echo " -g |--gitrepoindex : Index of the git repo to use for build (0 for default in '_godot' folder, 1 for official godot.., see list in variables.sh)."
+  echo "Notes:"
+  echo " Settings at the start of this file can be changed to custom build process."
+  echo " Some less important variables can also be edited in ./utilities/variables.sh  file."
+  exit 0
+}
+
+
+# ------------
+# COMMAND LINE OPTIONS
+# Must be done before other init
+# ------------
+
 while [ -n "$1" ]; do
   #echo_info "parameter=$1"
   case "$1" in
@@ -92,6 +121,9 @@ while [ -n "$1" ]; do
       ;;
     -q | --quiet)
       isQuiet=1
+      ;;
+    -t | --test)
+      runTest=1
       ;;
     -g | --gitrepoindex)
       export gitRepoIndex=$2
@@ -125,29 +157,9 @@ source "$UTILITIES_DIR/functions.sh"
 source "$UTILITIES_DIR/variables.sh"
 
 # log file name
-export deployLogOK="$DIR/deploy_OK_$(date +%Y-%m-%d).log"
-export deployLogHS="$DIR/deploy_HS_$(date +%Y-%m-%d).log"
+export deployLogOK="$LOGS_DIR/deploy_OK_$(date +%Y-%m-%d).log"
+export deployLogHS="$LOGS_DIR/deploy_HS_$(date +%Y-%m-%d).log"
 
-# ------------
-# UMOVABLE FUNCTIONS
-# ------------
-
-# print script usage and help
-function usage() {
-  echo ""
-  echo "Usage:"
-  echo "$(basename $0) [folder]"
-  echo "Result:"
-  echo " Build godot engine editor and templates from local source with several options."
-  echo "Command line options:"
-  echo " -h |--help  : Show this help."
-  echo " -q |--quiet : Stop asking for user input (automatic or batch mode)."
-  echo " -g |--gitrepoindex : Index of the git repo to use for build (see list in variables.sh)."
-  echo "Notes:"
-  echo " Settings at the start of this file can be changed to custom build process."
-  echo " Some less important variables can also be edited in ./utilities/variables.sh  file."
-  exit 0
-}
 
 # ------------
 # START
@@ -219,13 +231,10 @@ else
   fi
 fi
 
-# exemple of a quick build for testing purpose
-if false; then
-  scons platform=android target=release android_arch=armv7
-  scons platform=android target=release android_arch=arm64v8
-  cd platform/android/java
-  rm -Rf "$GODOT_DIR/platform/android/java/build/"
-  ./gradlew build
+# running test file
+if [ $runTest -eq 1 ]; then
+  echo_warning "Running test script and exit"
+  "$SCRIPTS_DIR/test.sh"
   exit
 fi
 
