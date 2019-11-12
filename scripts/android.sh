@@ -83,5 +83,9 @@ cd "$GODOT_DIR/platform/android/java"
 rm -Rf "$GODOT_DIR/platform/android/java/build/"
 ./gradlew build
 cd "../../.."
-if [ $? -eq 0 ]; then result=1; else result=0; fi
+
+#note file are generated in /platform/android/java/app/build/outputs/apk/ folder in not directly in bin (WTF ?)
+cpcheck "$GODOT_DIR/platform/android/java/app/build/outputs/apk/debug/android_debug.apk" "$GODOT_DIR/bin"
+cpcheck "$GODOT_DIR/platform/android/java/app/build/outputs/apk/release/android_release.apk" "$GODOT_DIR/bin"
+
 if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi

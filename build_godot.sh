@@ -52,12 +52,12 @@ export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
 export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
-export buildUWPTemplates=0     #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web/Other platforms
-export buildServer=0  # normal32:OK normal64:OK mono:unavailable
-export buildAndroid=1 # normal32:OK normal64:OK mono:BUG JS (Cannot create service of type PayloadSerializer )
+export buildAndroid=1 # normal32:OK normal64:OK mono:OK
 export buildWeb=0     # normal32:OK normal64:OK mono:unavailable
+export buildServer=0  # normal32:OK normal64:OK mono:unavailable
+export buildUWPTemplates=0     #TODO:TEST no mono & TEST Mono
 export buildIos=0     #TODO
 export buildDoc=0     #TODO
 
@@ -160,7 +160,6 @@ source "$UTILITIES_DIR/variables.sh"
 export deployLogOK="$LOGS_DIR/deploy_OK_$(date +%Y-%m-%d).log"
 export deployLogHS="$LOGS_DIR/deploy_HS_$(date +%Y-%m-%d).log"
 
-
 # ------------
 # START
 # ------------
@@ -179,14 +178,14 @@ if [ $isQuiet -eq 0 ]; then
   if [ $result -eq 1 ]; then export buildMacosEditor=1; fi
   yesNoS "Do you want to build Mac Os Templates"
   if [ $result -eq 1 ]; then export buildMacosTemplates=1; fi
-  yesNoS "Do you want to build UWP Templates"
-  if [ $result -eq 1 ]; then export buildUWPTemplates=1; fi
-  yesNoS "Do you want to build Server binaries"
-  if [ $result -eq 1 ]; then export buildServer=1; fi
   yesNoS "Do you want to build Android Templates"
   if [ $result -eq 1 ]; then export buildAndroid=1; fi
   yesNoS "Do you want to build Web Templates"
   if [ $result -eq 1 ]; then export buildWeb=1; fi
+  yesNoS "Do you want to build Server binaries"
+  if [ $result -eq 1 ]; then export buildServer=1; fi
+  yesNoS "Do you want to build UWP Templates"
+  if [ $result -eq 1 ]; then export buildUWPTemplates=1; fi
   yesNoS "Do you want to build Ios Templates"
   if [ $result -eq 1 ]; then export buildIos=1; fi
   yesNoS "Do you want to build Doc"
@@ -250,14 +249,14 @@ if [ $buildMacosEditor -eq 1 ] || [ $buildMacosTemplates -eq 1 ]; then "$SCRIPTS
 
 # build Other Templates
 #-----
-# UWP
-if [ $buildUWPTemplates -eq 1 ]; then "$SCRIPTS_DIR/uwp.sh"; fi
-# Server
-[ $buildServer -eq 1 ] && "$SCRIPTS_DIR/server.sh"
 # Android
 [ $buildAndroid -eq 1 ] && "$SCRIPTS_DIR/android.sh"
 # Web
 [ $buildWeb -eq 1 ] && "$SCRIPTS_DIR/web.sh"
+# Server
+[ $buildServer -eq 1 ] && "$SCRIPTS_DIR/server.sh"
+# UWP
+if [ $buildUWPTemplates -eq 1 ]; then "$SCRIPTS_DIR/uwp.sh"; fi
 # IOS
 [ $buildIos -eq 1 ] && "$SCRIPTS_DIR/ios.sh"
 

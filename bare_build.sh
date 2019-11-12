@@ -213,8 +213,7 @@ if [ $result -eq 1 ]; then
   cmdUpxStrip $TEMPLATES_DIR/linux_server_64
 fi
 
-yesNoS "Building Android Template" $defaultYN # ÉCHEC - Pb compil gradlew build
-#Cannot create service of type PayloadSerializer using ToolingBuildSessionScopeServices.createPayloadSerializer() as there is a problem with parameter #2 of type PayloadClassLoaderFactory.
+yesNoS "Building Android Template" $defaultYN
 if [ $result -eq 1 ]; then
   cmdScons platform=android target=release_debug android_arch=x86_64 $LTO_FLAG $SCONS_FLAGS
   cmdScons platform=android target=release_debug android_arch=x86 $LTO_FLAG $SCONS_FLAGS

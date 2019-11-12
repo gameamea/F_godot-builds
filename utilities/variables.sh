@@ -16,7 +16,7 @@
 # mono extensions
 export buildWithMono="${buildWithMono:-0}"
 if [ "$buildWithMono" -eq 1 ]; then
-  export MONO_FLAG=" module_mono_enabled=yes"
+  #export MONO_FLAG=" module_mono_enabled=yes"
   export MONO_FLAG=" module_mono_enabled=yes mono_static=yes copy_mono_root=yes"
   export MONO_EXT=".mono"
 else

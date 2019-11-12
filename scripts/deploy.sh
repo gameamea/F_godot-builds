@@ -183,12 +183,6 @@ if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else ech
 ## --------
 ## Other templates
 ## --------
-### Copy Server export templates
-label="Server templates"
-echo_header "Deploying $label"
-cpcheck "$GODOT_DIR/bin/godot_server.x11.opt.debug.32" "$TEMPLATES_DIR/linux_server_32"
-cpcheck "$GODOT_DIR/bin/godot_server.x11.opt.debug.64" "$TEMPLATES_DIR/linux_server_64"
-if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
 
 ### Copy Android export templates
 label="Android templates"
@@ -203,4 +197,11 @@ label="Web templates"
 echo_header "Deploying $label"
 cpcheck "$GODOT_DIR/bin/godot.javascript.opt.debug.zip" "$TEMPLATES_DIR/webassembly_debug.zip"
 cpcheck "$GODOT_DIR/bin/godot.javascript.opt.zip" "$TEMPLATES_DIR/webassembly_release.zip"
+if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
+
+### Copy Server export templates
+label="Server templates"
+echo_header "Deploying $label"
+cpcheck "$GODOT_DIR/bin/godot_server.x11.opt.debug.32" "$TEMPLATES_DIR/linux_server_32"
+cpcheck "$GODOT_DIR/bin/godot_server.x11.opt.debug.64" "$TEMPLATES_DIR/linux_server_64"
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
