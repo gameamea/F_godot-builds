@@ -104,7 +104,7 @@ export RESOURCES_DIR="$DIR/resources"
 export TOOLS_DIR="$DIR/tools"
 
 # The directory where logs are stored
-export LOGS_DIR="$DIR/tools"
+export LOGS_DIR="$DIR/logs"
 mkdir -p $LOGS_DIR
 chmod 777 $LOGS_DIR
 
