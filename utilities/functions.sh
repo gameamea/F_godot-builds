@@ -96,14 +96,14 @@ export -f echo_error
 # # add file to app log
 function cpcheck() {
   if [ -r $1 ]; then
-    echo $1 >> $deployLogOK
     cp --remove-destination $*
     result=1
-    echo_info "Copying $1 ...${greenOnBlack}PASSED"
+    echo_info "Copying $1 ...${greenOnBlack}SUCCESS"
+    echo "Copying $1 ... SUCCESS" >> $deployLogOK
   else
-    echo $1 >> $deployLogHS
     result=0
-    echo_info "Copying $1 ...${orangeOnBlack}FAILED"
+    echo_info "Copying $1 ...${orangeOnBlack}FAIL"
+    echo "Copying $1 ... FAIL" >> $deployLogHS
   fi
 }
 export -f cpcheck

@@ -22,7 +22,7 @@ set -e
 # ------------
 
 # if set to 1, no question will be ask and default value will be used
-export isQuiet=1
+export isQuiet=0
 # if set to 1, process will be stopped when something fails
 export stopOnFail=0
 # if set to 1, binaries size will be optimised
@@ -54,14 +54,15 @@ export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web/Other platforms
-export buildAndroid=1 # normal32:OK normal64:OK mono:OK
-export buildWeb=0     # normal32:OK normal64:OK mono:unavailable
-export buildServer=0  # normal32:OK normal64:OK mono:unavailable
-export buildUWPTemplates=0     #TODO:TEST no mono & TEST Mono
-export buildIos=0     #TODO
-export buildDoc=0     #TODO
+export buildAndroid=1      # normal32:OK normal64:OK mono:OK
+export buildWeb=1          # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
+export buildServer=1       # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
+export buildUWPTemplates=0 #TODO:TEST no mono & TEST Mono
+export buildIos=0          #TODO
+export buildDoc=0          #TODO
 
 # Build 32 bits version if possible
+# NOTE: it Will be build BEFOR the 64 bits version
 export build32Bits=0
 
 # Build with mono if possible
@@ -100,13 +101,16 @@ function usage() {
   echo " -h |--help  : Show this help."
   echo " -q |--quiet : Stop asking for user input (automatic or batch mode)."
   echo " -t |--test : Run './script/test.sh' file after initialisation instead of running normal process."
-  echo " -g |--gitrepoindex : Index of the git repo to use for build (0 for default in '_godot' folder, 1 for official godot.., see list in variables.sh)."
+  echo " -g |--gitrepoindex : Index of the git repo to use for build (0 for default in '_godot' folder, 1 for official godot.., see list in variables.sh), overwrite the setting set in files."
+  echo " --nomono : Force build without mono, overwrite the setting set in files."
+  echo " --mono : Force build with mono, overwrite the setting set in files."
+  echo " --32b : Force build with 32 bits versions, overwrite the setting set in files."
+  echo " --no32b : Force build without32 bits versions, overwrite the setting set in files."
   echo "Notes:"
   echo " Settings at the start of this file can be changed to custom build process."
   echo " Some less important variables can also be edited in ./utilities/variables.sh  file."
   exit 0
 }
-
 
 # ------------
 # COMMAND LINE OPTIONS
@@ -120,14 +124,26 @@ while [ -n "$1" ]; do
       usage
       ;;
     -q | --quiet)
-      isQuiet=1
+      export isQuiet=1
       ;;
     -t | --test)
-      runTest=1
+      export runTest=1
       ;;
     -g | --gitrepoindex)
       export gitRepoIndex=$2
       shift
+      ;;
+    --nomono)
+      export buildWithMono=0
+      ;;
+    --mono)
+      export buildWithMono=1
+      ;;
+    --32b)
+      export build32Bits=1
+      ;;
+    --no32b)
+      export build32Bits=0
       ;;
     --)
       # The double dash makes them parameters
