@@ -16,7 +16,7 @@ else
 fi
 
 if [ "$buildWithMono" -eq 1 ]; then
-  echo_info "Mono version of Web templates are not available."
+  echo_warning "Mono version of Web templates are not available."
   exit 0 # if 1, built process will be stopped
 fi
 

@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-echo_warning "TO FINISH"
+echo_warning "MUST BE FIXED"
 
 # Update classes.xml (used to generate doc)
 

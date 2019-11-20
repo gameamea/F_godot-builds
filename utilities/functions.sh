@@ -59,8 +59,8 @@ echo_header() {
   echo -e "\n-------\n${blackOnOrange}$1${resetColor}\n-------\n"
   zeDate=$(date +%Y-%m-%d:%H:%I:%S)
 
-  echo "***** $zeDate:: $1 *****" >> $deployLogOK
-  echo "***** $zeDate:: $1 *****" >> $deployLogHS
+  echo "***** $zeDate:: $1 *****" >> $logSuccessFile
+  echo "***** $zeDate:: $1 *****" >> $logFailFile
 }
 export -f echo_header
 
@@ -68,6 +68,8 @@ export -f echo_header
 # # Output a successful message
 echo_success() {
   echo -e "\n${greenOnBlack}$1${resetColor}\n"
+  echo "SUCCESS: $1" >> $logSuccessFile
+
 }
 export -f echo_success
 
@@ -82,6 +84,7 @@ export -f echo_info
 # # Output a error message
 echo_warning() {
   echo -e "\n${orangeOnBlack}$1${resetColor}\n"
+  echo "WARNING: $1" >> $logFailFile
   if [ $stopOnFail -eq 1 ]; then exit 1; fi
 }
 export -f echo_warning
@@ -90,6 +93,7 @@ export -f echo_warning
 # # Output a error message
 echo_error() {
   echo -e "\n${redOnBlack}$1${resetColor}\n"
+  echo "ERROR: $1" >> $logFailFile
   if [ $stopOnFail -eq 1 ]; then exit 1; fi
 }
 export -f echo_error
@@ -102,11 +106,11 @@ function cpcheck() {
     cp --remove-destination $*
     result=1
     echo_info "Copying $1 ...${greenOnBlack}SUCCESS"
-    echo "Copying $1 ... SUCCESS" >> $deployLogOK
+    echo "SUCCESS: Copying$1" >> $logSuccessFile
   else
     result=0
     echo_info "Copying $1 ...${orangeOnBlack}FAIL"
-    echo "Copying $1 ... FAIL" >> $deployLogHS
+    echo "ERROR:Copying $1" >> $logFailFile
   fi
 }
 export -f cpcheck

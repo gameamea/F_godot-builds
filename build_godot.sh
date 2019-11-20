@@ -112,6 +112,7 @@ function usage() {
   echo " --backup : Force to backup existng binaries."
   echo " --nobackup : Force not to backup existng binaries."
   echo "Default options are set to:"
+  echo " ask for user confirmation (add -q option to disable)."
   echo " use Source code stored in the '../_godot' folder (that must be a symlink to the version you want to compile)."
   echo " build only Linux and Windows 32 and 64 bits editors WITH Mono."
   echo " build only Linux, Windows 32 and 64 bits templates WITH Mono (if available)."
@@ -232,8 +233,8 @@ if [ $isQuiet -eq 0 ]; then
 fi
 
 # init logs
-initLog $deployLogHS
-initLog $deployLogOK
+initLog $logFailFile
+initLog $logSuccessFile
 
 # store build settings
 initLog $buildSettingsStoreFile
@@ -284,10 +285,10 @@ if [ $backupBinaries -eq 1 ]; then
   else
     bakFolder="$GODOT_DIR/bin_$deployDate"
   fi
-  mv "$GODOT_DIR/bin" "$bakFolder"
-  mkdir "$GODOT_DIR/bin"
+  cp -aR $GODOT_DIR/bin/* "$bakFolder/"
+  rm -Rf $GODOT_DIR/bin/*
   # create a git ignore in backup folder to ignore all files
-  cat "*">"$bakFolder/.gitignore"
+  echo "*" > "$bakFolder/.gitignore"
 
   echo_info "backup binaries to $bakFolder"
 fi

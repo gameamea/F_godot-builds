@@ -51,8 +51,8 @@ These are the most important items:
 The build process will log building operations and deployment results in 2 files stored in the './logs' folder.
 They are named as followed:
 
-- 'build_OK_[date_of_the_day].log' for the whole process steps AND the successfull messages.
-- 'build_HS_[date_of_the_day].log' for the whole process steps AND the failed messages.
+- '[date_of_the_day]_success.log' for the whole process steps AND the successfull messages.
+- '[date_of_the_day]_fail.log' for the whole process steps AND the failed messages.
 
 As these files are constantly updated during the build process, you can use them to know the current step in process (usefull when the console is flooded by compilation messages).
 
