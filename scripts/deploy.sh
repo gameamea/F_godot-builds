@@ -75,7 +75,11 @@ label="Windows 32 bit Editor & packaging"
 echo_header "Deploying $label"
 mkdir -p "$EDITOR_DIR/x86/Godot"
 cpcheck "$GODOT_DIR/bin/godot.windows.opt.tools.32${MONO_EXT}.exe" "$EDITOR_DIR/x86/Godot/godot.exe"
-if [ $result -eq 1 ]; then
+# BUG
+# 0009:err:module:import_dll Library ISCmplr.dll (which is needed by L"Z:\\mnt\\R\\Apps_Sources\\GodotEngine\\godot-builds\\tools\\innosetup\\ISCC.exe") not found
+# 0009:err:module:LdrInitializeThunk Importing dlls for L"Z:\\mnt\\R\\Apps_Sources\\GodotEngine\\godot-builds\\tools\\innosetup\\ISCC.exe" failed, status c0000135
+#if [ $result -eq 1 ]; then
+if false; then
   if [ $buildWithMono -eq 1 ]; then
     ### Copy Mono Windows Editor Data Folder
     ### check if GodotSharp is identical with 32 ou 64 bit built
@@ -117,7 +121,12 @@ label="Windows 64 bit Editor & packaging"
 echo_header "Deploying $label"
 mkdir -p "$EDITOR_DIR/x86_64/Godot"
 cpcheck "$GODOT_DIR/bin/godot.windows.opt.tools.64${MONO_EXT}.exe" "$EDITOR_DIR/x86_64/Godot/godot.exe"
-if [ $result -eq 1 ]; then
+
+# BUG
+# 0009:err:module:import_dll Library ISCmplr.dll (which is needed by L"Z:\\mnt\\R\\Apps_Sources\\GodotEngine\\godot-builds\\tools\\innosetup\\ISCC.exe") not found
+# 0009:err:module:LdrInitializeThunk Importing dlls for L"Z:\\mnt\\R\\Apps_Sources\\GodotEngine\\godot-builds\\tools\\innosetup\\ISCC.exe" failed, status c0000135
+#if [ $result -eq 1 ]; then
+if false; then
   if [ $buildWithMono -eq 1 ]; then
     ### Copy Mono Windows Editor Data Folder
     ### check if GodotSharp is identical with 32 ou 64 bit built

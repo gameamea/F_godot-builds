@@ -48,8 +48,8 @@ export runTest=0
 # Desktop platforms
 export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:unavailable
 export buildLinuxTemplates=1   # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
-export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
+export buildWindowsEditor=1    # normal32:OK normal64:OK mono:BUG cross build
+export buildWindowsTemplates=1 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 
@@ -62,14 +62,17 @@ export buildIos=0          #TODO
 export buildDoc=0          #TODO
 
 # Build 32 bits version if possible
-# NOTE: it Will be build BEFOR the 64 bits version
-export build32Bits=0
+# NOTE: it Will be build BEFORE the 64 bits version
+export build32Bits=1
 
 # Build with mono if possible
 export buildWithMono=1
 
 # Deploy
 export deploy=1 #TODO: update code after each sucessfull build process added
+
+# backup existing binaries
+export backupBinaries=1
 
 # ------------
 # BUILD OPTIONS
@@ -106,9 +109,19 @@ function usage() {
   echo " --mono : Force build with mono, overwrite the setting set in files."
   echo " --32b : Force build with 32 bits versions, overwrite the setting set in files."
   echo " --no32b : Force build without32 bits versions, overwrite the setting set in files."
+  echo " --backup : Force to backup existng binaries."
+  echo " --nobackup : Force not to backup existng binaries."
+  echo "Default options are set to:"
+  echo " use Source code stored in the '../_godot' folder (that must be a symlink to the version you want to compile)."
+  echo " build only Linux and Windows 32 and 64 bits editors WITH Mono."
+  echo " build only Linux, Windows 32 and 64 bits templates WITH Mono (if available)."
+  echo " build only Android, Web and server 32 and 64 bits templates WITH Mono (if available)."
+  echo " copy binaries and templates to './artifact' folder."
+  echo " copy templates to the recommanded template folder associated to the built godot version."
+  echo " optimisations: binary size but not linking."
   echo "Notes:"
   echo " Settings at the start of this file can be changed to custom build process."
-  echo " Some less important variables can also be edited in ./utilities/variables.sh  file."
+  echo " Some less important variables can also be edited in ./utilities/variables.sh file."
   exit 0
 }
 
@@ -145,6 +158,12 @@ while [ -n "$1" ]; do
     --no32b)
       export build32Bits=0
       ;;
+    --backup)
+      export backupBinaries=1
+      ;;
+    --nobackup)
+      export backupBinaries=0
+      ;;
     --)
       # The double dash makes them parameters
       shift
@@ -172,10 +191,6 @@ source "$UTILITIES_DIR/functions.sh"
 # init variables and settings
 source "$UTILITIES_DIR/variables.sh"
 
-# log file name
-export deployLogOK="$LOGS_DIR/deploy_OK_$(date +%Y-%m-%d).log"
-export deployLogHS="$LOGS_DIR/deploy_HS_$(date +%Y-%m-%d).log"
-
 # ------------
 # START
 # ------------
@@ -183,40 +198,45 @@ export deployLogHS="$LOGS_DIR/deploy_HS_$(date +%Y-%m-%d).log"
 # ASK USER
 if [ $isQuiet -eq 0 ]; then
   yesNoS "Do you want to build Linux Editor"
-  if [ $result -eq 1 ]; then export buildLinuxEditor=1; fi
+  if [ $result -eq 1 ]; then export buildLinuxEditor=1; else export buildLinuxEditor=0; fi
   yesNoS "Do you want to build Linux Templates"
-  if [ $result -eq 1 ]; then export buildLinuxTemplates=1; fi
+  if [ $result -eq 1 ]; then export buildLinuxTemplates=1; else export buildLinuxTemplates=0; fi
   yesNoS "Do you want to build Windows Editor"
-  if [ $result -eq 1 ]; then export buildWindowsEditor=1; fi
+  if [ $result -eq 1 ]; then export buildWindowsEditor=1; else export buildWindowsEditor=0; fi
   yesNoS "Do you want to build Windows Templates"
-  if [ $result -eq 1 ]; then export buildWindowsTemplates=1; fi
+  if [ $result -eq 1 ]; then export buildWindowsTemplates=1; else export buildWindowsTemplates=0; fi
   yesNoS "Do you want to build Mac Os Editor"
-  if [ $result -eq 1 ]; then export buildMacosEditor=1; fi
+  if [ $result -eq 1 ]; then export buildMacosEditor=1; else export buildMacosEditor=0; fi
   yesNoS "Do you want to build Mac Os Templates"
-  if [ $result -eq 1 ]; then export buildMacosTemplates=1; fi
+  if [ $result -eq 1 ]; then export buildMacosTemplates=1; else export buildMacosTemplates=0; fi
   yesNoS "Do you want to build Android Templates"
-  if [ $result -eq 1 ]; then export buildAndroid=1; fi
+  if [ $result -eq 1 ]; then export buildAndroid=1; else export buildAndroid=0; fi
   yesNoS "Do you want to build Web Templates"
-  if [ $result -eq 1 ]; then export buildWeb=1; fi
+  if [ $result -eq 1 ]; then export buildWeb=1; else export buildWeb=0; fi
   yesNoS "Do you want to build Server binaries"
-  if [ $result -eq 1 ]; then export buildServer=1; fi
+  if [ $result -eq 1 ]; then export buildServer=1; else export buildServer=0; fi
   yesNoS "Do you want to build UWP Templates"
-  if [ $result -eq 1 ]; then export buildUWPTemplates=1; fi
+  if [ $result -eq 1 ]; then export buildUWPTemplates=1; else export buildUWPTemplates=0; fi
   yesNoS "Do you want to build Ios Templates"
-  if [ $result -eq 1 ]; then export buildIos=1; fi
+  if [ $result -eq 1 ]; then export buildIos=1; else export buildIos=0; fi
   yesNoS "Do you want to build Doc"
-  if [ $result -eq 1 ]; then export buildDoc=1; fi
+  if [ $result -eq 1 ]; then export buildDoc=1; else export buildDoc=0; fi
   yesNoS "Do you want to build 32 Bits versions (64 bits version will always be built)"
-  if [ $result -eq 1 ]; then export build32Bits=1; fi
+  if [ $result -eq 1 ]; then export build32Bits=1; else export build32Bits=0; fi
   yesNoS "Do you want to build with Mono"
-  if [ $result -eq 1 ]; then export buildWithMono=1; fi
+  if [ $result -eq 1 ]; then export buildWithMono=1; else export buildWithMono=0; fi
   yesNoS "Do you want to deploy binaries"
-  if [ $result -eq 1 ]; then export deploy=1; fi
+  if [ $result -eq 1 ]; then export deploy=1; else export deploy=0; fi
+  yesNoS "Do you want to backup existing binaries"
+  if [ $result -eq 1 ]; then export backupBinaries=1; else export backupBinaries=0; fi
 fi
 
 # init logs
 initLog $deployLogHS
 initLog $deployLogOK
+
+# store build settings
+initLog $buildSettingsStoreFile
 
 mkdir -p "$EDITOR_DIR" "$TEMPLATES_DIR"
 
@@ -255,6 +275,22 @@ fi
 
 # build Desktop Editor & Templates
 #-----
+# backup
+if [ $backupBinaries -eq 1 ]; then
+  # we backup in different folders mono and no mono versions
+  isBinMono=$(ls $GODOT_DIR/bin/BUILD_* 2> /dev/null | grep -Fi 'mono' | wc -l)
+  if [ $isBinMono -lt 0 ]; then
+    bakFolder="$GODOT_DIR/bin_mono_$deployDate"
+  else
+    bakFolder="$GODOT_DIR/bin_$deployDate"
+  fi
+  mv "$GODOT_DIR/bin" "$bakFolder"
+  mkdir "$GODOT_DIR/bin"
+  # create a git ignore in backup folder to ignore all files
+  cat "*">"$bakFolder/.gitignore"
+
+  echo_info "backup binaries to $bakFolder"
+fi
 
 # Linux
 if [ $buildLinuxEditor -eq 1 ] || [ $buildLinuxTemplates -eq 1 ]; then "$SCRIPTS_DIR/linux.sh"; fi

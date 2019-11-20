@@ -30,21 +30,29 @@ Here are some technical details:
 
 ### Directory structure
 
-| File / directory | Purpose                                                             |
-| ---------------: | ------------------------------------------------------------------- |
-| `build_godot.sh` | The main build script                                               |
-|     `resources/` | Contains resource files, such as Windows installer definition files |
-|       `scripts/` | Contains the platform-specific build and packaging scripts          |
-|         `tools/` | Contains various utilities, such as for installing dependencies     |
-|     `utilities/` | Contains script settings and helpers                                |
+These are the most important items:
+
+|          File / directory | Purpose                                                                 |
+| ------------------------: | ----------------------------------------------------------------------- |
+|          `build_godot.sh` | The main build script                                                   |
+|           `bare_build.sh` | A monobloc bare build script for testing purpose                        |
+| `bare_build_with_mono.sh` | A monobloc bare build script with mono for testing purpose              |
+|              `artifacts/` | Contains generated binaries and helper folders for editor and templates |
+|                  `logs /` | logs files                                                              |
+|              `resources/` | Contains resource files, such as Windows installer definition files     |
+|                `scripts/` | Contains the platform-specific build and packaging scripts              |
+|                  `tools/` | Contains various utilities, such as for installing dependencies         |
+|              `tools/mono` | Mono sources for customized builds (usefull for android templates)      |
+| `tools/godot-mono-builds` | Scripts for building customized Mono (usefull for android templates)   |
+|              `utilities/` | Contains script settings and helpers                                    |
 
 ### Log files
 
-The build process will log building operations and deployment results in 2 files stored in the main folder.
+The build process will log building operations and deployment results in 2 files stored in the './logs' folder.
 They are named as followed:
 
-- 'build_OK_[date_of_the_day].log' for the successfull messages.
-- 'build_HS_[date_of_the_day].log' for the unsuccessfull messages.
+- 'build_OK_[date_of_the_day].log' for the whole process steps AND the successfull messages.
+- 'build_HS_[date_of_the_day].log' for the whole process steps AND the failed messages.
 
 As these files are constantly updated during the build process, you can use them to know the current step in process (usefull when the console is flooded by compilation messages).
 
@@ -63,7 +71,7 @@ All the other variables used by the scripts can be found in the file './tools/va
 ## TODO
 
 - test scripts on Ubuntu 16.04 to maximize templates compatability
-- finish missing platforms builds and tests (check the Todos in some files)
+- finish missing platforms builds and tests (check the TODOs in files)
 
 ## License
 
