@@ -21,6 +21,8 @@ function initLog() {
   content="${content}GODOT_BRANCH: $GODOT_BRANCH\n"
   content="${content}GODOT_ORIGIN: $GODOT_ORIGIN\n"
   content="${content}MONO_SOURCE_ROOT: $MONO_SOURCE_ROOT\n"
+  content="${content}GIT LAST COMMIT SHA:$BUILD_COMMIT\n"
+  content="${content}GIT LAST COMMIT DATE:$BUILD_DATE\n"
   content="${content}BUILD_VERSION:$BUILD_VERSION\n"
   content="${content}\n"
   content="${content}buildLinuxEditor: $buildLinuxEditor\n"
@@ -39,6 +41,7 @@ function initLog() {
   content="${content}build32Bits: $build32Bits\n"
   content="${content}buildWithMono: $buildWithMono\n"
   content="${content}buildWithJavascriptSingleton: $buildWithJavascriptSingleton\n"
+  content="${content}emscriptenVersion: $emscriptenVersion\n"
   content="${content}deploy: $deploy\n"
   content="${content}\n"
   content="${content}isQuiet: $isQuiet\n"
@@ -46,7 +49,7 @@ function initLog() {
   content="${content}isBinSizeOptimised: $isBinSizeOptimised\n"
   content="${content}isLinkingOptimised: $isLinkingOptimised\n"
   content="${content}---------------\n\n"
-  echo -e "$content" >> $1
+  echo -e "$content" >> "$1"
 }
 export -f initLog
 

@@ -156,8 +156,11 @@ export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
 # Build log : store the files that were missing on deloy/copy
 # the file is stored in the script folder
 export deployDate=$(date +%Y-%m-%d)
-export deployLogOK="./build_OK_$deployDate.log"
-export deployLogHS="./build_HS_$deployDate.log"
+export deployLogOK="$LOGS_DIR/build_OK_$deployDate.log"
+export deployLogHS="$LOGS_DIR/build_HS_$deployDate.log"
+
+# text file to store build settings (in bin folder )
+export buildSettingsStoreFile="$GODOT_DIR/bin/BUILD_$BUILD_VERSION${MONO_EXT}.txt"
 
 # used by some functions as return result
 export result=1
