@@ -111,6 +111,8 @@ function usage() {
   echo " --no32b : Force build without32 bits versions, overwrite the setting set in files."
   echo " --backup : Force to backup existng binaries."
   echo " --nobackup : Force not to backup existng binaries."
+  echo " --x11editoronly : Build only 64 bits editor for Linux."
+  echo " --windowseditoronly : Build only 64 bits editor for Windows."
   echo "Default options are set to:"
   echo " ask for user confirmation (add -q option to disable)."
   echo " use Source code stored in the '../_godot' folder (that must be a symlink to the version you want to compile)."
@@ -164,6 +166,38 @@ while [ -n "$1" ]; do
       ;;
     --nobackup)
       export backupBinaries=0
+      ;;
+    --x11editoronly)
+      export isQuiet=1
+      export buildLinuxEditor=1
+      export buildLinuxTemplates=0
+      export buildWindowsEditor=0
+      export buildWindowsTemplates=0
+      export buildMacosEditor=0
+      export buildMacosTemplates=0
+      export buildAndroid=0
+      export buildWeb=0
+      export buildServer=0
+      export buildUWPTemplates=0
+      export buildIos=0
+      export buildDoc=0
+      export build32Bits=0
+      ;;
+    --windowseditoronly)
+      export isQuiet=1
+      export buildLinuxEditor=0
+      export buildLinuxTemplates=0
+      export buildWindowsEditor=1
+      export buildWindowsTemplates=0
+      export buildMacosEditor=0
+      export buildMacosTemplates=0
+      export buildAndroid=0
+      export buildWeb=0
+      export buildServer=0
+      export buildUWPTemplates=0
+      export buildIos=0
+      export buildDoc=0
+      export build32Bits=0
       ;;
     --)
       # The double dash makes them parameters
@@ -244,8 +278,6 @@ mkdir -p "$EDITOR_DIR" "$TEMPLATES_DIR"
 echo_header "GODOT ENGINE BUILD SCRIPT"
 echo_info "${blueOnWhite}Source folder: $GODOT_DIR"
 
-cd "$GODOT_DIR"
-
 yesNoS "${orangeOnBlack}Do you want to Install or update dependencies" $importantYN
 if [ $result -eq 1 ]; then
   # Install or update dependencies
@@ -285,6 +317,7 @@ if [ $backupBinaries -eq 1 ]; then
   else
     bakFolder="$GODOT_DIR/bin_$deployDate"
   fi
+  mkdir -p "$bakFolder"
   cp -aR $GODOT_DIR/bin/* "$bakFolder/"
   rm -Rf $GODOT_DIR/bin/*
   # create a git ignore in backup folder to ignore all files
@@ -319,4 +352,4 @@ if [ $buildUWPTemplates -eq 1 ]; then "$SCRIPTS_DIR/uwp.sh"; fi
 # Deploy
 [ $deploy -eq 1 ] && "$SCRIPTS_DIR/deploy.sh"
 
-echo_header "${blueOnWhite}All Operations finished.${resetColor}"
+echo_header "All Operations finished."

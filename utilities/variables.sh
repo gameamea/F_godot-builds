@@ -81,6 +81,12 @@ case $gitRepoIndex in
     ;;
 esac
 
+# cd here to because some variables need to be computed in these folder
+cd "$GODOT_DIR"
+
+# ./bin dir could have been deleted
+[ ! -d "$GODOT_DIR/bin" ] && mkdir -p "$GODOT_DIR/bin"
+
 # The directory where build artifacts will be copied
 # EDITOR_DIR and TEMPLATES_DIR are used by platform-specific scripts
 export ARTIFACTS_DIR="${ARTIFACTS_DIR:-"$DIR/artifacts"}"
@@ -150,6 +156,7 @@ export EMSCRIPTEN_ROOT="/usr/lib/emscripten"
 export BUILD_DATE="$(git show -s --format=%cd --date=short)"
 # Short (9-character) commit hash
 export BUILD_COMMIT="$(git rev-parse --short=9 HEAD)"
+
 # The final version string
 export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
 
