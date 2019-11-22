@@ -32,19 +32,20 @@ Here are some technical details:
 
 These are the most important items:
 
-|          File / directory | Purpose                                                                 |
-| ------------------------: | ----------------------------------------------------------------------- |
-|          `build_godot.sh` | The main build script                                                   |
-|           `bare_build.sh` | A monobloc bare build script for testing purpose                        |
-| `bare_build_with_mono.sh` | A monobloc bare build script with mono for testing purpose              |
-|              `artifacts/` | Contains generated binaries and helper folders for editor and templates |
-|                  `logs /` | logs files                                                              |
-|              `resources/` | Contains resource files, such as Windows installer definition files     |
-|                `scripts/` | Contains the platform-specific build and packaging scripts              |
-|                  `tools/` | Contains various utilities, such as for installing dependencies         |
-|              `tools/mono` | Mono sources for customized builds (usefull for android templates)      |
-| `tools/godot-mono-builds` | Scripts for building customized Mono (usefull for android templates)   |
-|              `utilities/` | Contains script settings and helpers                                    |
+|          File / directory | Purpose                                                                    |
+| ------------------------: | -------------------------------------------------------------------------- |
+|          `build_godot.sh` | The main build script                                                      |
+|           `bare_build.sh` | A monobloc bare build script for testing purpose                           |
+| `bare_build_with_mono.sh` | A monobloc bare build script with mono for testing purpose                 |
+|       `synch_branches.sh` | Sync local changes and official git repo. MUST BE CHECKED BEFORE FIRST RUN |
+|              `artifacts/` | Contains generated binaries and helper folders for editor and templates    |
+|                  `logs /` | logs files                                                                 |
+|              `resources/` | Contains resource files, such as Windows installer definition files        |
+|                `scripts/` | Contains the platform-specific build and packaging scripts                 |
+|                  `tools/` | Contains various utilities, such as for installing dependencies            |
+|              `tools/mono` | Mono sources for customized builds (usefull for android templates)         |
+| `tools/godot-mono-builds` | Scripts for building customized Mono (usefull for android templates)       |
+|              `utilities/` | Contains script settings and helpers                                       |
 
 ### Log files
 
