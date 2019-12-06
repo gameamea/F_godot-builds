@@ -13,7 +13,7 @@ set -euo pipefail
 # Specify the macOS SDK version as cmdScons defaults to darwin14 and use Xcode Clang flags
 export SCONS_FLAGS="$SCONS_FLAGS osxcross_sdk=darwin15 CCFLAGS=-D__MACPORTS__"
 
-# Note : no 32 bits versions on macOS
+# Note: no 32 bits versions on macOS
 
 # Build 64 bits editor
 # -----

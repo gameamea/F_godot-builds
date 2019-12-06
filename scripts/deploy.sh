@@ -75,7 +75,8 @@ label="Windows 32 bit Editor & packaging"
 echo_header "Deploying $label"
 mkdir -p "$EDITOR_DIR/x86/Godot"
 cpcheck "$GODOT_DIR/bin/godot.windows.opt.tools.32${MONO_EXT}.exe" "$EDITOR_DIR/x86/Godot/godot.exe"
-# BUG
+
+# BUG:
 # 0009:err:module:import_dll Library ISCmplr.dll (which is needed by L"Z:\\mnt\\R\\Apps_Sources\\GodotEngine\\godot-builds\\tools\\innosetup\\ISCC.exe") not found
 # 0009:err:module:LdrInitializeThunk Importing dlls for L"Z:\\mnt\\R\\Apps_Sources\\GodotEngine\\godot-builds\\tools\\innosetup\\ISCC.exe" failed, status c0000135
 #if [ $result -eq 1 ]; then
@@ -122,7 +123,7 @@ echo_header "Deploying $label"
 mkdir -p "$EDITOR_DIR/x86_64/Godot"
 cpcheck "$GODOT_DIR/bin/godot.windows.opt.tools.64${MONO_EXT}.exe" "$EDITOR_DIR/x86_64/Godot/godot.exe"
 
-# BUG
+# BUG:
 # 0009:err:module:import_dll Library ISCmplr.dll (which is needed by L"Z:\\mnt\\R\\Apps_Sources\\GodotEngine\\godot-builds\\tools\\innosetup\\ISCC.exe") not found
 # 0009:err:module:LdrInitializeThunk Importing dlls for L"Z:\\mnt\\R\\Apps_Sources\\GodotEngine\\godot-builds\\tools\\innosetup\\ISCC.exe" failed, status c0000135
 #if [ $result -eq 1 ]; then
@@ -133,7 +134,7 @@ if false; then
     cpcheck "$GODOT_DIR/bin/GodotSharp" "$EDITOR_DIR/x86_64/Godot/" -r
   fi
   ### Create Windows 64-bit ZIP archives
-  ### TODO Add mono options for mono and mono data folder copy
+  ### TODO: Add mono options for mono and mono data folder copy
   cd "$EDITOR_DIR/x86_64"
   zip -r9 "Godot-Windows-x86_64.zip" "Godot"
   ### Prepare Windows installer generation

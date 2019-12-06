@@ -118,13 +118,13 @@ echo ""
 
 # TODO: BUILD ON MAC
 
-yesNoS "Building Linux 32 Editor" $defaultYN #TEST OK
+yesNoS "Building Linux 32 Editor" $defaultYN #TEST: OK
 if [ $result -eq 1 ]; then
   cmdScons platform=x11 tools=yes target=release_debug bits=32 $LTO_FLAG $SCONS_FLAGS
   cp bin/godot.x11.opt.tools.32 $EDITOR_DIR/godot_x11.32
   cmdUpxStrip $EDITOR_DIR/godot_x11.32 # may fails on some linux distros
 fi
-yesNoS "Building Linux 32 Release and Debug Template" $defaultYN #TEST OK
+yesNoS "Building Linux 32 Release and Debug Template" $defaultYN #TEST: OK
 if [ $result -eq 1 ]; then
   cmdScons platform=x11 target=release_debug tools=no bits=32 $LTO_FLAG $SCONS_FLAGS
   cp bin/godot.x11.opt.debug.32 $TEMPLATES_DIR/linux_x11_32_debug
@@ -135,7 +135,7 @@ if [ $result -eq 1 ]; then
   cmdUpxStrip $TEMPLATES_DIR/linux_x11_32_release
 fi
 
-yesNoS "Building Linux 64 Editor" $defaultYN #TEST OK
+yesNoS "Building Linux 64 Editor" $defaultYN #TEST: OK
 if [ $result -eq 1 ]; then
   cmdScons platform=x11 tools=yes target=release_debug bits=64 $LTO_FLAG $SCONS_FLAGS
   cp bin/godot.x11.opt.tools.64 $EDITOR_DIR/godot_x11.64
@@ -147,7 +147,7 @@ if [ $result -eq 1 ]; then
   # line just for easier comparison
   # line just for easier comparison
 fi
-yesNoS "Building Linux 64 Release and Debug Template" $defaultYN #TEST OK
+yesNoS "Building Linux 64 Release and Debug Template" $defaultYN #TEST: OK
 if [ $result -eq 1 ]; then
   cmdScons platform=x11 target=release_debug tools=no bits=64 $LTO_FLAG $SCONS_FLAGS
   cp bin/godot.x11.opt.debug.64 $TEMPLATES_DIR/linux_x11_64_debug
@@ -160,14 +160,14 @@ if [ $result -eq 1 ]; then
   # line just for easier comparison
 fi
 
-yesNoS "Building Windows 32 Editor" $defaultYN #TEST OK
+yesNoS "Building Windows 32 Editor" $defaultYN #TEST: OK
 if [ $result -eq 1 ]; then
   cmdScons platform=windows tools=yes target=release_debug bits=32 $LTO_FLAG $SCONS_FLAGS
   cp bin/godot.windows.opt.tools.32.exe $EDITOR_DIR/godot_win32.exe
   x86_64-w64-mingw32-strip $EDITOR_DIR/godot_win32.exe
   cmdUpxStrip $EDITOR_DIR/godot_win32.exe
 fi
-yesNoS "Building Windows 32 Release and Debug Template" $defaultYN #TEST OK
+yesNoS "Building Windows 32 Release and Debug Template" $defaultYN #TEST: OK
 if [ $result -eq 1 ]; then
   cmdScons platform=windows target=release_debug tools=no bits=32 $LTO_FLAG $SCONS_FLAGS
   cp bin/godot.windows.opt.debug.32.exe $TEMPLATES_DIR/windows_32_debug.exe
@@ -180,7 +180,7 @@ if [ $result -eq 1 ]; then
   cmdUpxStrip $TEMPLATES_DIR/windows_32_release.exe
 fi
 
-yesNoS "Building Windows 64 Editor" $defaultYN #TEST OK
+yesNoS "Building Windows 64 Editor" $defaultYN #TEST: OK
 # line just for easier comparison
 if [ $result -eq 1 ]; then
   cmdScons platform=windows tools=yes target=release_debug bits=64 $LTO_FLAG $SCONS_FLAGS
@@ -188,7 +188,7 @@ if [ $result -eq 1 ]; then
   x86_64-w64-mingw32-strip $EDITOR_DIR/godot_win64.exe
   cmdUpxStrip $EDITOR_DIR/godot_win64.exe
 fi
-yesNoS "Building Windows 64 Release and Debug Template" $defaultYN #TEST OK
+yesNoS "Building Windows 64 Release and Debug Template" $defaultYN #TEST: OK
 # line just for easier comparison
 # line just for easier comparison
 if [ $result -eq 1 ]; then
@@ -201,7 +201,7 @@ if [ $result -eq 1 ]; then
   x86_64-w64-mingw32-strip $TEMPLATES_DIR/windows_64_release.exe
 fi
 
-yesNoS "Building Linux Server for 32 and 64 bits" $defaultYN #TEST OK
+yesNoS "Building Linux Server for 32 and 64 bits" $defaultYN #TEST: OK
 # line just for easier comparison
 if [ $result -eq 1 ]; then
   cmdScons platform=server target=release_debug tools=no bits=32 $LTO_FLAG $SCONS_FLAGS
@@ -229,7 +229,7 @@ if [ $result -eq 1 ]; then
   cd "../../.."
 fi
 
-yesNoS "Building Javascript Template" $defaultYN #TEST OK -
+yesNoS "Building Javascript Template" $defaultYN #TEST: OK
 if [ $result -eq 1 ]; then
   cmdScons platform=javascript target=release $LTO_FLAG $SCONS_FLAGS
   cp javascript_release.zip $TEMPLATES_DIR/

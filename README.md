@@ -69,7 +69,7 @@ Settings variables at the start of the main build script can be changed to custo
 
 All the other variables used by the scripts can be found in the file './tools/variables.sh'. They can be changed too, but not necessarily.
 
-## TODO
+## TODOs
 
 - test scripts on Ubuntu 16.04 to maximize templates compatability
 - finish missing platforms builds and tests (check the TODOs in files)

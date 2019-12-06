@@ -134,7 +134,7 @@ echo "NOT AVAILABLE:Building MONO Linux 32 bits templates"
 # line just for easier comparison
 # line just for easier comparison
 
-yesNoS "Building MONO Linux 64 Editor" $defaultYN #TEST OK
+yesNoS "Building MONO Linux 64 Editor" $defaultYN #TEST: OK
 if [ $result -eq 1 ]; then
   # Build temporary binary
   cmdScons platform=x11 tools=yes target=release_debug bits=64 mono_glue=no copy_mono_root=yes $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
@@ -146,7 +146,7 @@ if [ $result -eq 1 ]; then
   cmdUpxStrip $EDITOR_DIR/godot_x11.64.mono # may fails on some linux distros
   # MONO DATA Folder: GodotSharp
 fi
-yesNoS "Building MONO Linux 64 Release and Debug Template" $defaultYN #TEST OK
+yesNoS "Building MONO Linux 64 Release and Debug Template" $defaultYN #TEST: OK
 if [ $result -eq 1 ]; then
   cmdScons platform=x11 target=release_debug tools=no bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   cp bin/godot.x11.opt.debug.64.mono $TEMPLATES_DIR/linux_x11_64_debug.mono

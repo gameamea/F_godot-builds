@@ -84,7 +84,7 @@ rm -Rf "$GODOT_DIR/platform/android/java/build/"
 ./gradlew build
 cd "../../.."
 
-#note file are generated in /platform/android/java/app/build/outputs/apk/ folder in not directly in bin (WTF ?)
+#NOTE: file are generated in /platform/android/java/app/build/outputs/apk/ folder in not directly in bin (WTF ?)
 cpcheck "$GODOT_DIR/platform/android/java/app/build/outputs/apk/debug/android_debug.apk" "$GODOT_DIR/bin"
 cpcheck "$GODOT_DIR/platform/android/java/app/build/outputs/apk/release/android_release.apk" "$GODOT_DIR/bin"
 

@@ -21,7 +21,7 @@ if [ $result -eq 1 ]; then
   echo_header "Installing $label"
   if [ $isArchLike -eq 1 ]; then
     ## Arch linux
-    sudo pacman -S --force upx scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu alsa-lib pulseaudio yasm
+    sudo pacman -S upx scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu alsa-lib pulseaudio yasm
   elif [ $isUbuntuLike -eq 1 ]; then
     ## Debian / Ubuntu
     # TODO: following command must be tested
@@ -61,9 +61,9 @@ if [ $result -eq 1 ]; then
   echo_header "Installing $label"
   if [ $isArchLike -eq 1 ]; then
     ## Arch linux
-    yay -S --force mingw-w64-crt mingw-w64-gcc
+    yay -S mingw-w64-gcc-base
 
-    sudo pacman -S --force wine
+    sudo pacman -S wine
   elif [ $isUbuntuLike -eq 1 ]; then
     ## Debian / Ubuntu
     # TODO: following command must be tested
@@ -101,12 +101,12 @@ fi
 
 # TODO: test build with mono missing to check for dependencies
 label="Mono"
-yesNoS "Do you want to download, update or install $label" 0
+yesNoS "Do you want to download, update or install $label" $isDependencyForced
 if [ $result -eq 1 ]; then
   # import necessary certificates for NuGet to perform HTTPS requests
   mozroots --import --sync
   if [ $isArchLike -eq 1 ]; then
-    sudo pacman -S --force mono
+    sudo pacman -S mono
   elif [ $isUbuntuLike -eq 1 ]; then
     # TODO: following command must be tested
     sudo apt install mono
@@ -133,7 +133,7 @@ if [ $result -eq 1 ]; then
 fi
 
 label="InnoSetup"
-yesNoS "Do you want to download, update or install $label" 0
+yesNoS "Do you want to download, update or install $label" $isDependencyForced
 if [ $result -eq 1 ]; then
   if [ ! -d "$TOOLS_DIR/innosetup" ]; then
     # Install InnoSetup
@@ -153,7 +153,7 @@ if [ $result -eq 1 ]; then
 fi
 
 label="Android SDK"
-yesNoS "Do you want to download, update or install $label" 0
+yesNoS "Do you want to download, update or install $label" $isDependencyForced
 if [ $result -eq 1 ]; then
   if [ "$ANDROID_HOME" ] && [ ! -d "$TOOLS_DIR/android" ]; then
     echo_header "Downloading $label"
@@ -174,15 +174,15 @@ if [ $result -eq 1 ]; then
 fi
 
 label="Mono for Android"
-yesNoS "Do you want to download, update or install $label" 0
+yesNoS "Do you want to download, update or install $label" $isDependencyForced
 if [ $result -eq 1 ]; then
-  "$TOOLS_DIR/godot-mono-builds/build_mono"
+  "$TOOLS_DIR/godot-mono-builds/build_mono.sh"
   if [ $? -eq 0 ] && [ -d "$TOOLS_DIR/mono/mono-installs/android-x86-release" ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
   if [ $result -eq 1 ]; then echo_success "$label installed successfully"; else echo_warning "$label installed with error"; fi
 fi
 
 label="OSXCross"
-yesNoS "Do you want to download, update or install $label" 0
+yesNoS "Do you want to download, update or install $label" $isDependencyForced
 if [ $result -eq 1 ]; then
   # Display a warning message if no Xcode DMG is found
   if [ ! -f "$XCODE_DMG" ]; then
@@ -207,7 +207,7 @@ if [ $result -eq 1 ]; then
 fi
 
 label="cctools-port"
-yesNoS "Do you want to download, update or install $label" 0
+yesNoS "Do you want to download, update or install $label" $isDependencyForced
 if [ $result -eq 1 ]; then
   if [ ! -f "$XCODE_DMG" ]; then
     echo -e "\e[1;33mNOTE:\e[0m Couldn't find a Xcode 7.3.1 DMG image.\nIf you want to build for macOS and iOS, download it from here (requires a free Apple Developer ID):\n\e[1mhttps://developer.apple.com/download/more/\e[0m\n"
@@ -227,7 +227,7 @@ if [ $result -eq 1 ]; then
 fi
 
 label="Emscripten ${emscriptenVersion}"
-yesNoS "Do you want to download, update or install $label" 0
+yesNoS "Do you want to download, update or install $label" $isDependencyForced
 if [ $result -eq 1 ]; then
   if [ ! -d "$TOOLS_DIR/emscripten" ]; then
     mkdir -p "$TOOLS_DIR/emscripten"
@@ -244,7 +244,7 @@ if [ $result -eq 1 ]; then
   cd emsdk
   git pull
 
-  # NOTE :
+  # NOTE:
   # specify which backend you want to use, either fastcomp or upstream
   # (without specifying the backend, the current default is used)
 

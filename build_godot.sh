@@ -37,6 +37,8 @@ export importantYN=0
 export gitRepoIndex=0
 #  if set to 1, Run './script/test.sh' file after initialisation instead of running normal process."
 export runTest=0
+#  if set to 1, dependency setup will be forced
+export isDependencyForced=0
 
 # ------------
 # CHANGING BUILDS SETTINGS
@@ -85,7 +87,7 @@ export backupBinaries=1
 export buildWithJavascriptSingleton=1
 
 # EMSCRIPTEN version to update on dependencies:
-# note: if latest is chosen, an new update will nearly be dowload each time
+# NOTE: if latest is chosen, an new update will nearly be dowload each time
 # export emscriptenVersion='latest'
 export emscriptenVersion='1.38.47'
 
@@ -113,6 +115,7 @@ function usage() {
   echo " --nobackup : Force not to backup existng binaries."
   echo " --x11editoronly : Build only 64 bits editor for Linux."
   echo " --windowseditoronly : Build only 64 bits editor for Windows."
+  echo " --dependencies : Force dependency setup will be forced, overwrite the setting set in files."
   echo "Default options are set to:"
   echo " ask for user confirmation (add -q option to disable)."
   echo " use Source code stored in the '../_godot' folder (that must be a symlink to the version you want to compile)."
@@ -166,6 +169,9 @@ while [ -n "$1" ]; do
       ;;
     --nobackup)
       export backupBinaries=0
+      ;;
+    --dependencies)
+      export isDependencyForced=1
       ;;
     --x11editoronly)
       export isQuiet=1
@@ -278,7 +284,7 @@ mkdir -p "$EDITOR_DIR" "$TEMPLATES_DIR"
 echo_header "GODOT ENGINE BUILD SCRIPT"
 echo_info "${blueOnWhite}Source folder: $GODOT_DIR"
 
-yesNoS "${orangeOnBlack}Do you want to Install or update dependencies" $importantYN
+yesNoS "${orangeOnBlack}Do you want to Install or update dependencies" $isDependencyForced
 if [ $result -eq 1 ]; then
   # Install or update dependencies
   "$UTILITIES_DIR/install_dependencies.sh"
