@@ -15,6 +15,17 @@ mkdir -p "$TOOLS_DIR"
 
 echo_header "Installing dependencies (administrative privileges may be required)"
 
+label="certificates for NuGet to perform (formerly mozroot)"
+yesNoS "Do you want to download, update or install $label" 0
+if [ $result -eq 1 ]; then
+  echo_header "Installing $label"
+  oldpwd=$(pwd)
+  cd $RESOURCES_DIR
+  curl -LO https://curl.haxx.se/ca/cacert.pem
+  cert-sync --user cacert.pem
+  cd $oldpwd
+fi
+
 label="all packages for your OS"
 yesNoS "Do you want to download, update or install $label" 0
 if [ $result -eq 1 ]; then
@@ -22,6 +33,8 @@ if [ $result -eq 1 ]; then
   if [ $isArchLike -eq 1 ]; then
     ## Arch linux
     sudo pacman -S upx scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu alsa-lib pulseaudio yasm
+    yay -S dotnet-host-bin dotnet-sdk-bin dotnet-runtime-bin msbuild
+
   elif [ $isUbuntuLike -eq 1 ]; then
     ## Debian / Ubuntu
     # TODO: following command must be tested
@@ -62,7 +75,6 @@ if [ $result -eq 1 ]; then
   if [ $isArchLike -eq 1 ]; then
     ## Arch linux
     yay -S mingw-w64-gcc-base
-
     sudo pacman -S wine
   elif [ $isUbuntuLike -eq 1 ]; then
     ## Debian / Ubuntu
@@ -103,8 +115,6 @@ fi
 label="Mono"
 yesNoS "Do you want to download, update or install $label" $isDependencyForced
 if [ $result -eq 1 ]; then
-  # import necessary certificates for NuGet to perform HTTPS requests
-  mozroots --import --sync
   if [ $isArchLike -eq 1 ]; then
     sudo pacman -S mono
   elif [ $isUbuntuLike -eq 1 ]; then
@@ -177,7 +187,7 @@ label="Mono for Android"
 yesNoS "Do you want to download, update or install $label" $isDependencyForced
 if [ $result -eq 1 ]; then
   "$TOOLS_DIR/godot-mono-builds/build_mono.sh"
-  if [ $? -eq 0 ] && [ -d "$TOOLS_DIR/mono/mono-installs/android-x86-release" ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
+  if [ -d "$TOOLS_DIR/mono/mono-installs/android-x86-release" ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
   if [ $result -eq 1 ]; then echo_success "$label installed successfully"; else echo_warning "$label installed with error"; fi
 fi
 

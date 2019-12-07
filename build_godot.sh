@@ -103,10 +103,12 @@ function usage() {
   echo "Result:"
   echo " Build godot engine editor and templates from local source with several options."
   echo "Command line options:"
-  echo " -h |--help  : Show this help."
+  echo " -h |--help  : Show this help and exit."
+  echo " -p |--printenv  : Print the environment settings and exit."
   echo " -q |--quiet : Stop asking for user input (automatic or batch mode)."
   echo " -t |--test : Run './script/test.sh' file after initialisation instead of running normal process."
   echo " -g |--gitrepoindex : Index of the git repo to use for build (0 for default in '_godot' folder, 1 for official godot.., see list in variables.sh), overwrite the setting set in files."
+  echo " --dependencies : Force dependency setup will be forced, overwrite the setting set in files."
   echo " --nomono : Force build without mono, overwrite the setting set in files."
   echo " --mono : Force build with mono, overwrite the setting set in files."
   echo " --32b : Force build with 32 bits versions, overwrite the setting set in files."
@@ -115,7 +117,6 @@ function usage() {
   echo " --nobackup : Force not to backup existng binaries."
   echo " --x11editoronly : Build only 64 bits editor for Linux."
   echo " --windowseditoronly : Build only 64 bits editor for Windows."
-  echo " --dependencies : Force dependency setup will be forced, overwrite the setting set in files."
   echo "Default options are set to:"
   echo " ask for user confirmation (add -q option to disable)."
   echo " use Source code stored in the '../_godot' folder (that must be a symlink to the version you want to compile)."
@@ -131,6 +132,39 @@ function usage() {
   exit 0
 }
 
+function printEnv() {
+  echo ""
+  echo "Script parameters:"
+  echo ""
+  echo "isQuiet=$isQuiet"
+  echo "stopOnFail=$stopOnFail"
+  echo "isBinSizeOptimised=$isBinSizeOptimised"
+  echo "isLinkingOptimised=$isLinkingOptimised"
+  echo "defaultYN=$defaultYN"
+  echo "importantYN=$importantYN"
+  echo "gitRepoIndex=$gitRepoIndex"
+  echo "runTest=$runTest"
+  echo "isDependencyForced=$isDependencyForced"
+  echo "buildLinuxEditor=$buildLinuxEditor"
+  echo "buildLinuxTemplates=$buildLinuxTemplates"
+  echo "buildWindowsEditor=$buildWindowsEditor"
+  echo "buildWindowsTemplates=$buildWindowsTemplates"
+  echo "buildMacosEditor=$buildMacosEditor"
+  echo "buildMacosTemplates=$buildMacosTemplates"
+  echo "buildAndroid=$buildAndroid"
+  echo "buildWeb=$buildWeb"
+  echo "buildServer=$buildServer"
+  echo "buildUWPTemplates=$buildUWPTemplates"
+  echo "buildIos=$buildIos"
+  echo "buildDoc=$buildDoc"
+  echo "build32Bits=$build32Bits"
+  echo "buildWithMono=$buildWithMono"
+  echo "deploy=$deploy"
+  echo "backupBinaries=$backupBinaries"
+  echo "buildWithJavascriptSingleton=$buildWithJavascriptSingleton"
+  echo "emscriptenVersion=$emscriptenVersion"
+  exit 0
+}
 # ------------
 # COMMAND LINE OPTIONS
 # Must be done before other init
@@ -142,6 +176,9 @@ while [ -n "$1" ]; do
     -h | --help)
       usage
       ;;
+    -p | --printenv)
+      printEnv
+      ;;
     -q | --quiet)
       export isQuiet=1
       ;;
@@ -151,6 +188,9 @@ while [ -n "$1" ]; do
     -g | --gitrepoindex)
       export gitRepoIndex=$2
       shift
+      ;;
+    --dependencies)
+      export isDependencyForced=1
       ;;
     --nomono)
       export buildWithMono=0
@@ -169,9 +209,6 @@ while [ -n "$1" ]; do
       ;;
     --nobackup)
       export backupBinaries=0
-      ;;
-    --dependencies)
-      export isDependencyForced=1
       ;;
     --x11editoronly)
       export isQuiet=1

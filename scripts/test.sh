@@ -12,6 +12,12 @@
 # web release build test
 #cmdScons platform=javascript target=release tools=no $SCONS_FLAGS
 
+scons p=x11 tools=yes module_mono_enabled=yes mono_glue=no
+exit
+cmdScons platform=x11 bits=64 tools=yes mono_glue=no -j4 module_mono_enabled=yes
+# mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux
+#  mono_static=yes copy_mono_root=yes progress=no debug_symbols=no target=release_debug
+exit
 #
 # android release build test with mono
 [ ! -z $MONO_PREFIX_ANDROID ] && MONO_OPTIONS=" module_mono_enabled=yes $MONO_PREFIX_ANDROID/mono-installs/android-arm64-v8a-release"

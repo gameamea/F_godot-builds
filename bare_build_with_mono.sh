@@ -49,9 +49,9 @@ export TEMPLATES_DIR="$ARTIFACTS_DIR/templates.mono"
 export TOOLS_DIR="${TOOLS_DIR:-"$DIR/tools"}"
 
 export TOOLS_MONO_DIR="${TOOLS_MONO_DIR:-"$TOOLS_DIR/mono"}"
-export MONO_PREFIX_LINUX="$TOOLS_MONO_DIR/linux"
-export MONO_PREFIX_WINDOWS="$TOOLS_MONO_DIR/windows"
-export MONO_PREFIX_ANDROID="$TOOLS_MONO_DIR/android"
+export MONO_PREFIX_LINUX=" mono_prefix=$TOOLS_MONO_DIR/linux"
+export MONO_PREFIX_WINDOWS=" mono_prefix=$TOOLS_MONO_DIR/windows"
+export MONO_PREFIX_ANDROID=" mono_prefix=$TOOLS_MONO_DIR/android"
 
 export EMSCRIPTEN_ROOT="/usr/lib/emscripten"
 
@@ -137,23 +137,23 @@ echo "NOT AVAILABLE:Building MONO Linux 32 bits templates"
 yesNoS "Building MONO Linux 64 Editor" $defaultYN #TEST: OK
 if [ $result -eq 1 ]; then
   # Build temporary binary
-  cmdScons platform=x11 tools=yes target=release_debug bits=64 mono_glue=no copy_mono_root=yes $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
+  cmdScons platform=x11 bits=64 tools=yes target=release_debug mono_glue=no copy_mono_root=yes $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   # Generate glue sources
-  bin\godot.x11.opt.tools.32.mono --generate-mono-glue modules/mono/mono-installs/glue
+  bin/godot.x11.opt.tools.32.mono --generate-mono-glue modules/mono/mono-installs/glue
   # Build binaries normally
-  cmdScons platform=x11 tools=yes target=release_debug bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
+  cmdScons platform=x11 bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   cp bin/godot.x11.opt.tools.64.mono $EDITOR_DIR/godot_x11.64.mono
   cmdUpxStrip $EDITOR_DIR/godot_x11.64.mono # may fails on some linux distros
   # MONO DATA Folder: GodotSharp
 fi
 yesNoS "Building MONO Linux 64 Release and Debug Template" $defaultYN #TEST: OK
 if [ $result -eq 1 ]; then
-  cmdScons platform=x11 target=release_debug tools=no bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
+  cmdScons platform=x11 bits=64 target=release_debug tools=no $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   cp bin/godot.x11.opt.debug.64.mono $TEMPLATES_DIR/linux_x11_64_debug.mono
   cmdUpxStrip $TEMPLATES_DIR/linux_x11_64_debug.mono
   # MONO DATA Folder: data.mono.x11.64.debug
 
-  cmdScons platform=x11 target=release tools=no bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
+  cmdScons platform=x11 bits=64 target=release tools=no $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   cp bin/godot.x11.opt.64.mono $TEMPLATES_DIR/linux_x11_64_release.mono
   cmdUpxStrip $TEMPLATES_DIR/linux_x11_64_release.mono
   # MONO DATA Folder: data.mono.x11.64.release
@@ -182,7 +182,7 @@ echo "NOT AVAILABLE:Building MONO Windows 32 bits templates"
 yesNoS "Building MONO Windows 64 Editor" $defaultYN # ECHEC : erreur de build
 # RuntimeError: Could not find mono library in: /mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/windows/lib:
 if [ $result -eq 1 ]; then
-  cmdScons platform=windows tools=yes target=release_debug bits=64 copy_mono_root=yes $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_WINDOWS
+  cmdScons platform=win bits=64 ows tools=yes target=release_debug copy_mono_root=yes $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_WINDOWS
   cp bin/godot.windows.opt.tools.64.mono.exe $EDITOR_DIR/godot_win64.mono.exe
   x86_64-w64-mingw32-strip $EDITOR_DIR/godot_win64.mono.mono.exe
   cmdUpxStrip $EDITOR_DIR/godot_win64.mono.exe
@@ -191,11 +191,11 @@ yesNoS "Building MONO Windows 64 Release and Debug Template" $defaultYN
 # ECHEC : erreur de build
 # RuntimeError: Could not find mono library in: /mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/windows/lib:
 if [ $result -eq 1 ]; then
-  cmdScons platform=windows target=release_debug tools=no bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_WINDOWS
+  cmdScons platform=win bits=64 ows target=release_debug tools=no $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_WINDOWS
   cp bin/godot.windows.opt.debug.64.mono.exe $TEMPLATES_DIR/windows_64_debug.mono.exe
   x86_64-w64-mingw32-strip $TEMPLATES_DIR/windows_64_debug.mono.exe
 
-  cmdScons platform=windows target=release tools=no bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_WINDOWS
+  cmdScons platform=win bits=64 ows target=release tools=no $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_WINDOWS
   cp bin/godot.windows.opt.64.mono.exe $TEMPLATES_DIR/windows_64_release.mono.exe
   x86_64-w64-mingw32-strip $TEMPLATES_DIR/windows_64_release.mono.exe
 fi
@@ -207,7 +207,7 @@ if [ $result -eq 1 ]; then
   cp bin/godot_server.x11.opt.debug.32 $TEMPLATES_DIR/linux_server_32
   cmdUpxStrip $TEMPLATES_DIR/linux_server_32
 
-  cmdScons platform=server target=release_debug tools=no bits=64 $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
+  cmdScons platform=ser bits=64 er target=release_debug tools=no $LTO_FLAG $SCONS_FLAGS $MONO_PREFIX_LINUX
   cp bin/godot_server.x11.opt.debug.64 $TEMPLATES_DIR/linux_server_64
   cmdUpxStrip $TEMPLATES_DIR/linux_server_64
 fi
