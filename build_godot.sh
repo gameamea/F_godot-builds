@@ -49,16 +49,16 @@ export isDependencyForced=0
 
 # Desktop platforms
 export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildLinuxTemplates=1   # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildWindowsEditor=1    # normal32:OK normal64:OK mono:BUG cross build
-export buildWindowsTemplates=1 # normal32:OK normal64:OK mono:BUG cross build
+export buildLinuxTemplates=0   # normal32:OK normal64:OK mono64:OK mono32:unavailable
+export buildWindowsEditor=0   # normal32:OK normal64:OK mono:BUG cross build
+export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web/Other platforms
-export buildAndroid=1      # normal32:OK normal64:OK mono:OK
-export buildWeb=1          # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
-export buildServer=1       # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
+export buildAndroid=0      # normal32:OK normal64:OK mono:OK
+export buildWeb=0          # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
+export buildServer=0       # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
 export buildUWPTemplates=0 #TODO:TEST no mono & TEST Mono
 export buildIos=0          #TODO
 export buildDoc=0          #TODO
@@ -68,7 +68,7 @@ export buildDoc=0          #TODO
 export build32Bits=1
 
 # Build with mono if possible
-export buildWithMono=1
+export buildWithMono=0
 
 # Deploy
 export deploy=1 #TODO: update code after each sucessfull build process added
