@@ -32,9 +32,14 @@ if [ $result -eq 1 ]; then
   echo_header "Installing $label"
   if [ $isArchLike -eq 1 ]; then
     ## Arch linux
-    sudo pacman -S upx scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu alsa-lib pulseaudio yasm
+    sudo pacman -S upx scons pkgconf gcc libxcursor libxinerama libxi libxrandr mesa glu libglvnd alsa-lib pulseaudio yasm
+    sudo pacman -S lib32-libpulse #for 32 bits version
+    # TODO: it seems to have repeatitive downloads in the following
     yay -S dotnet-host-bin dotnet-sdk-bin dotnet-runtime-bin msbuild
-
+    sudo pacman -S jdk8-openjdk
+    sudo archlinux-java set java-8-openjdk
+    ## acept licenses , if not adroid build will fail
+    /opt/android-sdk/tools/bin/sdkmanager --licenses
   elif [ $isUbuntuLike -eq 1 ]; then
     ## Debian / Ubuntu
     # TODO: following command must be tested
@@ -74,7 +79,7 @@ if [ $result -eq 1 ]; then
   echo_header "Installing $label"
   if [ $isArchLike -eq 1 ]; then
     ## Arch linux
-    yay -S mingw-w64-gcc-base
+    yay -S mingw-w64-gcc-base-bin
     sudo pacman -S wine
   elif [ $isUbuntuLike -eq 1 ]; then
     ## Debian / Ubuntu

@@ -36,7 +36,7 @@ export THREADS=$(nproc)
 export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
 
 # Link optimisation flag
-if [ $isLinkingOptimised -eq 1 ]; then
+if [ "x$isLinkingOptimised" = "x1" ]; then
   # LINKING PROCESS TAKES MUCH MORE TIME
   echo "linking optimisation deactivated"
   export LTO_FLAG="use_lto=yes"
