@@ -56,13 +56,6 @@ export DIR="${DIR:-"/mnt/R/Apps_Sources/GodotEngine/godot-builds"}"
 # and the distant git repo to pull from
 # for various godot versions
 case $gitRepoIndex in
-  0)
-    # system dependant/config independant) version (the symlink can be changed on différent PC)
-    export GODOT_DIR="$(dirname $DIR)/_godot"
-    # GODOT Gameamea version : 3.2 with editor auto formatter (taken from Frug version)
-    export GODOT_BRANCH="gdscript_format_updated"
-    export GODOT_ORIGIN="https://github.com/gameamea/F_godot.git"
-    ;;
   1)
     # GODOT official
     export GODOT_DIR="$(dirname $DIR)/godot_official"
@@ -81,6 +74,13 @@ case $gitRepoIndex in
     export GODOT_ORIGIN="https://github.com/frugs/godot.git"
     export GODOT_BRANCH="gdscript_auto_formatter"
     ;;
+  *)
+    # system dependant/config independant) version (the symlink can be changed on différent PC)
+    export GODOT_DIR="$(dirname $DIR)/_godot"
+    # GODOT Gameamea version : 3.2 with editor auto formatter (taken from Frug version)
+    export GODOT_BRANCH="gdscript_format_updated"
+    export GODOT_ORIGIN="https://github.com/gameamea/F_godot.git"
+    ;;
 esac
 
 # cd here to because some variables need to be computed in these folder
@@ -98,7 +98,7 @@ export GDVERSION=$(getGDVersion "$GODOT_DIR")
 export TEMPLATES_DIR="$HOME/.local/share/godot/templates/${GDVERSION}${MONO_EXT}"
 
 # ------------
-# variables
+# variables used by build_godot.sh
 #
 # usually these values should not be changed
 # ------------
@@ -118,6 +118,7 @@ chmod 777 $LOGS_DIR
 
 # The path to the mono dependencies
 export TOOLS_MONO_DIR="${TOOLS_MONO_DIR:-"$TOOLS_DIR/mono"}"
+
 # Some folder used by mono prefixes
 if [ "$buildWithMono" -eq 1 ]; then
   export MONO_PREFIX_LINUX=" mono_prefix=$TOOLS_MONO_DIR/linux"
@@ -130,7 +131,7 @@ else
 fi
 
 # The path to The mono sources for build
-export MONO_SOURCE_ROOT="/mnt/R/Apps_Sources/mono"
+export MONO_SOURCE_ROOT="${MONO_SOURCE_ROOT:-"/mnt/R/Apps_Sources/mono"}"
 
 # Set the environment variables used in build naming
 
@@ -161,6 +162,29 @@ export BUILD_COMMIT="$(git rev-parse --short=9 HEAD)"
 
 # The final version string
 export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
+
+# ------------
+# variables used by build_godot.sh
+#
+# usually these values should not be changed
+# ------------
+# Common directories used in the script
+
+# The path to the mono build scripts
+export TOOLS_MONO_BUILDS="$TOOLS_DIR/godot-mono-builds"
+
+export MONO_BUILDS_CROSS_COMPIL_FLAG="--mxe-prefix=/usr"
+
+export MONO_BUILDS_PREFIX_LINUX="$TOOLS_MONO_DIR/linux"
+export MONO_BUILDS_PREFIX_WINDOWS="$TOOLS_MONO_DIR/windows"
+export MONO_BUILDS_PREFIX_MACOS="$TOOLS_MONO_DIR/macos"
+export MONO_BUILDS_PREFIX_ANDROID="$TOOLS_MONO_DIR/android"
+export MONO_BUILDS_PREFIX_WEBASM="$TOOLS_MONO_DIR/webasm"
+export MONO_BUILDS_LINUX_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_LINUX/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_LINUX/mono-config"
+export MONO_BUILDS_MAC_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_MACOS/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_MACOS/mono-config"
+export MONO_BUILDS_WINDOWS_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_WINDOWS/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_WINDOWS/mono-config"
+export MONO_BUILDS_ANDROID_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_ANDROID/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_ANDROID/mono-config"
+export MONO_BUILDS_WEBASM_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_WEBASM/mono-installs --configure-dir=$MONO_PREFIX_WEBASM/mono-config"
 
 # Build log : store the files that were missing on deloy/copy
 # the file is stored in the script folder

@@ -37,8 +37,10 @@ export importantYN=0
 export gitRepoIndex=0
 #  if set to 1, Run './script/test.sh' file after initialisation instead of running normal process."
 export runTest=0
-#  if set to 1, dependency setup will be forced
+#  if set to 1, dependency setup will be forced in quiet mode
 export isDependencyForced=0
+#  if set to 1, mono build from sources will be forced in quiet mode
+export isBuildMonoFromSourceForced=0
 
 # ------------
 # CHANGING BUILDS SETTINGS
@@ -50,7 +52,7 @@ export isDependencyForced=0
 # Desktop platforms
 export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:unavailable
 export buildLinuxTemplates=0   # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildWindowsEditor=0   # normal32:OK normal64:OK mono:BUG cross build
+export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
 export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
@@ -109,6 +111,7 @@ function usage() {
   echo " -t |--test : Run './script/test.sh' file after initialisation instead of running normal process."
   echo " -g |--gitrepoindex : Index of the git repo to use for build (0 for default in '_godot' folder, 1 for official godot.., see list in variables.sh), overwrite the setting set in files."
   echo " --dependencies : Force dependency setup will be forced, overwrite the setting set in files."
+  echo " --buildmono : Force mono build from sources setup will be forced, overwrite the setting set in files."
   echo " --nomono : Force build without mono, overwrite the setting set in files."
   echo " --mono : Force build with mono, overwrite the setting set in files."
   echo " --32b : Force build with 32 bits versions, overwrite the setting set in files."
@@ -165,6 +168,7 @@ function printEnv() {
   echo "emscriptenVersion=$emscriptenVersion"
   exit 0
 }
+
 # ------------
 # COMMAND LINE OPTIONS
 # Must be done before other init
@@ -191,6 +195,9 @@ while [ -n "$1" ]; do
       ;;
     --dependencies)
       export isDependencyForced=1
+      ;;
+    --buildmono)
+      export isBuildMonoFromSourceForced=1
       ;;
     --nomono)
       export buildWithMono=0
@@ -325,6 +332,11 @@ yesNoS "${orangeOnBlack}Do you want to Install or update dependencies" $isDepend
 if [ $result -eq 1 ]; then
   # Install or update dependencies
   "$UTILITIES_DIR/install_dependencies.sh"
+fi
+
+yesNoS "${orangeOnBlack}Do you want to build mono from sources (can be long)" $isBuildMonoFromSourceForced
+if [ $result -eq 1 ]; then
+  "$DIR/build_mono.sh"
 fi
 
 # Delete the existing Godot Git repository then clone a fresh copy

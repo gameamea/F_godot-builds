@@ -209,12 +209,14 @@ export -f detectOsRelease
 # # Get godot version from setup.py
 function getGDVersion() {
   folder=$1
-  string='major = '
-  ver_major=$(cat "$folder/version.py" | grep -Fi "$string" | sed "s/$string//g")
-  string='minor = '
-  ver_minor=$(cat "$folder/version.py" | grep -Fi "$string" | sed "s/$string//g")
-  string='status = '
-  ver_status=$(cat "$folder/version.py" | grep -Fi "$string" | sed "s/$string//g" | sed 's/"//g')
-  echo "$ver_major.$ver_minor.$ver_status"
+  if [ ! -z $folder ]; then
+    string='major = '
+    ver_major=$(cat "$folder/version.py" | grep -Fi "$string" | sed "s/$string//g")
+    string='minor = '
+    ver_minor=$(cat "$folder/version.py" | grep -Fi "$string" | sed "s/$string//g")
+    string='status = '
+    ver_status=$(cat "$folder/version.py" | grep -Fi "$string" | sed "s/$string//g" | sed 's/"//g')
+    echo "$ver_major.$ver_minor.$ver_status"
+  fi
 }
 export -f getGDVersion
