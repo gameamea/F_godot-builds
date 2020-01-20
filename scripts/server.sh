@@ -17,7 +17,7 @@ fi
 # Build 32 bits server template
 # -----
 if [ $build32Bits -eq 1 ]; then
-  label="Building 32 bits SERVER release export template"
+  label="Building 32 bits SERVER debug export template"
   echo_header "Running $label"
   resultFile="$GODOT_DIR/bin/godot_server.x11.opt.debug.32"
   rm -f $resultFile
@@ -29,7 +29,7 @@ fi
 
 # Build 64 bits server template
 # -----
-label="Building 64 bits SERVER release export template"
+label="Building 64 bits SERVER debug export template"
 echo_header "Running $label"
 resultFile="$GODOT_DIR/bin/godot_server.x11.opt.debug.64"
 rm -f $resultFile

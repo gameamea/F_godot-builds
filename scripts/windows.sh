@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #------
-# This script compiles and packages Godot for Windows using MinGW and InnoSetup.
+# This script compiles Godot for Windows using MinGW.
 #
 # Copyright © 2017 Hugo Locurcio and contributors - CC0 1.0 Universal - for the base version
 # Copyright © 2019 Laurent Ongaro and contributors - CC0 1.0 Universal - for the updated version
@@ -9,47 +9,35 @@
 #------
 
 set -euo pipefail
-noBuild=0
+MONO_OPTIONS=""
 
-if [ "$buildWithMono" -eq 1 ] && [ $isArchLike -eq 1 ]; then
-  printf "\n${redOnBlack}Due to a bug on godot cross compiling, Windows binaries with mono can not be built on linux.${resetColor}"
-  # missing files on mono install : 'mono-2.0-sgen.lib' 'monosgen-2.0.lib'
-  # more info
-  # https://github.com/godotengine/godot/issues/31793
-  exit 0
-fi
+# line just for easier comparison
 
 # Build 32 bits editor
 # -----
 if [ $buildWindowsEditor -eq 1 ]; then
   if [ $build32Bits -eq 1 ]; then
     if [ "$buildWithMono" -eq 1 ]; then
+      [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-i686-release"
       label="Generate the glue for 32 bits editor for Windows"
       echo_header "Running $label"
-      if [ $isArchLike -eq 1 ]; then
-        echo_warning "32 bits version of mono is not available for $label. Can not Built."
-        noBuild=1
-      else
-        # Generate the glue
-        cmdScons platform=windows bits=32 tools=yes target=release_debug mono_glue=no $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS
-        "$GODOT_DIR/bin/godot.windows.tools.32.mono.exe" --generate-mono-glue "$GODOT_DIR/modules/mono/glue"
-        if [ $? -eq 0 ]; then result=1; else result=0; fi
-        if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
-        rm "$GODOT_DIR/bin/godot.windows.tools.32.mono.exe"
-      fi
-    fi
-    if [ $noBuild -eq 0 ]; then
-      # Build the editor
-      label="Building 32 bits editor${MONO_EXT} for Windows"
-      echo_header "Running $label"
-      resultFile="$GODOT_DIR/bin/godot.windows.opt.tools.32${MONO_EXT}.exe"
-      rm -f $resultFile
-      cmdScons platform=windows bits=32 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS
-      # Remove symbols and sections from files
-      x86_64-w64-mingw32-strip $resultFile
+      # Generate the glue
+      cmdScons platform=windows bits=32 tools=yes target=release_debug mono_glue=no $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS
+      "$GODOT_DIR/bin/godot.windows.opt.tools.32${MONO_EXT}.exe" --generate-mono-glue "$GODOT_DIR/modules/mono/glue"
       if [ $? -eq 0 ]; then result=1; else result=0; fi
       if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+      rm "$GODOT_DIR/bin/godot.windows.opt.tools.32${MONO_EXT}.exe"
     fi
+    # Build the editor
+    label="Building 32 bits editor${MONO_EXT} for Windows"
+    echo_header "Running $label"
+    resultFile="$GODOT_DIR/bin/godot.windows.opt.tools.32${MONO_EXT}.exe"
+    rm -f $resultFile
+    cmdScons platform=windows bits=32 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS
+    # Remove symbols and sections from files
+    x86_64-w64-mingw32-strip $resultFile
+    if [ $? -eq 0 ]; then result=1; else result=0; fi
+    if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
   fi
 fi
 
@@ -57,11 +45,12 @@ fi
 # --------------
 if [ $buildWindowsTemplates -eq 1 ]; then
   if [ $build32Bits -eq 1 ]; then
-    label="Building 32 bits debug export template${MONO_EXT} for Windows"
-    echo_header "Running $label"
-    if [ "$buildWithMono" -eq 1 ] && [ $isArchLike -eq 1 ]; then
-      echo_warning "32 bits version of mono is not available for $label. Can not Built."
+    if [ "$buildWithMono" -eq 1 ]; then
+      echo_warning "Building 32 bits debug export templates for Windows are bypassed due to missing debug version of mono (too long, but can be done if necessary)"
     else
+      label="Building 32 bits debug export template${MONO_EXT} for Windows"
+      echo_header "Running $label"
+      [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-i686-debug"
       resultFile="$GODOT_DIR/bin/godot.windows.opt.debug.32${MONO_EXT}.exe"
       rm -f $resultFile
       cmdScons platform=windows bits=32 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS
@@ -69,32 +58,35 @@ if [ $buildWindowsTemplates -eq 1 ]; then
       x86_64-w64-mingw32-strip $resultFile
       if [ $? -eq 0 ]; then result=1; else result=0; fi
       if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
-
-      label="32 bits release export template${MONO_EXT} for Windows"
-      echo_header "Running $label"
-      resultFile="$GODOT_DIR/bin/godot.windows.opt.32${MONO_EXT}.exe"
-      rm -f $resultFile
-      cmdScons platform=windows bits=32 tools=no target=release $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS
-      # Remove symbols and sections from files
-      x86_64-w64-mingw32-strip $resultFile
-      if [ $? -eq 0 ]; then result=1; else result=0; fi
-      if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
     fi
+    label="Building 32 bits release export template${MONO_EXT} for Windows"
+    echo_header "Running $label"
+    [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-i686-release"
+    resultFile="$GODOT_DIR/bin/godot.windows.opt.32${MONO_EXT}.exe"
+    rm -f $resultFile
+    cmdScons platform=windows bits=32 tools=no target=release $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS
+    # Remove symbols and sections from files
+    x86_64-w64-mingw32-strip $resultFile
+    if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
+    if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
   fi
 fi
+
+MONO_OPTIONS=""
 
 # Build 64 bits editor
 # -----
 if [ $buildWindowsEditor -eq 1 ]; then
   if [ "$buildWithMono" -eq 1 ]; then
+    [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-x86_64-release"
     # Generate the glue
     label="Generate the glue for 64 bits editor for Windows"
     echo_header "Running $label"
     cmdScons platform=windows bits=64 tools=yes target=release_debug mono_glue=no $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS
-    "$GODOT_DIR/bin/godot.windows.tools.64.mono.exe" --generate-mono-glue "$GODOT_DIR/modules/mono/glue"
+    "$GODOT_DIR/bin/godot.windows.opt.tools.64${MONO_EXT}.exe" --generate-mono-glue "$GODOT_DIR/modules/mono/glue"
     if [ $? -eq 0 ]; then result=1; else result=0; fi
     if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
-    rm "$GODOT_DIR/bin/godot.windows.tools.64.mono.exe"
+    rm "$GODOT_DIR/bin/godot.windows.tools.64${MONO_EXT}.exe"
   fi
 
   # Build the editor
@@ -105,25 +97,31 @@ if [ $buildWindowsEditor -eq 1 ]; then
   cmdScons platform=windows bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS
   # Remove symbols and sections from files
   x86_64-w64-mingw32-strip $resultFile
-  if [ $? -eq 0 ]; then result=1; else result=0; fi
+  if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 fi
 
 # Build 64 bits export templates
 # --------------
 if [ $buildWindowsTemplates -eq 1 ]; then
-  label="Building 64 bits debug export template${MONO_EXT} for Windows"
-  echo_header "Running $label"
-  resultFile="$GODOT_DIR/bin/godot.windows.opt.debug.64${MONO_EXT}.exe"
-  rm -f $resultFile
-  cmdScons platform=windows bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS
-  # Remove symbols and sections from files
-  x86_64-w64-mingw32-strip $resultFile
-  if [ $? -eq 0 ]; then result=1; else result=0; fi
-  if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+  if [ "$buildWithMono" -eq 1 ]; then
+    echo_warning "Building 64 bits debug export templates for Windows are bypassed due to missing debug version of mono (too long, but can be done if necessary)"
+  else
+    label="Building 64 bits debug export template${MONO_EXT} for Windows"
+    echo_header "Running $label"
+    [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-x86_64-debug"
+    resultFile="$GODOT_DIR/bin/godot.windows.opt.debug.64${MONO_EXT}.exe"
+    rm -f $resultFile
+    cmdScons platform=windows bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS
+    # Remove symbols and sections from files
+    x86_64-w64-mingw32-strip $resultFile
+    if [ $? -eq 0 ]; then result=1; else result=0; fi
+    if [ $result -easierq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+  fi
 
   label="Building 64 bits release export template${MONO_EXT} for Windows"
   echo_header "Running $label"
+  [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-x86_64-release"
   resultFile="$GODOT_DIR/bin/godot.windows.opt.64${MONO_EXT}.exe"
   rm -f $resultFile
   cmdScons platform=windows bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS $MONO_FLAG $MONO_PREFIX_WINDOWS

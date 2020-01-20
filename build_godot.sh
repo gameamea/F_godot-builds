@@ -51,26 +51,26 @@ export isBuildMonoFromSourceForced=0
 
 # Desktop platforms
 export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildLinuxTemplates=0   # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
-export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
+export buildLinuxTemplates=1   # normal32:OK normal64:OK mono64:OK mono32:unavailable
+export buildWindowsEditor=1    # normal32:OK normal64:OK mono:BUG cross build
+export buildWindowsTemplates=1 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web/Other platforms
-export buildAndroid=0      # normal32:OK normal64:OK mono:OK
-export buildWeb=0          # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
-export buildServer=0       # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
+export buildAndroid=1      # normal32:OK normal64:OK mono:OK
+export buildWeb=1          # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
+export buildServer=1       # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
 export buildUWPTemplates=0 #TODO:TEST no mono & TEST Mono
 export buildIos=0          #TODO
 export buildDoc=0          #TODO
 
 # Build 32 bits version if possible
-# NOTE: it Will be build BEFORE the 64 bits version
+# NOTE: the 32 bits is built BEFORE the 64 bits version
 export build32Bits=1
 
 # Build with mono if possible
-export buildWithMono=0
+export buildWithMono=1
 
 # Deploy
 export deploy=1 #TODO: update code after each sucessfull build process added
@@ -89,7 +89,7 @@ export backupBinaries=1
 export buildWithJavascriptSingleton=1
 
 # EMSCRIPTEN version to update on dependencies:
-# NOTE: if latest is chosen, an new update will nearly be dowload each time
+# NOTE: if latest is chosen, an new update will nearly be dowloaded each time
 # export emscriptenVersion='latest'
 export emscriptenVersion='1.38.47'
 
@@ -346,7 +346,7 @@ if [ $result -eq 1 ]; then
   echo_header "Cloning Godot Git repository from $GODOT_ORIGIN"
   git clone --depth=1 "$GODOT_ORIGIN" "$GODOT_DIR"
 else
-  yesNoS "Do you want to pull from origin (branch: $GODOT_BRANCH)?" $defaultYN
+  yesNoS "${orangeOnBlack}Do you want to pull from origin (branch: $GODOT_BRANCH)?" $defaultYN
   if [ $result -eq 1 ]; then
     git fetch origin
     git checkout $GODOT_BRANCH

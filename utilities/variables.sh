@@ -13,7 +13,7 @@
 # these values can be changed to customize the build process
 # ------------
 
-# mono extensions
+# mono extension
 export buildWithMono="${buildWithMono:-0}"
 if [ "$buildWithMono" -eq 1 ]; then
   #export MONO_FLAG=" module_mono_enabled=yes"
@@ -48,11 +48,11 @@ fi
 #export MINGW64_PREFIX="/path/to/x86_64-w64-mingw32-gcc"
 #export MINGW32_PREFIX="/path/to/i686-w64-mingw32-gcc"
 
-# `DIR` contains the directory where the script is located, regardless of where
+# `DIR` contains Folder where the script is located, regardless of where
 # it is run from. This makes it easy to run this set of build scripts from any location
 export DIR="${DIR:-"/mnt/R/Apps_Sources/GodotEngine/godot-builds"}"
 
-# The directory where the Godot Git repository will be cloned
+# Folder where the Godot Git repository will be cloned
 # and the distant git repo to pull from
 # for various godot versions
 case $gitRepoIndex in
@@ -89,7 +89,7 @@ cd "$GODOT_DIR"
 # ./bin dir could have been deleted
 [ ! -d "$GODOT_DIR/bin" ] && mkdir -p "$GODOT_DIR/bin"
 
-# The directory where build artifacts will be copied
+# Folder where build artifacts will be copied
 # EDITOR_DIR and TEMPLATES_DIR are used by platform-specific scripts
 export ARTIFACTS_DIR="${ARTIFACTS_DIR:-"$DIR/artifacts"}"
 export EDITOR_DIR="$ARTIFACTS_DIR/editor${MONO_EXT}"
@@ -102,35 +102,60 @@ export TEMPLATES_DIR="$HOME/.local/share/godot/templates/${GDVERSION}${MONO_EXT}
 #
 # usually these values should not be changed
 # ------------
-# Common directories used in the script
+# Path to building scripts
 export SCRIPTS_DIR="$DIR/scripts"
 
-# The directory where resource files are located
+# Path to resource files
 export RESOURCES_DIR="$DIR/resources"
 
-# The directory where SDKs and tools like InnoSetup are located
+# Path to SDKs and tools like InnoSetup
 export TOOLS_DIR="$DIR/tools"
 
-# The directory where logs are stored
+# Folder for log files
 export LOGS_DIR="$DIR/logs"
 mkdir -p $LOGS_DIR
 chmod 777 $LOGS_DIR
 
-# The path to the mono dependencies
+# Path to mono dependencies
 export TOOLS_MONO_DIR="${TOOLS_MONO_DIR:-"$TOOLS_DIR/mono"}"
 
-# Some folder used by mono prefixes
+# Path to mono build scripts
+export TOOLS_MONO_BUILDS="$TOOLS_DIR/godot-mono-builds"
+
+export MONO_BUILDS_CROSS_COMPIL_FLAG="--mxe-prefix=/usr"
+
+# Folders used by mono prefixes when building MONO
+export MONO_BUILDS_PREFIX_LINUX="$TOOLS_MONO_DIR/linux"
+export MONO_BUILDS_PREFIX_WINDOWS="$TOOLS_MONO_DIR/windows"
+export MONO_BUILDS_PREFIX_MACOS="$TOOLS_MONO_DIR/macosx"
+export MONO_BUILDS_PREFIX_ANDROID="$TOOLS_MONO_DIR/android"
+export MONO_BUILDS_PREFIX_WEBASM="$TOOLS_MONO_DIR/webasm"
+export MONO_BUILDS_PREFIX_BCL="$TOOLS_MONO_DIR/bcl"
+export MONO_BUILDS_LINUX_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_LINUX/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_LINUX/mono-config"
+export MONO_BUILDS_WINDOWS_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_WINDOWS/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_WINDOWS/mono-config"
+export MONO_BUILDS_MACOS_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_MACOS/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_MACOS/mono-config"
+export MONO_BUILDS_ANDROID_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_ANDROID/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_ANDROID/mono-config"
+export MONO_BUILDS_WEBASM_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_WEBASM/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_WEBASM/mono-config"
+export MONO_BUILDS_BCL_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_BCL/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_BCL/mono-config"
+
+# Folders used by mono prefixes when building GODOT
 if [ "$buildWithMono" -eq 1 ]; then
-  export MONO_PREFIX_LINUX=" mono_prefix=$TOOLS_MONO_DIR/linux"
-  export MONO_PREFIX_WINDOWS=" mono_prefix=$TOOLS_MONO_DIR/windows"
-  export MONO_PREFIX_ANDROID=" mono_prefix=$TOOLS_MONO_DIR/android"
+  export MONO_PREFIX_LINUX=" mono_prefix=$MONO_BUILDS_PREFIX_LINUX"
+  export MONO_PREFIX_WINDOWS=" mono_prefix=$MONO_BUILDS_PREFIX_WINDOWS"
+  export MONO_PREFIX_MACOSX=" mono_prefix=$MONO_BUILDS_PREFIX_MACOS"
+  export MONO_PREFIX_ANDROID=" mono_prefix=$MONO_BUILDS_PREFIX_ANDROID"
+  export MONO_PREFIX_WEBASM=" mono_prefix=$MONO_BUILDS_PREFIX_WEBASM"
+  export MONO_PREFIX_BCL=" mono_prefix=$MONO_BUILDS_BCL_FLAGS"
 else
   export MONO_PREFIX_LINUX=""
   export MONO_PREFIX_WINDOWS=""
+  export MONO_PREFIX_MACOSX=""
   export MONO_PREFIX_ANDROID=""
+  export MONO_PREFIX_WEBASM=""
+  export MONO_PREFIX_BCL=""
 fi
 
-# The path to The mono sources for build
+# Path to mono sources
 export MONO_SOURCE_ROOT="${MONO_SOURCE_ROOT:-"/mnt/R/Apps_Sources/mono"}"
 
 # Set the environment variables used in build naming
@@ -138,10 +163,10 @@ export MONO_SOURCE_ROOT="${MONO_SOURCE_ROOT:-"/mnt/R/Apps_Sources/mono"}"
 # Path to the Xcode DMG image
 export XCODE_DMG="$DIR/Xcode_7.3.1.dmg"
 
-# The path to the OSXCross installation
+# Path to the OSXCross installation
 export OSXCROSS_ROOT="$TOOLS_DIR/osxcross"
 
-# The paths to the Android SDK and NDK
+# Paths to the Android SDK and NDK
 # only overridden if the user does not already have these variables set
 # If these 2 variables are not set, the tools will be downloaded inside the folder set in TOOLS_DIR
 export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-"/opt/android-sdk"}"
@@ -149,10 +174,20 @@ export ANDROID_NDK_ROOT="${ANDROID_NDK_ROOT:-"/opt/android-ndk"}"
 export ANDROID_HOME="$ANDROID_SDK_ROOT"
 [ ! -r "$ANDROID_HOME" ] && export ANDROID_HOME="${ANDROID_HOME:-"$TOOLS_DIR/android"}"
 
-# The path to the Inno Setup compiler (ISCC.exe)
+# Targets to mono for android builds
+# The option --target=all-runtime is a shortcut for --target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64. The equivalent applies for all-cross and all-cross-win.
+# uses an enumerated platforme list instead
+#ANDROID_ALL_TARGET="--target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64"
+#ANDROID_ALL_TARGETCROSS="--target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64"
+#ANDROID_ALL_TARGETWIN="--target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64"
+ANDROID_ALL_TARGET="--target=all-runtime"
+ANDROID_ALL_TARGETCROSS="--target=all-cross"
+ANDROID_ALL_TARGETWIN="--target=all-cross-win"
+
+# Path to the Inno Setup compiler (ISCC.exe)
 export ISCC="$TOOLS_DIR/innosetup/ISCC.exe"
 
-# The path to emscripten
+# Path to emscripten
 export EMSCRIPTEN_ROOT="/usr/lib/emscripten"
 
 # Commit date (not the system date!)
@@ -162,29 +197,6 @@ export BUILD_COMMIT="$(git rev-parse --short=9 HEAD)"
 
 # The final version string
 export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
-
-# ------------
-# variables used by build_godot.sh
-#
-# usually these values should not be changed
-# ------------
-# Common directories used in the script
-
-# The path to the mono build scripts
-export TOOLS_MONO_BUILDS="$TOOLS_DIR/godot-mono-builds"
-
-export MONO_BUILDS_CROSS_COMPIL_FLAG="--mxe-prefix=/usr"
-
-export MONO_BUILDS_PREFIX_LINUX="$TOOLS_MONO_DIR/linux"
-export MONO_BUILDS_PREFIX_WINDOWS="$TOOLS_MONO_DIR/windows"
-export MONO_BUILDS_PREFIX_MACOS="$TOOLS_MONO_DIR/macos"
-export MONO_BUILDS_PREFIX_ANDROID="$TOOLS_MONO_DIR/android"
-export MONO_BUILDS_PREFIX_WEBASM="$TOOLS_MONO_DIR/webasm"
-export MONO_BUILDS_LINUX_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_LINUX/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_LINUX/mono-config"
-export MONO_BUILDS_MAC_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_MACOS/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_MACOS/mono-config"
-export MONO_BUILDS_WINDOWS_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_WINDOWS/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_WINDOWS/mono-config"
-export MONO_BUILDS_ANDROID_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_ANDROID/mono-installs --configure-dir=$MONO_BUILDS_PREFIX_ANDROID/mono-config"
-export MONO_BUILDS_WEBASM_FLAGS="--install-dir=$MONO_BUILDS_PREFIX_WEBASM/mono-installs --configure-dir=$MONO_PREFIX_WEBASM/mono-config"
 
 # Build log : store the files that were missing on deloy/copy
 # the file is stored in the script folder
@@ -220,16 +232,10 @@ export isArch=0
 export isArco=0
 export isManjaro=0
 export isMint=0
-export isPopOs=0
 export isUbuntu=0
 
 detectOsRelease
 
-checkInString $DETECTED_OS 'pop!_os'
-if [ $result -gt 0 ]; then
-  export isPopOs=1
-  export isUbuntuLike=1
-fi
 checkInString $DETECTED_OS 'ubuntu'
 if [ $result -gt 0 ]; then
   export isUbuntu=1
