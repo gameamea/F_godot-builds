@@ -29,7 +29,7 @@ else
   label="Building debug export template for Web"
   echo_header "Running $label"
   [ ! -z $MONO_PREFIX_WEBASM ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WEBASM/mono-installs/wasm-runtime-debug"
-  cmdScons platform=javascript target=release_debug tools=no $SINGLETON_FLAG $SCONS_FLAGS $MONO_OPTIONS
+  cmdScons p=javascript target=release_debug tools=no $SINGLETON_FLAG $SCONS_FLAGS $MONO_OPTIONS
   #Install file: "bin/godot.javascript.opt.debug.wasm" as "bin/.javascript_zip/godot.wasm"
   #Creating 'bin/godot.javascript.opt.debug.wrapped.js'
   #Install file: "bin/godot.javascript.opt.debug.wrapped.js" as "bin/.javascript_zip/godot.js"
@@ -41,7 +41,7 @@ fi
 label="Building release export template for Web"
 [ ! -z $MONO_PREFIX_WEBASM ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WEBASM/mono-installs/wasm-runtime-release"
 echo_header "Running $label"
-cmdScons platform=javascript target=release tools=no $SINGLETON_FLAG $SCONS_FLAGS $MONO_OPTIONS
+cmdScons p=javascript target=release tools=no $SINGLETON_FLAG $SCONS_FLAGS $MONO_OPTIONS
 #Install file: "bin/godot.javascript.opt.wasm" as "bin/.javascript_zip/godot.wasm"
 #Creating 'bin/godot.javascript.opt.wrapped.js'
 #Install file: "bin/godot.javascript.opt.wrapped.js" as "bin/.javascript_zip/godot.js"

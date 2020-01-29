@@ -22,7 +22,7 @@ if [ $buildMacosEditor -eq 1 ]; then
   echo_header "Running $label"
   resultFile="$GODOT_DIR/bin/godot.osx.opt.tools.64"
   rm -f $resultFile
-  cmdScons platform=osx bits=64 tools=yes $LTO_FLAG $SCONS_FLAGS
+  cmdScons p=osx bits=64 tools=yes $LTO_FLAG $SCONS_FLAGS
   # Remove symbols and sections from files
   cmdUpxStrip $resultFile
   if [ $? -eq 0 ]; then result=1; else result=0; fi
@@ -35,7 +35,7 @@ if [ $buildMacosTemplates -eq 1 ]; then
   echo_header "Running $label"
   resultFile="$GODOT_DIR/bin/godot.osx.opt.debug.64"
   rm -f $resultFile
-  cmdScons platform=osx bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS
+  cmdScons p=osx bits=64 tools=no target=release_debug $LTO_FLAG $SCONS_FLAGS
   # Remove symbols and sections from files
   cmdUpxStrip $resultFile
   if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h
@@ -45,7 +45,7 @@ if [ $buildMacosTemplates -eq 1 ]; then
   echo_header "Running $label"
   resultFile="$GODOT_DIR/bin/godot.osx.opt.64"
   rm -f $resultFile
-  cmdScons platform=osx bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS
+  cmdScons p=osx bits=64 tools=no target=release $LTO_FLAG $SCONS_FLAGS
   # Remove symbols and sections from files
   cmdUpxStrip $resultFile
   if [ $? -eq 0 ]; then result=1; else result=0; fi # line just for easier comparison with windows.h

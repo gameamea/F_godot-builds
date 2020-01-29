@@ -18,7 +18,10 @@ export buildWithMono="${buildWithMono:-0}"
 if [ "$buildWithMono" -eq 1 ]; then
   #export MONO_FLAG=" module_mono_enabled=yes"
   export MONO_FLAG_P1=" module_mono_enabled=yes"
-  export MONO_FLAG_P2=" mono_static=yes copy_mono_root=yes"
+  # "Linking Mono statically generates an error. Option is removed in code."
+  # "Copying Mono generates an error. Option is removed in code."
+  #export MONO_FLAG_P2=" mono_static=yes copy_mono_root=yes"
+  export MONO_FLAG_P2=""
   export MONO_FLAG=" $MONO_FLAG_P1 $MONO_FLAG_P2"
   export MONO_EXT=".mono"
 else
@@ -33,7 +36,8 @@ fi
 export THREADS=$(nproc)
 
 # SCons flags to use in all build commands
-export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
+#export SCONS_FLAGS="progress=no debug_symbols=no -j$THREADS"
+export SCONS_FLAGS="debug_symbols=no -j$THREADS"
 
 # Link optimisation flag
 if [ "x$isLinkingOptimised" = "x1" ]; then
@@ -173,16 +177,6 @@ export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-"/opt/android-sdk"}"
 export ANDROID_NDK_ROOT="${ANDROID_NDK_ROOT:-"/opt/android-ndk"}"
 export ANDROID_HOME="$ANDROID_SDK_ROOT"
 [ ! -r "$ANDROID_HOME" ] && export ANDROID_HOME="${ANDROID_HOME:-"$TOOLS_DIR/android"}"
-
-# Targets to mono for android builds
-# The option --target=all-runtime is a shortcut for --target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64. The equivalent applies for all-cross and all-cross-win.
-# uses an enumerated platforme list instead
-#ANDROID_ALL_TARGET="--target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64"
-#ANDROID_ALL_TARGETCROSS="--target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64"
-#ANDROID_ALL_TARGETWIN="--target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64"
-ANDROID_ALL_TARGET="--target=all-runtime"
-ANDROID_ALL_TARGETCROSS="--target=all-cross"
-ANDROID_ALL_TARGETWIN="--target=all-cross-win"
 
 # Path to the Inno Setup compiler (ISCC.exe)
 export ISCC="$TOOLS_DIR/innosetup/ISCC.exe"

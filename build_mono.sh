@@ -80,6 +80,13 @@ function printEnv() {
   exit 0
 }
 
+# #
+# # run commands using python
+function runPython() {
+  printf "\n${blueOnWhite}Running:${blueOnBlack}scons $*${resetColor}\n"
+  python $*
+}
+
 # ------------
 # COMMAND LINE OPTIONS
 # Must be done before other init
@@ -125,8 +132,8 @@ yesNoS "Do you want to build $label" $answer
 if [ $result -eq 1 ]; then
   echo_header "Building $label"
   # Build the runtimes for 32-bit and 64-bit Linux.
-  ./desktop.py $MONO_BUILDS_LINUX_FLAGS linux configure --target=i686 --target=x86_64
-  ./desktop.py $MONO_BUILDS_LINUX_FLAGS linux make --target=i686 --target=x86_64
+  runPython linux.py $MONO_BUILDS_LINUX_FLAGS configure --target=i686 --target=x86_64
+  runPython linux.py $MONO_BUILDS_LINUX_FLAGS make --target=i686 --target=x86_64
   if [ $? -eq 0 ]; then result=1; else result=0; fi
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 fi
@@ -141,8 +148,8 @@ yesNoS "Do you want to build $label" $answer
 if [ $result -eq 1 ]; then
   echo_header "Building $label"
   # Build the runtimes for 32-bit and 64-bit Windows.
-  ./desktop.py $MONO_BUILDS_WINDOWS_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG windows configure --target=i686 --target=x86_64
-  ./desktop.py $MONO_BUILDS_WINDOWS_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG windows make --target=i686 --target=x86_64
+  runPython windows.py $MONO_BUILDS_WINDOWS_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG configure --target=i686 --target=x86_64
+  runPython windows.py $MONO_BUILDS_WINDOWS_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG make --target=i686 --target=x86_64
   if [ $? -eq 0 ]; then result=1; else result=0; fi
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 fi
@@ -157,8 +164,8 @@ yesNoS "Do you want to build $label" $answer
 if [ $result -eq 1 ]; then
   echo_header "Building $label"
   # Build the runtime for 64-bit macOS.
-  ./desktop.py $MONO_BUILDS_MACOS_FLAGS osx configure --target=x86_64
-  ./desktop.py $MONO_BUILDS_MACOS_FLAGS osx make --target=x86_64
+  runPython osx.py $MONO_BUILDS_MACOS_FLAGS configure --target=x86_64
+  runPython osx.py $MONO_BUILDS_MACOS_FLAGS make --target=x86_64
   if [ $? -eq 0 ]; then result=1; else result=0; fi
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 fi
@@ -178,20 +185,30 @@ if [ $result -eq 1 ]; then
   echo_header "Building $label"
   echo_info "Debug version of mono for android are bypassed (too long, but can be done if necessary, script must be completed if so)"
 
+  # Targets to mono for android builds
+  # The option --target=all-runtime is a shortcut for --target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64. The equivalent applies for all-cross and all-cross-win.
+  # uses an enumerated platforme list instead
+  #ANDROID_ALL_TARGET="--target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64"
+  #ANDROID_ALL_TARGETCROSS="--target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64"
+  #ANDROID_ALL_TARGETWIN="--target=armeabi-v7a --target=x86 --target=arm64-v8a --target=x86_64"
+  ANDROID_ALL_TARGET="--target=all-runtime"
+  ANDROID_ALL_TARGETCROSS="--target=all-cross"
+  ANDROID_ALL_TARGETWIN="--target=all-cross-win"
+
   # Some patches may need to be applied to the Mono sources before building for Android.
-  ./patch_mono.py
+  runPython patch_mono.py
 
   # Build the runtime for all supported Android ABIs.
-  ./android.py $MONO_BUILDS_ANDROID_FLAGS configure $ANDROID_ALL_TARGET
-  ./android.py $MONO_BUILDS_ANDROID_FLAGS make $ANDROID_ALL_TARGET
+  runPython android.py $MONO_BUILDS_ANDROID_FLAGS configure $ANDROID_ALL_TARGET
+  runPython android.py $MONO_BUILDS_ANDROID_FLAGS make $ANDROID_ALL_TARGET
 
   # Build the AOT cross-compilers targeting all supported Android ABIs.
-  ./android.py $MONO_BUILDS_ANDROID_FLAGS configure $ANDROID_ALL_TARGETCROSS
-  ./android.py $MONO_BUILDS_ANDROID_FLAGS make $ANDROID_ALL_TARGETCROSS
+  runPython android.py $MONO_BUILDS_ANDROID_FLAGS configure $ANDROID_ALL_TARGETCROSS
+  runPython android.py $MONO_BUILDS_ANDROID_FLAGS make $ANDROID_ALL_TARGETCROSS
 
   # Build the AOT cross-compilers for Windows targeting all supported Android ABIs.
-  ./android.py $MONO_BUILDS_ANDROID_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG configure $ANDROID_ALL_TARGETWIN
-  ./android.py $MONO_BUILDS_ANDROID_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG make $ANDROID_ALL_TARGETWIN
+  runPython android.py $MONO_BUILDS_ANDROID_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG configure $ANDROID_ALL_TARGETWIN
+  runPython android.py $MONO_BUILDS_ANDROID_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG make $ANDROID_ALL_TARGETWIN
 
   if [ $? -eq 0 ]; then result=1; else result=0; fi
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
@@ -209,11 +226,11 @@ if [ $result -eq 1 ]; then
   echo_info "Debug version of mono for WebAssembly are bypassed (too long, but can be done if necessary, script must be completed if so)"
 
   # Some patches may need to be applied to the Emscripten SDK before building Mono.
-  ./patch_emscripten.py
+  runPython patch_emscripten.py
 
   # Build the runtime for WebAssembly.
-  ./wasm.py $MONO_BUILDS_WEBASM_FLAGS configure --target=runtime
-  ./wasm.py $MONO_BUILDS_WEBASM_FLAGS make --target=runtime
+  runPython wasm.py $MONO_BUILDS_WEBASM_FLAGS configure --target=runtime
+  runPython wasm.py $MONO_BUILDS_WEBASM_FLAGS make --target=runtime
 
   if [ $? -eq 0 ]; then result=1; else result=0; fi
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
@@ -229,16 +246,19 @@ yesNoS "Do you want to build $label" $answer
 if [ $result -eq 1 ]; then
   echo_header "Building $label"
   # Build the Desktop BCL.
-  ./bcl.py $MONO_BUILDS_BCL_FLAGS make --product=desktop
+  runPython bcl.py $MONO_BUILDS_BCL_FLAGS make --product=desktop
+
+  # Build the Desktop BCL for Windows.
+  runPython bcl.py $MONO_BUILDS_BCL_FLAGS make --product=desktop-win32
 
   # Build the Android BCL.
-  ./bcl.py $MONO_BUILDS_BCL_FLAGS make --product=android
+  runPython bcl.py $MONO_BUILDS_BCL_FLAGS make --product=android
 
   # Build the WebAssembly BCL.
-  ./bcl.py $MONO_BUILDS_BCL_FLAGS make --product=wasm
+  runPython bcl.py $MONO_BUILDS_BCL_FLAGS make --product=wasm
 
   # install the reference assemblies
-  ./reference_assemblies.py install
+  runPython reference_assemblies.py install
 
   if [ $? -eq 0 ]; then result=1; else result=0; fi
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi

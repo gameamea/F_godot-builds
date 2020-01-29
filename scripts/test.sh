@@ -9,32 +9,69 @@
 # Copyright © 2019 Laurent Ongaro and contributors - CC0 1.0 Universal
 # This script is licensed under CC0 1.0 Universal:
 #------
-# web release build test
-#cmdScons platform=javascript target=release tools=no $SCONS_FLAGS
 
-scons p=x11 tools=yes module_mono_enabled=yes mono_glue=no
-exit
-cmdScons platform=x11 bits=64 tools=yes mono_glue=no -j4 module_mono_enabled=yes
-# mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux
-#  mono_static=yes copy_mono_root=yes progress=no debug_symbols=no target=release_debug
-exit
-#
-# android release build test with mono
-[ ! -z $MONO_PREFIX_ANDROID ] && MONO_OPTIONS=" module_mono_enabled=yes $MONO_PREFIX_ANDROID/mono-installs/android-arm64-v8a-release"
-cmdScons platform=android android_arch=arm64v8 target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_OPTIONS
-#
-[ ! -z $MONO_PREFIX_ANDROID ] && MONO_OPTIONS="module_mono_enabled=yes $MONO_PREFIX_ANDROID/mono-installs/android-armeabi-v7a-release"
-cmdScons platform=android android_arch=armv7 target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_OPTIONS
+testNumber=5
 
-#scons platform=android target=release android_arch=armv7
-#scons platform=android target=release android_arch=arm64v8
+case "$testNumber" in
+  1)
 
-# remove build content, if not, build will produce no apk
-rm -Rf "$GODOT_DIR/platform/android/java/build/"
+    # 32 bits editor for linux with mono build test
+    # generate glue
+    scons platform=x11 bits=32 tools=yes target=release_debug mono_glue=no progress=no debug_symbols=no -j4 module_mono_enabled=yes mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-i686-release
 
-cd "$GODOT_DIR/platform/android/java"
-./gradlew build
+    # build editor
+    /mnt/R/Apps_Sources/GodotEngine/_godot/bin/godot.x11.opt.tools.32.mono --generate-mono-glue /mnt/R/Apps_Sources/GodotEngine/_godot/modules/mono/glue
+    ;;
 
-#NOTE: file are generated in /platform/android/java/app/build/outputs/apk/ folder in not directly in bin
-cp -a "$GODOT_DIR/platform/android/java/app/build/outputs/apk/debug/android_debug.apk" "$GODOT_DIR/bin"
-cp -a "$GODOT_DIR/platform/android/java/app/build/outputs/apk/release/android_release.apk" "$GODOT_DIR/bin"
+  2)
+    # X11 with mono (installed)
+    # Build temporary binary
+    scons p=x11 -j4 tools=yes module_mono_enabled=yes mono_glue=no
+    # Generate glue sources
+    bin/godot.x11.tools.64.mono --generate-mono-glue modules/mono/glue
+
+    ### Build binaries normally
+    # Editor
+    scons p=x11 -j4 target=release_debug tools=yes module_mono_enabled=yes
+    # Export templates
+    scons p=x11 -j4 target=release_debug tools=no module_mono_enabled=yes
+    scons p=x11 -j4 target=release tools=no module_mono_enabled=yes
+    ;;
+
+  3)
+    # X11 with mono compiled (OK)
+    # Build temporary binary (OK)
+    scons p=x11 -j4 tools=yes module_mono_enabled=yes mono_glue=no mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-x86_64-release
+
+    # Generate glue sources
+    bin/godot.x11.tools.64.mono --generate-mono-glue modules/mono/glue mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-x86_64-release
+
+    ### Build binaries normally
+    # Editor
+    scons p=x11 -j4 target=release_debug tools=yes module_mono_enabled=yes mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-x86_64-release
+    # Export templates
+    #scons p=x11 -j4 target=release_debug tools=no module_mono_enabled=yes mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-x86_64-release
+    #scons p=x11 -j4 target=release tools=no module_mono_enabled=yes mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-x86_64-release
+    ;;
+
+  4)
+    # X11 32 bits with mono compiled
+    # Build temporary binary
+    scons p=x11 bits=32 -j4 tools=yes module_mono_enabled=yes mono_glue=no mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-i686-release
+
+    # Generate glue sources
+    bin/godot.x11.tools.32.mono --generate-mono-glue modules/mono/glue mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-i686-release
+
+    ### Build binaries normally
+    # Editor
+    scons p=x11 bits=32 -j4 target=release_debug tools=yes module_mono_enabled=yes mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-i686-release
+    # Export templates
+    #scons p=x11 bits=32 -j4 target=release_debug tools=no module_mono_enabled=yes mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-i686-release
+    #scons p=x11 bits=32 -j4 target=release tools=no module_mono_enabled=yes mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-i686-release
+    ;;
+    5)
+    # HS
+    scons p=windows bits=64 tools=yes mono_glue=no debug_symbols=no -j4 module_mono_enabled=yes mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/windows/mono-installs/desktop-windows-x86_64-release
+    # OK
+    scons p=x11     bits=64 tools=yes mono_glue=no debug_symbols=no -j4 module_mono_enabled=yes mono_prefix=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/linux/mono-installs/desktop-linux-x86_64-release
+esac

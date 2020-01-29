@@ -118,8 +118,11 @@ function usage() {
   echo " --no32b : Force build without32 bits versions, overwrite the setting set in files."
   echo " --backup : Force to backup existng binaries."
   echo " --nobackup : Force not to backup existng binaries."
-  echo " --x11editoronly : Build only 64 bits editor for Linux."
-  echo " --windowseditoronly : Build only 64 bits editor for Windows."
+  echo " --linuxeditoronly : Build only (64 bits) editor for Linux."
+  echo " --windowseditoronly : Build only (64 bits) editor for Windows."
+  echo " --alltested : Build all platforms and templates that have been successfully tested on this system, with mono (may vary with settings in this file)."
+  echo " --webexportonly : Build only (64 bits) template for Web."
+  echo " --androidexportonly : Build only (64 bits) template for Android."
   echo "Default options are set to:"
   echo " ask for user confirmation (add -q option to disable)."
   echo " use Source code stored in the '../_godot' folder (that must be a symlink to the version you want to compile)."
@@ -130,6 +133,7 @@ function usage() {
   echo " copy templates to the recommanded template folder associated to the built godot version."
   echo " optimisations: binary size but not linking."
   echo "Notes:"
+  echo " the order of options can be important. In case of conflicts in settings, the last ones in the list will used in priority"
   echo " Settings at the start of this file can be changed to custom build process."
   echo " Some less important variables can also be edited in ./utilities/variables.sh file."
   exit 0
@@ -188,6 +192,7 @@ while [ -n "$1" ]; do
       ;;
     -t | --test)
       export runTest=1
+      export isQuiet=1
       ;;
     -g | --gitrepoindex)
       export gitRepoIndex=$2
@@ -217,7 +222,7 @@ while [ -n "$1" ]; do
     --nobackup)
       export backupBinaries=0
       ;;
-    --x11editoronly)
+    --linuxeditoronly)
       export isQuiet=1
       export buildLinuxEditor=1
       export buildLinuxTemplates=0
@@ -248,6 +253,53 @@ while [ -n "$1" ]; do
       export buildIos=0
       export buildDoc=0
       export build32Bits=0
+      ;;
+    --alltested)
+      export isQuiet=1
+      export buildLinuxEditor=1
+      export buildLinuxTemplates=1
+      export buildWindowsEditor=1
+      export buildWindowsTemplates=1
+      export buildMacosEditor=0
+      export buildMacosTemplates=0
+      export buildAndroid=1
+      export buildWeb=1
+      export buildServer=1
+      export buildUWPTemplates=0
+      export buildIos=0
+      export buildDoc=0
+      export build32Bits=1
+      export buildWithMono=1
+      ;;
+    --webexportonly)
+      export isQuiet=1
+      export buildLinuxEditor=0
+      export buildLinuxTemplates=0
+      export buildWindowsEditor=0
+      export buildWindowsTemplates=0
+      export buildMacosEditor=0
+      export buildMacosTemplates=0
+      export buildAndroid=0
+      export buildWeb=1
+      export buildServer=0
+      export buildUWPTemplates=0
+      export buildIos=0
+      export buildDoc=0
+      ;;
+    --androidexortonly)
+      export isQuiet=1
+      export buildLinuxEditor=0
+      export buildLinuxTemplates=0
+      export buildWindowsEditor=0
+      export buildWindowsTemplates=0
+      export buildMacosEditor=0
+      export buildMacosTemplates=0
+      export buildAndroid=1
+      export buildWeb=0
+      export buildServer=0
+      export buildUWPTemplates=0
+      export buildIos=0
+      export buildDoc=0
       ;;
     --)
       # The double dash makes them parameters
