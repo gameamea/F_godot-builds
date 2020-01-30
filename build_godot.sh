@@ -52,14 +52,14 @@ export isBuildMonoFromSourceForced=0
 # Desktop platforms
 export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:unavailable
 export buildLinuxTemplates=1   # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildWindowsEditor=1    # normal32:OK normal64:OK mono:BUG cross build
-export buildWindowsTemplates=1 # normal32:OK normal64:OK mono:BUG cross build
+export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
+export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web/Other platforms
 export buildAndroid=1      # normal32:OK normal64:OK mono:OK
-export buildWeb=1          # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
+export buildWeb=1          # normal32:OK normal64:OK mono:OK
 export buildServer=1       # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
 export buildUWPTemplates=0 #TODO:TEST no mono & TEST Mono
 export buildIos=0          #TODO
@@ -67,7 +67,7 @@ export buildDoc=0          #TODO
 
 # Build 32 bits version if possible
 # NOTE: the 32 bits is built BEFORE the 64 bits version
-export build32Bits=1
+export build32Bits=0
 
 # Build with mono if possible
 export buildWithMono=1
@@ -75,8 +75,8 @@ export buildWithMono=1
 # Deploy
 export deploy=1 #TODO: update code after each sucessfull build process added
 
-# backup existing binaries
-export backupBinaries=1
+# backup existing binaries. If set to 1, could create issue in the deploy script because previous built files will be moved in backup folder.
+export backupBinaries=0
 
 # ------------
 # BUILD OPTIONS
@@ -105,24 +105,25 @@ function usage() {
   echo "Result:"
   echo " Build godot engine editor and templates from local source with several options."
   echo "Command line options:"
-  echo " -h |--help  : Show this help and exit."
-  echo " -p |--printenv  : Print the environment settings and exit."
-  echo " -q |--quiet : Stop asking for user input (automatic or batch mode)."
-  echo " -t |--test : Run './script/test.sh' file after initialisation instead of running normal process."
-  echo " -g |--gitrepoindex : Index of the git repo to use for build (0 for default in '_godot' folder, 1 for official godot.., see list in variables.sh), overwrite the setting set in files."
-  echo " --dependencies : Force dependency setup will be forced, overwrite the setting set in files."
-  echo " --buildmono : Force mono build from sources setup will be forced, overwrite the setting set in files."
-  echo " --nomono : Force build without mono, overwrite the setting set in files."
-  echo " --mono : Force build with mono, overwrite the setting set in files."
-  echo " --32b : Force build with 32 bits versions, overwrite the setting set in files."
-  echo " --no32b : Force build without32 bits versions, overwrite the setting set in files."
-  echo " --backup : Force to backup existng binaries."
-  echo " --nobackup : Force not to backup existng binaries."
-  echo " --linuxeditoronly : Build only (64 bits) editor for Linux."
-  echo " --windowseditoronly : Build only (64 bits) editor for Windows."
-  echo " --alltested : Build all platforms and templates that have been successfully tested on this system, with mono (may vary with settings in this file)."
-  echo " --webexportonly : Build only (64 bits) template for Web."
-  echo " --androidexportonly : Build only (64 bits) template for Android."
+  echo " -h |--help: Show this help and exit."
+  echo " -p |--printenv: Print the environment settings and exit."
+  echo " -q |--quiet: Stop asking for user input (automatic or batch mode)."
+  echo " -t |--test: Run './script/test.sh' file after initialisation instead of running normal process."
+  echo " -g |--gitrepoindex: Index of the git repo to use for build (0 for default in '_godot' folder, 1 for official godot.., see list in variables.sh), overwrite the setting set in files."
+  echo " --dependencies: Force dependency setup will be forced, overwrite the setting set in files."
+  echo " --buildmono: Force mono build from sources setup will be forced, overwrite the setting set in files."
+  echo " --nomono: Force build without mono, overwrite the setting set in files."
+  echo " --mono: Force build with mono, overwrite the setting set in files."
+  echo " --32b: Force build with 32 bits versions, overwrite the setting set in files."
+  echo " --no32b: Force build without32 bits versions, overwrite the setting set in files."
+  echo " --backup: Force to backup existng binaries."
+  echo " --nobackup: Force not to backup existng binaries."
+  echo " --linuxeditoronly: Build only (64 bits) editor for Linux (force -q option)."
+  echo " --windowseditoronly: Build only (64 bits) editor for Windows (force -q option)."
+  echo " --alltested: Build all platforms and templates successfully tested, with mono (may vary with settings in this file) (force -q option)."
+  echo " --webexportonly: Build only (64 bits) template for Web (force -q option)."
+  echo " --androidexportonly: Build only (64 bits) template for Android (force -q option)."
+  echo " --deployonly: No build. Run only the deploy script (force -q option)."
   echo "Default options are set to:"
   echo " ask for user confirmation (add -q option to disable)."
   echo " use Source code stored in the '../_godot' folder (that must be a symlink to the version you want to compile)."
@@ -133,7 +134,7 @@ function usage() {
   echo " copy templates to the recommanded template folder associated to the built godot version."
   echo " optimisations: binary size but not linking."
   echo "Notes:"
-  echo " the order of options can be important. In case of conflicts in settings, the last ones in the list will used in priority"
+  echo " the order of options can be important. In case of conflicts in settings, the last ones in the list will used in priority."
   echo " Settings at the start of this file can be changed to custom build process."
   echo " Some less important variables can also be edited in ./utilities/variables.sh file."
   exit 0
@@ -237,6 +238,7 @@ while [ -n "$1" ]; do
       export buildIos=0
       export buildDoc=0
       export build32Bits=0
+      export deploy=1
       ;;
     --windowseditoronly)
       export isQuiet=1
@@ -253,6 +255,7 @@ while [ -n "$1" ]; do
       export buildIos=0
       export buildDoc=0
       export build32Bits=0
+      export deploy=1
       ;;
     --alltested)
       export isQuiet=1
@@ -270,6 +273,7 @@ while [ -n "$1" ]; do
       export buildDoc=0
       export build32Bits=1
       export buildWithMono=1
+      export deploy=1
       ;;
     --webexportonly)
       export isQuiet=1
@@ -285,8 +289,9 @@ while [ -n "$1" ]; do
       export buildUWPTemplates=0
       export buildIos=0
       export buildDoc=0
+      export deploy=1
       ;;
-    --androidexortonly)
+    --androidexportonly)
       export isQuiet=1
       export buildLinuxEditor=0
       export buildLinuxTemplates=0
@@ -300,6 +305,23 @@ while [ -n "$1" ]; do
       export buildUWPTemplates=0
       export buildIos=0
       export buildDoc=0
+      export deploy=1
+      ;;
+    --deployonly)
+      export isQuiet=1
+      export buildLinuxEditor=0
+      export buildLinuxTemplates=0
+      export buildWindowsEditor=0
+      export buildWindowsTemplates=0
+      export buildMacosEditor=0
+      export buildMacosTemplates=0
+      export buildAndroid=0
+      export buildWeb=0
+      export buildServer=0
+      export buildUWPTemplates=0
+      export buildIos=0
+      export buildDoc=0
+      export deploy=1
       ;;
     --)
       # The double dash makes them parameters

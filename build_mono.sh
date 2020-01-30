@@ -236,7 +236,7 @@ if [ $result -eq 1 ]; then
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 fi
 
-answer=$defaultYN
+answer=0
 label="Base Class library and Reference Assemblies"
 if [ -r "$MONO_BUILDS_PREFIX_BCL/mono-installs/" ]; then
   echo_info "$label has already been built. Building it again will take unnecessary time..."

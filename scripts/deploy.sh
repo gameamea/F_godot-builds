@@ -205,8 +205,8 @@ if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else ech
 ### Copy Web export templates
 label="Web templates"
 echo_header "Deploying $label"
-cpcheck "$GODOT_DIR/bin/godot.javascript.opt.debug.zip" "$TEMPLATES_DIR/webassembly_debug.zip"
-cpcheck "$GODOT_DIR/bin/godot.javascript.opt.zip" "$TEMPLATES_DIR/webassembly_release.zip"
+cpcheck "$GODOT_DIR/bin/godot.javascript.opt.debug${MONO_EXT}.zip" "$TEMPLATES_DIR/webassembly_debug${MONO_EXT}.zip"
+cpcheck "$GODOT_DIR/bin/godot.javascript.opt${MONO_EXT}.zip" "$TEMPLATES_DIR/webassembly_release${MONO_EXT}.zip"
 if [ $result -eq 1 ]; then echo_success "$label deployed successfully"; else echo_warning "$label not found"; fi
 
 ### Copy Server export templates
