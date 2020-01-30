@@ -58,12 +58,13 @@ export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
 export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web/Other platforms
-export buildAndroid=1      # normal32:OK normal64:OK mono:OK
-export buildWeb=1          # normal32:OK normal64:OK mono:OK
-export buildServer=1       # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
-export buildUWPTemplates=0 #TODO:TEST no mono & TEST Mono
-export buildIos=0          #TODO
-export buildDoc=0          #TODO
+export buildAndroidTemplate=1 # normal32:OK normal64:OK mono:OK
+export buildWebTemplate=1     # normal32:OK normal64:OK mono:OK
+export buildServerTemplate=1  # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
+export buildUWPTemplates=0    #TODO:TEST no mono & TEST Mono
+export buildIosTemplate=0     #TODO
+
+export buildDoc=0 #TODO
 
 # Build 32 bits version if possible
 # NOTE: the 32 bits is built BEFORE the 64 bits version
@@ -123,6 +124,7 @@ function usage() {
   echo " --alltested: Build all platforms and templates successfully tested, with mono (may vary with settings in this file) (force -q option)."
   echo " --webexportonly: Build only (64 bits) template for Web (force -q option)."
   echo " --androidexportonly: Build only (64 bits) template for Android (force -q option)."
+  echo " --serverexportonly: Build only (64 bits) server template (force -q option)."
   echo " --deployonly: No build. Run only the deploy script (force -q option)."
   echo "Default options are set to:"
   echo " ask for user confirmation (add -q option to disable)."
@@ -159,11 +161,11 @@ function printEnv() {
   echo "buildWindowsTemplates=$buildWindowsTemplates"
   echo "buildMacosEditor=$buildMacosEditor"
   echo "buildMacosTemplates=$buildMacosTemplates"
-  echo "buildAndroid=$buildAndroid"
-  echo "buildWeb=$buildWeb"
-  echo "buildServer=$buildServer"
+  echo "buildAndroidTemplate=$buildAndroidTemplate"
+  echo "buildWebTemplate=$buildWebTemplate"
+  echo "buildServerTemplate=$buildServerTemplate"
   echo "buildUWPTemplates=$buildUWPTemplates"
-  echo "buildIos=$buildIos"
+  echo "buildIosTemplate=$buildIosTemplate"
   echo "buildDoc=$buildDoc"
   echo "build32Bits=$build32Bits"
   echo "buildWithMono=$buildWithMono"
@@ -231,11 +233,11 @@ while [ -n "$1" ]; do
       export buildWindowsTemplates=0
       export buildMacosEditor=0
       export buildMacosTemplates=0
-      export buildAndroid=0
-      export buildWeb=0
-      export buildServer=0
+      export buildAndroidTemplate=0
+      export buildWebTemplate=0
+      export buildServerTemplate=0
       export buildUWPTemplates=0
-      export buildIos=0
+      export buildIosTemplate=0
       export buildDoc=0
       export build32Bits=0
       export deploy=1
@@ -248,11 +250,11 @@ while [ -n "$1" ]; do
       export buildWindowsTemplates=0
       export buildMacosEditor=0
       export buildMacosTemplates=0
-      export buildAndroid=0
-      export buildWeb=0
-      export buildServer=0
+      export buildAndroidTemplate=0
+      export buildWebTemplate=0
+      export buildServerTemplate=0
       export buildUWPTemplates=0
-      export buildIos=0
+      export buildIosTemplate=0
       export buildDoc=0
       export build32Bits=0
       export deploy=1
@@ -265,11 +267,11 @@ while [ -n "$1" ]; do
       export buildWindowsTemplates=1
       export buildMacosEditor=0
       export buildMacosTemplates=0
-      export buildAndroid=1
-      export buildWeb=1
-      export buildServer=1
+      export buildAndroidTemplate=1
+      export buildWebTemplate=1
+      export buildServerTemplate=1
       export buildUWPTemplates=0
-      export buildIos=0
+      export buildIosTemplate=0
       export buildDoc=0
       export build32Bits=1
       export buildWithMono=1
@@ -283,11 +285,11 @@ while [ -n "$1" ]; do
       export buildWindowsTemplates=0
       export buildMacosEditor=0
       export buildMacosTemplates=0
-      export buildAndroid=0
-      export buildWeb=1
-      export buildServer=0
+      export buildAndroidTemplate=0
+      export buildWebTemplate=1
+      export buildServerTemplate=0
       export buildUWPTemplates=0
-      export buildIos=0
+      export buildIosTemplate=0
       export buildDoc=0
       export deploy=1
       ;;
@@ -299,11 +301,27 @@ while [ -n "$1" ]; do
       export buildWindowsTemplates=0
       export buildMacosEditor=0
       export buildMacosTemplates=0
-      export buildAndroid=1
-      export buildWeb=0
-      export buildServer=0
+      export buildAndroidTemplate=1
+      export buildWebTemplate=0
+      export buildServerTemplate=0
       export buildUWPTemplates=0
-      export buildIos=0
+      export buildIosTemplate=0
+      export buildDoc=0
+      export deploy=1
+      ;;
+    --serverexportonly)
+      export isQuiet=1
+      export buildLinuxEditor=0
+      export buildLinuxTemplates=0
+      export buildWindowsEditor=0
+      export buildWindowsTemplates=0
+      export buildMacosEditor=0
+      export buildMacosTemplates=0
+      export buildAndroidTemplate=0
+      export buildWebTemplate=0
+      export buildServerTemplate=1
+      export buildUWPTemplates=0
+      export buildIosTemplate=0
       export buildDoc=0
       export deploy=1
       ;;
@@ -315,11 +333,11 @@ while [ -n "$1" ]; do
       export buildWindowsTemplates=0
       export buildMacosEditor=0
       export buildMacosTemplates=0
-      export buildAndroid=0
-      export buildWeb=0
-      export buildServer=0
+      export buildAndroidTemplate=0
+      export buildWebTemplate=0
+      export buildServerTemplate=0
       export buildUWPTemplates=0
-      export buildIos=0
+      export buildIosTemplate=0
       export buildDoc=0
       export deploy=1
       ;;
@@ -369,15 +387,15 @@ if [ $isQuiet -eq 0 ]; then
   yesNoS "Do you want to build Mac Os Templates"
   if [ $result -eq 1 ]; then export buildMacosTemplates=1; else export buildMacosTemplates=0; fi
   yesNoS "Do you want to build Android Templates"
-  if [ $result -eq 1 ]; then export buildAndroid=1; else export buildAndroid=0; fi
+  if [ $result -eq 1 ]; then export buildAndroidTemplate=1; else export buildAndroidTemplate=0; fi
   yesNoS "Do you want to build Web Templates"
-  if [ $result -eq 1 ]; then export buildWeb=1; else export buildWeb=0; fi
+  if [ $result -eq 1 ]; then export buildWebTemplate=1; else export buildWebTemplate=0; fi
   yesNoS "Do you want to build Server binaries"
-  if [ $result -eq 1 ]; then export buildServer=1; else export buildServer=0; fi
+  if [ $result -eq 1 ]; then export buildServerTemplate=1; else export buildServerTemplate=0; fi
   yesNoS "Do you want to build UWP Templates"
   if [ $result -eq 1 ]; then export buildUWPTemplates=1; else export buildUWPTemplates=0; fi
   yesNoS "Do you want to build Ios Templates"
-  if [ $result -eq 1 ]; then export buildIos=1; else export buildIos=0; fi
+  if [ $result -eq 1 ]; then export buildIosTemplate=1; else export buildIosTemplate=0; fi
   yesNoS "Do you want to build Doc"
   if [ $result -eq 1 ]; then export buildDoc=1; else export buildDoc=0; fi
   yesNoS "Do you want to build 32 Bits versions (64 bits version will always be built)"
@@ -465,15 +483,15 @@ if [ $buildMacosEditor -eq 1 ] || [ $buildMacosTemplates -eq 1 ]; then "$SCRIPTS
 # build Other Templates
 #-----
 # Android
-[ $buildAndroid -eq 1 ] && "$SCRIPTS_DIR/android.sh"
+[ $buildAndroidTemplate -eq 1 ] && "$SCRIPTS_DIR/android.sh"
 # Web
-[ $buildWeb -eq 1 ] && "$SCRIPTS_DIR/web.sh"
+[ $buildWebTemplate -eq 1 ] && "$SCRIPTS_DIR/web.sh"
 # Server
-[ $buildServer -eq 1 ] && "$SCRIPTS_DIR/server.sh"
+[ $buildServerTemplate -eq 1 ] && "$SCRIPTS_DIR/server.sh"
 # UWP
 if [ $buildUWPTemplates -eq 1 ]; then "$SCRIPTS_DIR/uwp.sh"; fi
 # IOS
-[ $buildIos -eq 1 ] && "$SCRIPTS_DIR/ios.sh"
+[ $buildIosTemplate -eq 1 ] && "$SCRIPTS_DIR/ios.sh"
 
 # Doc
 [ $buildDoc -eq 1 ] && "$SCRIPTS_DIR/doc.sh"
