@@ -26,6 +26,12 @@ result=0
 # UMOVABLE VARIABLES
 # ------------
 
+# folder where the mono binary is installed (needed to compile mono)
+MONO_BIN_PREFIX=/usr
+
+# mono version to compile
+MONO_TAG="mono-6.4.0.198"
+
 # `DIR` contains the directory where the script is located, regardless of where
 # it is run from. This makes it easy to run this set of build scripts from any location
 # NOTE: can not be moved in variables.sh
@@ -39,6 +45,9 @@ source "$UTILITIES_DIR/functions.sh"
 
 # init variables and settings
 source "$UTILITIES_DIR/variables.sh"
+
+# folder for the mono sources
+MONO_FOLDER=$(dirname $MONO_SOURCE_ROOT)
 
 # print script usage and help
 function usage() {
@@ -117,7 +126,29 @@ while [ -n "$1" ]; do
   shift
 done
 
+yesNoS "Do you want to clean and Clone mono source" $answer
+if [ $result -eq 1 ]; then
+  PATH=$MONO_BIN_PREFIX/bin:$PATH
+
+  cd $MONO_FOLDER
+
+  git clone https://github.com/mono/mono.git
+
+  cd mono
+
+  git fetch --all
+  git checkout $MONO_TAG
+
+  yesNoS "Do you want to compil mono by the usual way" $answer
+  if [ $result -eq 1 ]; then
+    ./autogen.sh --prefix=$MONO_BIN_PREFIX
+    make
+    make install
+  fi
+fi
+
 cd $TOOLS_MONO_BUILDS
+
 #echo $TOOLS_MONO_BUILDS;echo "ICI";exit
 
 #TODO: replace all the TODO_CHANGE_FILENAME_HERE by final filenames once compiled

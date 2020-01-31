@@ -440,7 +440,7 @@ if [ $result -eq 1 ]; then
 else
   yesNoS "${orangeOnBlack}Do you want to pull from origin (branch: $GODOT_BRANCH)?" $defaultYN
   if [ $result -eq 1 ]; then
-    git fetch origin
+    git fetch --all
     git checkout $GODOT_BRANCH
     git pull origin
   fi
