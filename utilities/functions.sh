@@ -59,11 +59,11 @@ export -f initLog
 # before compilation: copy mono 4.5 folder  to a temporary location while compiling for linux
 # 64 and 32 bits versions are saved distinctively
 fixForMonoSave() {
-  if [ "$buildWithMono" -eq 1 ]; then
+  if [ "$buildWithMono" -eq 1 ] && [ $isMonoStatic -eq 1 ]; then
     if [ -z $1 ]; then bits="64"; else bits=$1; fi
     echo_warning "fix For Mono Save $bits bits"
-    mkdir -p "$GODOT_DIR/bin/GodotSharp_${bits}_KEEP/Mono/lib/mono/4.5"
-    cp -Rfa "$GODOT_DIR/bin/GodotSharp/Mono/lib/mono/4.5/" "$GODOT_DIR/bin/GodotSharp_${bits}_KEEP/Mono/lib/mono/4.5"
+    mkdir -p "$GODOT_DIR/bin/GodotSharp_${bits}_KEEP/Mono/lib/mono"
+    cp -Rfa "$GODOT_DIR/bin/GodotSharp/Mono/lib/mono/4.5" "$GODOT_DIR/bin/GodotSharp_${bits}_KEEP/Mono/lib/mono/"
   fi
 }
 export -f fixForMonoSave
@@ -74,11 +74,11 @@ export -f fixForMonoSave
 # # after compilation finished, copy it back for windows
 # 64 and 32 bits versions are saved distinctively
 fixForMonoRestore() {
-  if [ "$buildWithMono" -eq 1 ]; then
+  if [ "$buildWithMono" -eq 1 ] && [ $isMonoStatic -eq 1 ]; then
     if [ -z $1 ]; then bits="64"; else bits=$1; fi
     echo_warning "fix For Mono Restore $bits bits"
-    mkdir -p "$GODOT_DIR/bin/GodotSharp/Mono/lib/mono/4.5"
-    cp -Rfa "$GODOT_DIR/bin/GodotSharp_${bits}_KEEP/Mono/lib/mono/4.5/" "$GODOT_DIR/bin/GodotSharp/Mono/lib/mono/4.5"
+    mkdir -p "$GODOT_DIR/bin/GodotSharp/Mono/lib/mono"
+    cp -Rfa "$GODOT_DIR/bin/GodotSharp_${bits}_KEEP/Mono/lib/mono/4.5" "$GODOT_DIR/bin/GodotSharp/Mono/lib/mono/"
   fi
 }
 export -f fixForMonoRestore

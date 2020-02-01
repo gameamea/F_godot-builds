@@ -280,7 +280,6 @@ if [ $result -eq 1 ]; then
   # Build the AOT cross-compilers for Windows targeting all supported Android ABIs.
   ##HS  runPython android.py $MONO_BUILDS_ANDROID_FLAGS configure $ANDROID_ALL_TARGETWIN $MONO_BUILDS_CROSS_COMPIL_FLAG
   ##HS  runPython android.py $MONO_BUILDS_ANDROID_FLAGS make $ANDROID_ALL_TARGETWIN $MONO_BUILDS_CROSS_COMPIL_FLAG
-
   if [ $? -eq 0 ]; then result=1; else result=0; fi
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
 fi

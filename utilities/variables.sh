@@ -18,10 +18,16 @@ export buildWithMono="${buildWithMono:-0}"
 if [ "$buildWithMono" -eq 1 ]; then
   #export MONO_FLAG=" module_mono_enabled=yes"
   export MONO_FLAG_P1=" module_mono_enabled=yes"
-  # "Linking Mono statically generates an error. Option is removed in code."
-  # "Copying Mono generates an error. Option is removed in code."
-  export MONO_FLAG_P2=" mono_static=yes copy_mono_root=yes"
-  #export MONO_FLAG_P2=""
+  if [ $isMonoStatic -eq 0 ]; then
+    # first option: dynamic linking (shared mono)
+    # "Linking Mono statically generates an error. Option is removed in code."
+    # "Copying Mono generates an error. Option is removed in code."
+    export MONO_FLAG_P2=""
+  else
+    # second option: static linking:
+    # "Linking using a shared mono mono won't work for build a for windows on Linux."
+    export MONO_FLAG_P2=" mono_static=yes copy_mono_root=yes"
+  fi
   export MONO_FLAG=" $MONO_FLAG_P1 $MONO_FLAG_P2"
   export MONO_EXT=".mono"
 else

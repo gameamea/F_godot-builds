@@ -50,8 +50,8 @@ export isBuildMonoFromSourceForced=0
 # ------------
 
 # Desktop platforms
-export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:unavailable
-export buildLinuxTemplates=1   # normal32:OK normal64:OK mono64:OK mono32:unavailable
+export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:TODOTEST
+export buildLinuxTemplates=1   # normal32:OK normal64:OK mono64:OK mono32:TODO TEST
 export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
 export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
 export buildMacosEditor=0      #TODO:TEST no mono & TEST Mono
@@ -59,8 +59,8 @@ export buildMacosTemplates=0   #TODO:TEST no mono & TEST Mono
 
 # Mobile/Web/Other platforms
 export buildAndroidTemplate=1 # normal32:OK normal64:OK mono:OK
-export buildWebTemplate=1     # normal32:OK normal64:OK mono:OK
-export buildServerTemplate=1  # normal32:OK normal64:OK mono:unavailable (DEACTIVATED)
+export buildWebTemplate=1     # normal32:OK normal64:OK mono:OK mono32:TODO TEST
+export buildServerTemplate=1  # normal32:OK normal64:OK mono64:OK mono32:TODO TEST
 export buildUWPTemplates=0    #TODO:TEST no mono & TEST Mono
 export buildIosTemplate=0     #TODO
 
@@ -73,11 +73,25 @@ export build32Bits=0
 # Build with mono if possible
 export buildWithMono=1
 
+# Type of mono linking
+# first option: dynamic linking (shared mono)
+# "Linking Mono statically generates an error."
+# "Copying Mono generates an error."
+# All builds are OK except cross compiling for windows
+export isMonoStatic=0
+# second option: static linking:
+# "Linking using a shared mono mono won't work for build a for windows on Linux."
+# No build is OK . The workarround use to save/resore the GodoSharp content does not works well
+# export isMonoStatic=1
+
 # Deploy
 export deploy=1 #TODO: update code after each sucessfull build process added
 
 # backup existing binaries. If set to 1, could create issue in the deploy script because previous built files will be moved in backup folder.
 export backupBinaries=0
+
+#  if set to 1, Ignore the workarroud to save/restore the GodotSharp folder content
+export noMonoSave=0
 
 # ------------
 # BUILD OPTIONS
@@ -119,6 +133,7 @@ function usage() {
   echo " --no32b: Force build without32 bits versions, overwrite the setting set in files."
   echo " --backup: Force to backup existing binaries."
   echo " --nobackup: Force not to backup existing binaries."
+  echo " --nomonosave: Ignore the workarroud to save/restore the GodotSharp folder content."
   echo " --linuxeditoronly: Build only (64 bits) editor for Linux (force -q option)."
   echo " --windowseditoronly: Build only (64 bits) editor for Windows (force -q option)."
   echo " --alltested: Build all platforms and templates successfully tested, with mono (may vary with settings in this file) (force -q option)."
@@ -224,6 +239,9 @@ while [ -n "$1" ]; do
       ;;
     --nobackup)
       export backupBinaries=0
+      ;;
+    --nomonosave)
+      export noMonoSave=1
       ;;
     --linuxeditoronly)
       export isQuiet=1
@@ -473,24 +491,27 @@ if [ $backupBinaries -eq 1 ]; then
   echo_info "backup binaries to $bakFolder"
 fi
 
-if [ "$buildWithMono" -eq 1 ]; then
+if [ "$buildWithMono" -eq 1 ] && [ $isMonoStatic -eq 1 ] && [ $noMonoSave -eq 0 ]; then
   # Workaround for the following error when compiling for WINDOWS AND MONO
   # see https://github.com/godotengine/godot/issues/34825
   # before compilation: copy mono 4.5 folder  to a temporary location while compiling for linux
   # after compilation finished: copy it back for windows
-
   if [ $build32Bits -eq 1 ]; then
-    # create a temporary 32 bits (server) binary for generating the full content in GodotSharp folder required by static linking
-    label="A temporary 32 bits (server) binary for generating the full content in GodotSharp folder"
+    # create a temporary 32 bits (server) binary for building the full content in GodotSharp folder required by static linking
+    # NOTE: do not use the prefix to the build version of mono (ie $MONO_PREFIX_LINUX/mono-installs/desktop-linux-x686-release)
+    [ ! -z $MONO_PREFIX_LINUX ] && MONO_OPTIONS="$MONO_FLAG_P1 copy_mono_root=yes "
+    label="A temporary 32 bits (server) binary for building the full content in GodotSharp folder"
     echo_header "Building $label"
-    cmdScons p=server tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG_P1 copy_mono_root=yes
+    cmdScons p=server tools=yes bits=32 target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_OPTIONS
     fixForMonoSave 32
   fi
 
-  # create a temporary 64 bits (server) binary for generating the full content in GodotSharp folder required by static linking
-  label="A temporary 64 bits (server) binary for generating the full content in GodotSharp folder"
+  # create a temporary 64 bits (server) binary for building the full content in GodotSharp folder required by static linking
+  # NOTE: do not use the prefix to the build version of mono (ie $MONO_PREFIX_LINUX/mono-installs/desktop-linux-x86_64-release)
+  [ ! -z $MONO_PREFIX_LINUX ] && MONO_OPTIONS="$MONO_FLAG_P1 copy_mono_root=yes "
+  label="A temporary 64 bits (server) binary for building the full content in GodotSharp folder"
   echo_header "Building $label"
-  cmdScons p=server tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG_P1 copy_mono_root=yes
+  cmdScons p=server tools=yes bits=64 target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_OPTIONS
   fixForMonoSave 64
 fi
 
