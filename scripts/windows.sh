@@ -9,9 +9,10 @@
 #------
 
 set -euo pipefail
-MONO_OPTIONS=""
 
-# line just for easier comparison
+MONO_OPTIONS=""
+export WINEARCH=win32
+export WINEPREFIX="$HOME/.wine32"
 
 if [ $build32Bits -eq 1 ] && [ "$buildWithMono" -eq 1 ]; then
   echo_warning "Building 32 bits editor for Windows is bypassed due to missing 32bit version of mono"
@@ -25,6 +26,8 @@ else
         [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-i686-release"
         label="Generate the glue for 32 bits editor for Windows"
         echo_header "Running $label"
+        fixForMonoRestore 32
+
         # Build temporary binary
         cmdScons p=windows bits=32 tools=yes mono_glue=no $LTO_FLAG $SCONS_FLAGS $MONO_OPTIONS
         # Generate the glue
@@ -36,6 +39,8 @@ else
       # Build the editor
       label="Building 32 bits editor${MONO_EXT} for Windows"
       echo_header "Running $label"
+      fixForMonoRestore 32
+
       resultFile="$GODOT_DIR/bin/godot.windows.tools.32${MONO_EXT}.exe"
       rm -f $resultFile
       cmdScons p=windows bits=32 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_OPTIONS
@@ -52,6 +57,8 @@ else
     if [ $build32Bits -eq 1 ]; then
       label="Building 32 bits debug export template${MONO_EXT} for Windows"
       echo_header "Running $label"
+      fixForMonoRestore 32
+
       [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-i686-debug"
       resultFile="$GODOT_DIR/bin/godot.windows.opt.debug.32${MONO_EXT}.exe"
       rm -f $resultFile
@@ -63,6 +70,8 @@ else
 
       label="Building 32 bits release export template${MONO_EXT} for Windows"
       echo_header "Running $label"
+      fixForMonoRestore 32
+
       [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-i686-release"
       resultFile="$GODOT_DIR/bin/godot.windows.opt.32${MONO_EXT}.exe"
       rm -f $resultFile
@@ -76,7 +85,8 @@ else
 fi
 
 MONO_OPTIONS=""
-
+export WINEARCH=win64
+export WINEPREFIX="$HOME/.wine"
 # Build 64 bits editor
 # -----
 if [ $buildWindowsEditor -eq 1 ]; then
@@ -84,8 +94,11 @@ if [ $buildWindowsEditor -eq 1 ]; then
     [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-x86_64-release"
     label="Generate the glue for 64 bits editor for Windows"
     echo_header "Running $label"
+    fixForMonoRestore 64
+
     # Build temporary binary
     cmdScons p=windows bits=64 tools=yes mono_glue=no $LTO_FLAG $SCONS_FLAGS $MONO_OPTIONS
+
     # Generate the glue
     "$GODOT_DIR/bin/godot.windows.tools.64${MONO_EXT}.exe" --generate-mono-glue "$GODOT_DIR/modules/mono/glue" $MONO_OPTIONS
     if [ $? -eq 0 ]; then result=1; else result=0; fi
@@ -96,7 +109,9 @@ if [ $buildWindowsEditor -eq 1 ]; then
   # Build the editor
   label="Building 64 bits editor${MONO_EXT} for Windows"
   echo_header "Running $label"
-  resultFile="$GODOT_DIR/bin/godot.windows.tools.64${MONO_EXT}.exe"
+  fixForMonoRestore 64
+
+  resultFile="$GODOT_DIR/bin/godot.windows.opt.tools.64${MONO_EXT}.exe"
   rm -f $resultFile
   cmdScons p=windows bits=64 tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_OPTIONS
   # Remove symbols and sections from files
@@ -113,6 +128,8 @@ if [ $buildWindowsTemplates -eq 1 ]; then
   else
     label="Building 64 bits debug export template${MONO_EXT} for Windows"
     echo_header "Running $label"
+    fixForMonoRestore 64
+
     [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-x86_64-debug"
     resultFile="$GODOT_DIR/bin/godot.windows.opt.debug.64${MONO_EXT}.exe"
     rm -f $resultFile
@@ -125,6 +142,8 @@ if [ $buildWindowsTemplates -eq 1 ]; then
 
   label="Building 64 bits release export template${MONO_EXT} for Windows"
   echo_header "Running $label"
+  fixForMonoRestore 64
+
   [ ! -z $MONO_PREFIX_WINDOWS ] && MONO_OPTIONS="$MONO_FLAG $MONO_PREFIX_WINDOWS/mono-installs/desktop-windows-x86_64-release"
   resultFile="$GODOT_DIR/bin/godot.windows.opt.64${MONO_EXT}.exe"
   rm -f $resultFile

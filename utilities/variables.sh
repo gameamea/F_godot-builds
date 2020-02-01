@@ -20,8 +20,8 @@ if [ "$buildWithMono" -eq 1 ]; then
   export MONO_FLAG_P1=" module_mono_enabled=yes"
   # "Linking Mono statically generates an error. Option is removed in code."
   # "Copying Mono generates an error. Option is removed in code."
-  #export MONO_FLAG_P2=" mono_static=yes copy_mono_root=yes"
-  export MONO_FLAG_P2=""
+  export MONO_FLAG_P2=" mono_static=yes copy_mono_root=yes"
+  #export MONO_FLAG_P2=""
   export MONO_FLAG=" $MONO_FLAG_P1 $MONO_FLAG_P2"
   export MONO_EXT=".mono"
 else

@@ -11,8 +11,11 @@
 # do not stop on build exit with error
 # set -euo pipefail
 
-# if set to 1, no question will be ask and default value will be used
+# if set to 1, no question will be ask and default value will be used (needed for functions.h)
 export isQuiet="${isQuiet:-0}"
+
+# if set to 1, process will be stopped when something fails (needed for functions.h)
+export stopOnFail="${stopOnFail:-0}"
 
 # default answer to yesNo questions
 export defaultYN=1
@@ -31,6 +34,7 @@ MONO_BIN_PREFIX=/usr
 
 # mono version to compile
 MONO_TAG="mono-6.4.0.198"
+MONO_TAG="mono-6.8.0.96"
 
 # `DIR` contains the directory where the script is located, regardless of where
 # it is run from. This makes it easy to run this set of build scripts from any location
@@ -59,7 +63,6 @@ function usage() {
   echo "Command line options:"
   echo " -h |--help  : Show this help and exit."
   echo " -p |--printenv  : Print the environment settings and exit."
-
   echo " -q |--quiet : Stop asking for user input (automatic or batch mode)."
   echo "Notes:"
   echo " Settings at the start of this file can be changed to custom build process."
@@ -126,18 +129,34 @@ while [ -n "$1" ]; do
   shift
 done
 
-yesNoS "Do you want to clean and Clone mono source" $answer
+answer=0
+yesNoS "Do you want to clean mono source and compiled version in tools folder" $answer
+if [ $result -eq 1 ]; then
+  rm -Rf "$MONO_BUILDS_PREFIX_LINUX"
+  rm -Rf "$MONO_BUILDS_PREFIX_WINDOWS"
+  rm -Rf "$MONO_BUILDS_PREFIX_MACOS"
+  rm -Rf "$MONO_BUILDS_PREFIX_ANDROID"
+  rm -Rf "$MONO_BUILDS_PREFIX_WEBASM"
+  rm -Rf "$MONO_BUILDS_PREFIX_BCL"
+
+  rm -Rf "$MONO_FOLDER/mono"
+fi
+
+answer=0
+yesNoS "Do you want to clone mono source" $answer
 if [ $result -eq 1 ]; then
   PATH=$MONO_BIN_PREFIX/bin:$PATH
 
   cd $MONO_FOLDER
 
-  git clone https://github.com/mono/mono.git
+  git clone https://github.com/mono/mono.git --recursive
 
   cd mono
 
   git fetch --all
   git checkout $MONO_TAG
+
+  git submodule update --init --recursive
 
   yesNoS "Do you want to compil mono by the usual way" $answer
   if [ $result -eq 1 ]; then
@@ -179,10 +198,28 @@ yesNoS "Do you want to build $label" $answer
 if [ $result -eq 1 ]; then
   echo_header "Building $label"
   # Build the runtimes for 32-bit and 64-bit Windows.
-  runPython windows.py $MONO_BUILDS_WINDOWS_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG configure --target=i686 --target=x86_64
-  runPython windows.py $MONO_BUILDS_WINDOWS_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG make --target=i686 --target=x86_64
+  runPython windows.py $MONO_BUILDS_WINDOWS_FLAGS configure --target=i686 --target=x86_64 $MONO_BUILDS_CROSS_COMPIL_FLAG
+  runPython windows.py $MONO_BUILDS_WINDOWS_FLAGS make --target=i686 --target=x86_64 $MONO_BUILDS_CROSS_COMPIL_FLAG
   if [ $? -eq 0 ]; then result=1; else result=0; fi
-  if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi
+  if [ $result -eq 1 ]; then
+    echo_success "$label built successfully"
+  else
+    echo_warning "$label built with error"
+    echo_info "if build fail with error : undefined reference to __chk_fail\nSome file needs to be patched or a more recent version of mono source must be used"
+    echo_info "see https://github.com/mono/mono/issues/18287 and https://github.com/mono/mono/pull/18312/files"
+  fi
+
+  # some link must be created to avoid following errors when building windows editor
+  # RuntimeError: Could not find mono library in: /mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/windows/mono-installs/desktop-windows-x86_64-release/lib:
+  # RuntimeError: Could not find mono shared library in: /mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/windows/mono-installs/desktop-windows-x86_64-release/bin:
+  cd $MONO_BUILDS_PREFIX_WINDOWS/mono-installs/desktop-windows-x86_64-release/lib
+  # create missing files
+  cp -f libmono-2.0.dll.a mono-2.0-sgen.a
+  cp -f libmonosgen-2.0.dll.a monosgen-2.0.a
+  # note symlink does not work here
+  cp -f libmono-2.0.dll.a ../bin/mono-2.0-sgen.dll
+  cp -f libmonosgen-2.0.dll.a ../bin/monosgen-2.0.dll
+  cd $TOOLS_MONO_BUILDS
 fi
 
 answer=0
@@ -203,6 +240,9 @@ fi
 
 answer=$defaultYN
 label="Mono for Android"
+# ERRORS
+# scons android.py --install-dir=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/android/mono-installs --configure-dir=/mnt/R/Apps_Sources/GodotEngine/godot-builds/tools/mono/android/mono-config --mxe-prefix=/usr make --target=all-cross-win
+
 if [ -r "$MONO_BUILDS_PREFIX_ANDROID/mono-installs/android-x86_64-release/bin/mono-sgen-gdb.py" ]; then
   echo_info "$label has already been built. Building it again will take unnecessary time..."
   answer=$alreadyDoneYN
@@ -238,8 +278,8 @@ if [ $result -eq 1 ]; then
   runPython android.py $MONO_BUILDS_ANDROID_FLAGS make $ANDROID_ALL_TARGETCROSS
 
   # Build the AOT cross-compilers for Windows targeting all supported Android ABIs.
-  runPython android.py $MONO_BUILDS_ANDROID_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG configure $ANDROID_ALL_TARGETWIN
-  runPython android.py $MONO_BUILDS_ANDROID_FLAGS $MONO_BUILDS_CROSS_COMPIL_FLAG make $ANDROID_ALL_TARGETWIN
+  ##HS  runPython android.py $MONO_BUILDS_ANDROID_FLAGS configure $ANDROID_ALL_TARGETWIN $MONO_BUILDS_CROSS_COMPIL_FLAG
+  ##HS  runPython android.py $MONO_BUILDS_ANDROID_FLAGS make $ANDROID_ALL_TARGETWIN $MONO_BUILDS_CROSS_COMPIL_FLAG
 
   if [ $? -eq 0 ]; then result=1; else result=0; fi
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi

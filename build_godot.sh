@@ -21,9 +21,9 @@ set -e
 # these values are default values and can be changed to choose what to do in the build process
 # ------------
 
-# if set to 1, no question will be ask and default value will be used
+# if set to 1, no question will be ask and default value will be used (needed for functions.h)
 export isQuiet=0
-# if set to 1, process will be stopped when something fails
+# if set to 1, process will be stopped when something fails (needed for functions.h)
 export stopOnFail=0
 # if set to 1, binaries size will be optimised
 export isBinSizeOptimised=1
@@ -117,14 +117,14 @@ function usage() {
   echo " --mono: Force build with mono, overwrite the setting set in files."
   echo " --32b: Force build with 32 bits versions, overwrite the setting set in files."
   echo " --no32b: Force build without32 bits versions, overwrite the setting set in files."
-  echo " --backup: Force to backup existng binaries."
-  echo " --nobackup: Force not to backup existng binaries."
+  echo " --backup: Force to backup existing binaries."
+  echo " --nobackup: Force not to backup existing binaries."
   echo " --linuxeditoronly: Build only (64 bits) editor for Linux (force -q option)."
   echo " --windowseditoronly: Build only (64 bits) editor for Windows (force -q option)."
   echo " --alltested: Build all platforms and templates successfully tested, with mono (may vary with settings in this file) (force -q option)."
   echo " --webexportonly: Build only (64 bits) template for Web (force -q option)."
   echo " --androidexportonly: Build only (64 bits) template for Android (force -q option)."
-  echo " --serverexportonly: Build only (64 bits) server template (force -q option)."
+  echo " --serveronly: Build only (64 bits) server binaries (force -q option)."
   echo " --deployonly: No build. Run only the deploy script (force -q option)."
   echo "Default options are set to:"
   echo " ask for user confirmation (add -q option to disable)."
@@ -309,7 +309,7 @@ while [ -n "$1" ]; do
       export buildDoc=0
       export deploy=1
       ;;
-    --serverexportonly)
+    --serveronly)
       export isQuiet=1
       export buildLinuxEditor=0
       export buildLinuxTemplates=0
@@ -374,6 +374,8 @@ source "$UTILITIES_DIR/variables.sh"
 
 # ASK USER
 if [ $isQuiet -eq 0 ]; then
+  yesNoS "Do you want to build Server binaries"
+  if [ $result -eq 1 ]; then export buildServerTemplate=1; else export buildServerTemplate=0; fi
   yesNoS "Do you want to build Linux Editor"
   if [ $result -eq 1 ]; then export buildLinuxEditor=1; else export buildLinuxEditor=0; fi
   yesNoS "Do you want to build Linux Templates"
@@ -390,8 +392,6 @@ if [ $isQuiet -eq 0 ]; then
   if [ $result -eq 1 ]; then export buildAndroidTemplate=1; else export buildAndroidTemplate=0; fi
   yesNoS "Do you want to build Web Templates"
   if [ $result -eq 1 ]; then export buildWebTemplate=1; else export buildWebTemplate=0; fi
-  yesNoS "Do you want to build Server binaries"
-  if [ $result -eq 1 ]; then export buildServerTemplate=1; else export buildServerTemplate=0; fi
   yesNoS "Do you want to build UWP Templates"
   if [ $result -eq 1 ]; then export buildUWPTemplates=1; else export buildUWPTemplates=0; fi
   yesNoS "Do you want to build Ios Templates"
@@ -473,6 +473,29 @@ if [ $backupBinaries -eq 1 ]; then
   echo_info "backup binaries to $bakFolder"
 fi
 
+if [ "$buildWithMono" -eq 1 ]; then
+  # Workaround for the following error when compiling for WINDOWS AND MONO
+  # see https://github.com/godotengine/godot/issues/34825
+  # before compilation: copy mono 4.5 folder  to a temporary location while compiling for linux
+  # after compilation finished: copy it back for windows
+
+  if [ $build32Bits -eq 1 ]; then
+    # create a temporary 32 bits (server) binary for generating the full content in GodotSharp folder required by static linking
+    label="A temporary 32 bits (server) binary for generating the full content in GodotSharp folder"
+    echo_header "Building $label"
+    cmdScons p=server tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG_P1 copy_mono_root=yes
+    fixForMonoSave 32
+  fi
+
+  # create a temporary 64 bits (server) binary for generating the full content in GodotSharp folder required by static linking
+  label="A temporary 64 bits (server) binary for generating the full content in GodotSharp folder"
+  echo_header "Building $label"
+  cmdScons p=server tools=yes target=release_debug $LTO_FLAG $SCONS_FLAGS $MONO_FLAG_P1 copy_mono_root=yes
+  fixForMonoSave 64
+fi
+
+# platform editor and templates
+#-----
 # Linux
 if [ $buildLinuxEditor -eq 1 ] || [ $buildLinuxTemplates -eq 1 ]; then "$SCRIPTS_DIR/linux.sh"; fi
 # Windows
@@ -480,22 +503,24 @@ if [ $buildWindowsEditor -eq 1 ] || [ $buildWindowsTemplates -eq 1 ]; then "$SCR
 # MacOS
 if [ $buildMacosEditor -eq 1 ] || [ $buildMacosTemplates -eq 1 ]; then "$SCRIPTS_DIR/macos.sh"; fi
 
+# Server
+[ $buildServerTemplate -eq 1 ] && "$SCRIPTS_DIR/server.sh"
+
 # build Other Templates
 #-----
 # Android
 [ $buildAndroidTemplate -eq 1 ] && "$SCRIPTS_DIR/android.sh"
 # Web
 [ $buildWebTemplate -eq 1 ] && "$SCRIPTS_DIR/web.sh"
-# Server
-[ $buildServerTemplate -eq 1 ] && "$SCRIPTS_DIR/server.sh"
 # UWP
 if [ $buildUWPTemplates -eq 1 ]; then "$SCRIPTS_DIR/uwp.sh"; fi
 # IOS
 [ $buildIosTemplate -eq 1 ] && "$SCRIPTS_DIR/ios.sh"
 
+# Extras
+#-----
 # Doc
 [ $buildDoc -eq 1 ] && "$SCRIPTS_DIR/doc.sh"
-
 # Deploy
 [ $deploy -eq 1 ] && "$SCRIPTS_DIR/deploy.sh"
 

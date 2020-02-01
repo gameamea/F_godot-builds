@@ -54,6 +54,36 @@ function initLog() {
 export -f initLog
 
 # #
+# # Workaround for the following error when compiling for WINDOWS AND MONO
+# # see https://github.com/godotengine/godot/issues/34825
+# before compilation: copy mono 4.5 folder  to a temporary location while compiling for linux
+# 64 and 32 bits versions are saved distinctively
+fixForMonoSave() {
+  if [ "$buildWithMono" -eq 1 ]; then
+    if [ -z $1 ]; then bits="64"; else bits=$1; fi
+    echo_warning "fix For Mono Save $bits bits"
+    mkdir -p "$GODOT_DIR/bin/GodotSharp_${bits}_KEEP/Mono/lib/mono/4.5"
+    cp -Rfa "$GODOT_DIR/bin/GodotSharp/Mono/lib/mono/4.5/" "$GODOT_DIR/bin/GodotSharp_${bits}_KEEP/Mono/lib/mono/4.5"
+  fi
+}
+export -f fixForMonoSave
+
+# #
+# # Workaround for the following error when compiling for WINDOWS AND MONO
+# # see https://github.com/godotengine/godot/issues/34825
+# # after compilation finished, copy it back for windows
+# 64 and 32 bits versions are saved distinctively
+fixForMonoRestore() {
+  if [ "$buildWithMono" -eq 1 ]; then
+    if [ -z $1 ]; then bits="64"; else bits=$1; fi
+    echo_warning "fix For Mono Restore $bits bits"
+    mkdir -p "$GODOT_DIR/bin/GodotSharp/Mono/lib/mono/4.5"
+    cp -Rfa "$GODOT_DIR/bin/GodotSharp_${bits}_KEEP/Mono/lib/mono/4.5/" "$GODOT_DIR/bin/GodotSharp/Mono/lib/mono/4.5"
+  fi
+}
+export -f fixForMonoRestore
+
+# #
 # # Output an underlined line in standard output
 echo_header() {
   echo -e "\n-------\n${blackOnOrange}$1${resetColor}\n-------\n"
