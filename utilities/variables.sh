@@ -67,10 +67,10 @@ export DIR="${DIR:-"/mnt/R/Apps_Sources/GodotEngine/godot-builds"}"
 # for various godot versions
 case $gitRepoIndex in
   1)
-    # GODOT official
+    # GODOT official Master version
     export GODOT_DIR="$(dirname $DIR)/godot_official"
     export GODOT_ORIGIN="https://github.com/godotengine/godot.git"
-    export GODOT_BRANCH="master"
+    export GODOT_BRANCH="master" # master is instable and includes vulcan since 2020-02-05
     ;;
   2)
     # GODOT Gameamea version : 3.2 with editor auto formatter (taken from Frug version)
@@ -79,10 +79,10 @@ case $gitRepoIndex in
     export GODOT_ORIGIN="https://github.com/gameamea/F_godot.git"
     ;;
   3)
-    # GODOT Frug version : 3.2 with editor auto formatter (not up to date)
-    export GODOT_DIR="$(dirname $DIR)/godot_frugs"
-    export GODOT_ORIGIN="https://github.com/frugs/godot.git"
-    export GODOT_BRANCH="gdscript_auto_formatter"
+    # GODOT official 3.2 version
+    export GODOT_DIR="$(dirname $DIR)/godot_32"
+    export GODOT_ORIGIN="https://github.com/godotengine/godot.git"
+    export GODOT_BRANCH="3.2"    # latest stable version
     ;;
   *)
     # system dependant/config independant) version (the symlink can be changed on différent PC)
@@ -201,8 +201,8 @@ export BUILD_VERSION="$BUILD_DATE.$BUILD_COMMIT"
 # Build log : store the files that were missing on deloy/copy
 # the file is stored in the script folder
 export deployDate=$(date +%Y-%m-%d)
-export logSuccessFile="$LOGS_DIR/${deployDate}_success.log"
-export logFailFile="$LOGS_DIR/${deployDate}_fail.log"
+export logSuccessFile="$LOGS_DIR/${deployDate}_repo#${gitRepoIndex}_success.log"
+export logFailFile="$LOGS_DIR/${deployDate}_repo#${gitRepoIndex}_fail.log"
 
 # text file to store build settings (in bin folder )
 export buildSettingsStoreFile="$GODOT_DIR/bin/BUILD_$BUILD_VERSION${MONO_EXT}.txt"

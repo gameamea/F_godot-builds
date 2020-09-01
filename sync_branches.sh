@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 folder="../_godot/"
-branchMaster='master'
+branchMaster='3.2'
 branchDevelop="gdscript_format_updated"
 upstream="https://github.com/godotengine/godot.git"
 

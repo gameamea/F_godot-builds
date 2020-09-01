@@ -50,7 +50,7 @@ export isBuildMonoFromSourceForced=0
 # ------------
 
 # Desktop platforms
-export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:TODOTEST
+export buildLinuxEditor=1      # normal32:OK normal64:OK mono64:OK mono32:HS (error on linking with mono)
 export buildLinuxTemplates=1   # normal32:OK normal64:OK mono64:OK mono32:TODO TEST
 export buildWindowsEditor=0    # normal32:OK normal64:OK mono:BUG cross build
 export buildWindowsTemplates=0 # normal32:OK normal64:OK mono:BUG cross build
@@ -133,6 +133,8 @@ function usage() {
   echo " --no32b: Force build without32 bits versions, overwrite the setting set in files."
   echo " --backup: Force to backup existing binaries."
   echo " --nobackup: Force not to backup existing binaries."
+  echo " --nodeploy: Build but does not run the deploy script."
+  echo " --deployonly: No build. Run only the deploy script (force -q option)."
   echo " --nomonosave: Ignore the workarroud to save/restore the GodotSharp folder content."
   echo " --linuxeditoronly: Build only (64 bits) editor for Linux (force -q option)."
   echo " --windowseditoronly: Build only (64 bits) editor for Windows (force -q option)."
@@ -140,7 +142,6 @@ function usage() {
   echo " --webexportonly: Build only (64 bits) template for Web (force -q option)."
   echo " --androidexportonly: Build only (64 bits) template for Android (force -q option)."
   echo " --serveronly: Build only (64 bits) server binaries (force -q option)."
-  echo " --deployonly: No build. Run only the deploy script (force -q option)."
   echo "Default options are set to:"
   echo " ask for user confirmation (add -q option to disable)."
   echo " use Source code stored in the '../_godot' folder (that must be a symlink to the version you want to compile)."
@@ -243,6 +244,25 @@ while [ -n "$1" ]; do
     --nomonosave)
       export noMonoSave=1
       ;;
+    --nodeploy)
+      export deploy=0
+      ;;
+    --deployonly)
+      export isQuiet=1
+      export buildLinuxEditor=0
+      export buildLinuxTemplates=0
+      export buildWindowsEditor=0
+      export buildWindowsTemplates=0
+      export buildMacosEditor=0
+      export buildMacosTemplates=0
+      export buildAndroidTemplate=0
+      export buildWebTemplate=0
+      export buildServerTemplate=0
+      export buildUWPTemplates=0
+      export buildIosTemplate=0
+      export buildDoc=0
+      export deploy=1
+      ;;
     --linuxeditoronly)
       export isQuiet=1
       export buildLinuxEditor=1
@@ -338,22 +358,6 @@ while [ -n "$1" ]; do
       export buildAndroidTemplate=0
       export buildWebTemplate=0
       export buildServerTemplate=1
-      export buildUWPTemplates=0
-      export buildIosTemplate=0
-      export buildDoc=0
-      export deploy=1
-      ;;
-    --deployonly)
-      export isQuiet=1
-      export buildLinuxEditor=0
-      export buildLinuxTemplates=0
-      export buildWindowsEditor=0
-      export buildWindowsTemplates=0
-      export buildMacosEditor=0
-      export buildMacosTemplates=0
-      export buildAndroidTemplate=0
-      export buildWebTemplate=0
-      export buildServerTemplate=0
       export buildUWPTemplates=0
       export buildIosTemplate=0
       export buildDoc=0
@@ -456,11 +460,12 @@ if [ $result -eq 1 ]; then
   echo_header "Cloning Godot Git repository from $GODOT_ORIGIN"
   git clone --depth=1 "$GODOT_ORIGIN" "$GODOT_DIR"
 else
-  yesNoS "${orangeOnBlack}Do you want to pull from origin (branch: $GODOT_BRANCH)?" $defaultYN
+  yesNoS "${orangeOnBlack}Do you want to pull from origin (branch: $GODOT_BRANCH) ?" 1
   if [ $result -eq 1 ]; then
+    echo_header "Pulling from $GODOT_ORIGIN/$GODOT_BRANCH) "
     git fetch --all
+    git pull origin $GODOT_BRANCH
     git checkout $GODOT_BRANCH
-    git pull origin
   fi
 fi
 

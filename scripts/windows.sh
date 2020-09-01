@@ -14,8 +14,7 @@ MONO_OPTIONS=""
 export WINEARCH=win32
 export WINEPREFIX="$HOME/.wine32"
 
-
-echo_warnind "actually cros compiling for windows does not work: issue with linking. No solution found"
+echo_warning "actually cross compiling for windows does not work: issue with linking. No solution found"
 # ERROR ON LINKING
 #/usr/lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/bin/ld: cannot find -lmono-2.0-sgen
 #collect2: error: ld returned 1 exit status
@@ -27,7 +26,9 @@ echo_warnind "actually cros compiling for windows does not work: issue with link
 # no solution by testing dynamic linking with copying missing files (when building mono) -> no link is possible
 # see https://github.com/godotengine/godot/issues/31793
 
-if [ $build32Bits -eq 1 ] && [ "$buildWithMono" -eq 1 ]; then
+if true && [ $build32Bits -eq 1 ] && [ "$buildWithMono" -eq 1 ]; then
+  # ERROR ON LINKING
+  # bin/godot.x11.tools.32.mono: error while loading shared libraries: libmonosgen-2.0.so.1: cannot open shared object file: No such file or directory
   echo_warning "Building 32 bits editor for Windows is bypassed due to missing 32bit version of mono"
   echo_warning "Building 32 bits debug export templates for Windows are bypassed due to missing debug version of mono (too long, but can be done if necessary)"
 else

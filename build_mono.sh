@@ -328,7 +328,7 @@ if [ $result -eq 1 ]; then
   runPython bcl.py $MONO_BUILDS_BCL_FLAGS make --product=wasm
 
   # install the reference assemblies
-  runPython reference_assemblies.py install
+  runPython reference_assemblies.py $MONO_BUILDS_BCL_FLAGS install
 
   if [ $? -eq 0 ]; then result=1; else result=0; fi
   if [ $result -eq 1 ]; then echo_success "$label built successfully"; else echo_warning "$label built with error"; fi

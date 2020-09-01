@@ -14,7 +14,7 @@ MONO_OPTIONS=""
 echo_info "NOTE: Linux binaries usually won’t run on distributions that are older than the distribution they were built on. If you wish to distribute binaries that work on most distributions, you should build them on an old distribution such as Ubuntu 16.04. You can use a virtual machine or a container to set up a suitable build environment."
 # line just for easier comparison
 
-if [ false ] && [ $build32Bits -eq 1 ] && [ "$buildWithMono" -eq 1 ]; then
+if true && [ $build32Bits -eq 1 ] && [ "$buildWithMono" -eq 1 ]; then
   echo_warning "Building 32 bits editor for Linux is bypassed due to missing 32bit version of mono"
   echo_warning "Building 32 bits debug export templates for Linux are bypassed due to missing debug version of mono (too long, but can be done if necessary)"
 else
