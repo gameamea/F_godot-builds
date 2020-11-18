@@ -145,6 +145,7 @@ fi
 answer=0
 yesNoS "Do you want to clone mono source" $answer
 if [ $result -eq 1 ]; then
+	echo "mono will be cloned in $MONO_FOLDER"
   PATH=$MONO_BIN_PREFIX/bin:$PATH
 
   cd $MONO_FOLDER
@@ -158,11 +159,12 @@ if [ $result -eq 1 ]; then
 
   git submodule update --init --recursive
 
-  yesNoS "Do you want to compil mono by the usual way" $answer
+  yesNoS "Do you want to compil mono by the normal way" $answer
   if [ $result -eq 1 ]; then
     ./autogen.sh --prefix=$MONO_BIN_PREFIX
     make
-    make install
+		make distclean
+    sudo make install
   fi
 fi
 

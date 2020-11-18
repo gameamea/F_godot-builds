@@ -90,7 +90,7 @@ export deploy=1 #TODO: update code after each sucessfull build process added
 # backup existing binaries. If set to 1, could create issue in the deploy script because previous built files will be moved in backup folder.
 export backupBinaries=0
 
-#  if set to 1, Ignore the workarroud to save/restore the GodotSharp folder content
+# if set to 1, Ignore the workarroud to save/restore the GodotSharp folder content
 export noMonoSave=0
 
 # ------------
@@ -120,11 +120,11 @@ function usage() {
   echo "Result:"
   echo " Build godot engine editor and templates from local source with several options."
   echo "Command line options:"
-  echo " -h |--help: Show this help and exit."
-  echo " -p |--printenv: Print the environment settings and exit."
-  echo " -q |--quiet: Stop asking for user input (automatic or batch mode)."
-  echo " -t |--test: Run './script/test.sh' file after initialisation instead of running normal process."
-  echo " -g |--gitrepoindex: Index of the git repo to use for build (0 for default in '_godot' folder, 1 for official godot.., see list in variables.sh), overwrite the setting set in files."
+  echo " -h | --help: Show this help and exit."
+  echo " -p | --printenv: Print the environment settings and exit."
+  echo " -q | --quiet: Stop asking for user input (automatic or batch mode)."
+  echo " -t | --test: Run './script/test.sh' file after initialisation instead of running normal process."
+  echo " -g | --gitrepoindex: Index of the git repo to use for build (0 for default in '_godot' folder, 1 for official godot.., see list in variables.sh), overwrite the setting set in files."
   echo " --dependencies: Force dependency setup will be forced, overwrite the setting set in files."
   echo " --buildmono: Force mono build from sources setup will be forced, overwrite the setting set in files."
   echo " --nomono: Force build without mono, overwrite the setting set in files."
